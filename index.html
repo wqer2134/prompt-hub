@@ -24,6 +24,7 @@
     --drum: #f76a8a;
     --vocal: #6af7c8;
     --bass: #f7a26a;
+    --promo: #f7e26a;
     --radius: 12px;
     --radius-sm: 8px;
   }
@@ -106,6 +107,7 @@
   .inst-tab.active-drum { color: var(--drum); border-color: var(--drum); background: rgba(247,106,138,0.1); }
   .inst-tab.active-vocal { color: var(--vocal); border-color: var(--vocal); background: rgba(106,247,200,0.1); }
   .inst-tab.active-bass { color: var(--bass); border-color: var(--bass); background: rgba(247,162,106,0.1); }
+  .inst-tab.active-promo { color: var(--promo); border-color: var(--promo); background: rgba(247,226,106,0.1); }
 
   /* 콘텐츠 패널 */
   .panel { display: none; animation: fadeIn 0.25s ease; }
@@ -242,7 +244,7 @@
       <div class="logo-icon">🎵</div>
       <div>
         <h1>홍보 프롬프트 허브</h1>
-        <div class="subtitle">실용음악학원 · SNS 채널별 AI 프롬프트 모음</div>
+        <div class="subtitle">실용음악학원 · SNS 채널별 AI 프롬프트 모음 · 주 5회 발행</div>
       </div>
     </div>
     <div class="badge-row">
@@ -261,37 +263,40 @@
 
   <!-- 블로그 패널 -->
   <div id="panel-blog" class="panel active">
-    <div class="instrument-tabs">
-      <button class="inst-tab active-guitar" onclick="switchInst('guitar', this)">🎸 기타</button>
-      <button class="inst-tab" onclick="switchInst('drum', this)">🥁 드럼 (준비중)</button>
-      <button class="inst-tab" onclick="switchInst('vocal', this)">🎤 보컬 (준비중)</button>
-      <button class="inst-tab" onclick="switchInst('bass', this)">🎵 베이스 (준비중)</button>
+
+    <!-- 콘텐츠 유형 탭 -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="ch-tab active" id="btn-lesson" onclick="switchContentType('lesson',this)">📚 레슨 콘텐츠 <span style="font-size:11px;opacity:0.7;margin-left:4px">월·화·목·금</span></button>
+      <button class="ch-tab" id="btn-promo-type" onclick="switchContentType('promo',this)">📢 학원 홍보 <span style="font-size:11px;opacity:0.7;margin-left:4px">수요일</span></button>
     </div>
 
-    <!-- 기타 패널 -->
-    <div id="inst-guitar" class="panel active">
-
-      <!-- 프롬프트 섹션 -->
-      <div class="section-header">
-        <div class="section-dot" style="background:var(--guitar)"></div>
-        <div class="section-title">Gemini 통합 프롬프트</div>
-        <div class="section-desc">글 + 이미지 동시 생성</div>
+    <!-- 레슨 콘텐츠 -->
+    <div id="content-lesson">
+      <div class="instrument-tabs">
+        <button class="inst-tab active-guitar" onclick="switchInst('guitar',this)">🎸 기타</button>
+        <button class="inst-tab" onclick="switchInst('drum',this)">🥁 드럼 (준비중)</button>
+        <button class="inst-tab" onclick="switchInst('vocal',this)">🎤 보컬 (준비중)</button>
+        <button class="inst-tab" onclick="switchInst('bass',this)">🎵 베이스 (준비중)</button>
       </div>
 
-      <div class="prompt-grid">
-
-        <!-- 카툰 프롬프트 -->
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:var(--accent)">🎨 카툰 일러스트 스타일</div>
-              <div class="card-title">블로그 글 + 이미지 3장 (카툰)</div>
-              <div class="card-sub">사선 2면 구도 · 말풍선 포함 · 파스텔 톤</div>
+      <div id="inst-guitar" class="panel active">
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--guitar)"></div>
+          <div class="section-title">🎸 기타 레슨 Gemini 프롬프트</div>
+          <div class="section-desc">글 + 이미지 동시 생성</div>
+        </div>
+        <div class="prompt-grid">
+          <div class="prompt-card">
+            <div class="card-header">
+              <div class="card-meta">
+                <div class="card-label" style="color:var(--accent)">🎨 카툰 일러스트 스타일</div>
+                <div class="card-title">블로그 글 + 이미지 3장 (카툰)</div>
+                <div class="card-sub">사선 2면 구도 · 말풍선 포함 · 파스텔 톤</div>
+              </div>
+              <div class="day-badge">🗓 월 · 화 사용</div>
             </div>
-            <div class="day-badge">🗓 월 · 목 사용</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="prompt-cartoon">너는 기타 학원 네이버 블로그 전문 작가이자 이미지 디렉터야.
+            <div class="card-body">
+              <div class="prompt-text" id="prompt-cartoon">너는 기타 학원 네이버 블로그 전문 작가이자 이미지 디렉터야.
 아래 조건에 따라 블로그 글을 쓰고,
 각 ▼ 이미지 생성 위치에서 카툰 일러스트 스타일로 이미지를 직접 생성해줘.
 이미지 3장 모두 카툰 스타일로 통일해줘.
@@ -305,69 +310,51 @@
 ────────────────────────────────────────
 
 [글 작성 조건]
-- 분량: 1,000~1,300자
-- 톤: 친근하고 따뜻한 구어체
-- 핵심 키워드 '기타배우기', '기타레슨' 자연스럽게 포함
+- 분량: 1,000~1,300자 / 친근하고 따뜻한 구어체
+- 핵심 키워드 기타배우기, 기타레슨 자연스럽게 포함
 - 구성:
-
   1. 도입부 – 독자 공감으로 시작
+  ▼ 이미지 1 [카툰 – 전체 장면]
+  [주제] 전체 장면 / 귀여운 한국 만화 스타일 일러스트 /
+  둥글둥글한 캐릭터와 볼터치 / 밝고 따뜻한 파스텔 톤 /
+  부드러운 2D 플랫 스타일 / 사선으로 나눈 2면 카툰 구도 /
+  부드러운 갈색 선, 가늘게 / 텍스트·말풍선·설명 있음
 
-  ▼ 이미지 1 생성 [카툰 – 전체 장면]
-  [주제] 전체 장면 /
-  귀여운 한국 만화 스타일 일러스트 /
-  둥글둥글한 캐릭터와 볼터치 /
-  밝고 따뜻한 파스텔 톤 색감 /
-  부드러운 선의 2D 플랫 스타일 /
-  주제에만 집중한 사선으로 나눈 2면 카툰 구도 /
-  부드러운 갈색 선, 선 굵기는 가늘게 /
-  텍스트·말풍선·설명 있음
+  2. 소제목1 🎸 핵심 개념 설명
+  3. 소제목2 💡 실전 팁 또는 연습법
+  ▼ 이미지 2 [카툰 – 전체 장면]
+  [주제] 연습하는 전체 장면 / 귀여운 한국 만화 스타일 일러스트 /
+  둥글둥글한 캐릭터와 볼터치 / 밝고 따뜻한 파스텔 톤 /
+  부드러운 2D 플랫 스타일 / 사선으로 나눈 2면 카툰 구도 /
+  부드러운 갈색 선, 가늘게 / 텍스트·말풍선·설명 있음
 
-  2. 소제목1 🎸 – 핵심 개념 설명
-  3. 소제목2 💡 – 실전 팁 또는 연습법
-
-  ▼ 이미지 2 생성 [카툰 – 전체 장면]
-  [주제] 연습하는 전체 장면 /
-  귀여운 한국 만화 스타일 일러스트 /
-  둥글둥글한 캐릭터와 볼터치 /
-  밝고 따뜻한 파스텔 톤 색감 /
-  부드러운 선의 2D 플랫 스타일 /
-  주제에만 집중한 사선으로 나눈 2면 카툰 구도 /
-  부드러운 갈색 선, 선 굵기는 가늘게 /
-  텍스트·말풍선·설명 있음
-
-  4. 소제목3 ✅ – 흔한 실수 또는 Q&A
+  4. 소제목3 ✅ 흔한 실수 또는 Q&A
   5. 마무리 – 격려 + 학원 수강 유도 CTA
-
-  ▼ 이미지 3 생성 [카툰 – 클로즈업]
-  [주제] 핵심 부분 클로즈업 장면 /
-  귀여운 한국 만화 스타일 일러스트 /
-  둥글둥글한 표현과 볼터치 /
-  밝고 따뜻한 파스텔 톤 색감 /
-  부드러운 선의 2D 플랫 스타일 /
-  주제에만 집중한 사선으로 나눈 2면 카툰 구도 /
-  부드러운 갈색 선, 선 굵기는 가늘게 /
-  텍스트·말풍선·설명 있음
+  ▼ 이미지 3 [카툰 – 클로즈업]
+  [주제] 핵심 부분 클로즈업 / 귀여운 한국 만화 스타일 일러스트 /
+  둥글둥글한 표현과 볼터치 / 밝고 따뜻한 파스텔 톤 /
+  부드러운 2D 플랫 스타일 / 사선으로 나눈 2면 카툰 구도 /
+  부드러운 갈색 선, 가늘게 / 텍스트·말풍선·설명 있음
 
 - 해시태그 10개 글 맨 끝에 추가</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('prompt-cartoon', this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('prompt-cartoon', this)">접기 ▲</button>
-          </div>
-        </div>
-
-        <!-- 실사 프롬프트 -->
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:var(--accent2)">📷 클로즈업 실사 스타일</div>
-              <div class="card-title">블로그 글 + 이미지 3장 (실사)</div>
-              <div class="card-sub">한국인 모델 · 실용음악학원 배경 · 아이폰 질감</div>
             </div>
-            <div class="day-badge">🗓 화 · 금 사용</div>
+            <div class="card-footer">
+              <button class="copy-btn" onclick="copyPrompt('prompt-cartoon',this)">📋 복사하기</button>
+              <button class="toggle-btn" onclick="togglePrompt('prompt-cartoon',this)">접기 ▲</button>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="prompt-text" id="prompt-realistic">너는 기타 학원 네이버 블로그 전문 작가이자 이미지 디렉터야.
+
+          <div class="prompt-card">
+            <div class="card-header">
+              <div class="card-meta">
+                <div class="card-label" style="color:var(--accent2)">📷 클로즈업 실사 스타일</div>
+                <div class="card-title">블로그 글 + 이미지 3장 (실사)</div>
+                <div class="card-sub">한국인 모델 · 실용음악학원 배경 · 아이폰 질감</div>
+              </div>
+              <div class="day-badge">🗓 목 · 금 사용</div>
+            </div>
+            <div class="card-body">
+              <div class="prompt-text" id="prompt-realistic">너는 기타 학원 네이버 블로그 전문 작가이자 이미지 디렉터야.
 아래 조건에 따라 블로그 글을 쓰고,
 각 ▼ 이미지 생성 위치에서 실사 스타일로 이미지를 직접 생성해줘.
 이미지 3장 모두 실사 스타일로 통일해줘.
@@ -381,100 +368,153 @@
 ────────────────────────────────────────
 
 [글 작성 조건]
-- 분량: 1,000~1,300자
-- 톤: 친근하고 따뜻한 구어체
-- 핵심 키워드 '기타배우기', '기타레슨' 자연스럽게 포함
+- 분량: 1,000~1,300자 / 친근하고 따뜻한 구어체
+- 핵심 키워드 기타배우기, 기타레슨 자연스럽게 포함
 - 구성:
-
   1. 도입부 – 독자 공감으로 시작
+  ▼ 이미지 1 [실사 – 전체 장면]
+  [주제] 전체 장면 / 한국인 모델 / 실용음악학원 내부 배경 /
+  매우 밝고 깨끗한 화이트톤 / 담백한 색감 /
+  아이폰 카메라 특유의 선명하고 정돈된 질감 /
+  따뜻한 자연광 / 배경 흐릿하게 처리 / 텍스트·라벨 없음
 
-  ▼ 이미지 1 생성 [실사 – 전체 장면]
-  [주제] 전체 장면 /
-  한국인 모델 /
-  실용음악학원 내부 배경 /
-  매우 밝고 깨끗한 화이트톤 배경 /
-  인위적이지 않은 담백한 색감 /
-  실제 아이폰 카메라 특유의 선명하면서도 정돈된 질감 /
-  따뜻한 자연광 /
-  배경은 흐릿하게 처리 /
-  텍스트·말풍선·라벨·설명 일체 없음 /
-  주제에 집중
+  2. 소제목1 🎸 핵심 개념 설명
+  3. 소제목2 💡 실전 팁 또는 연습법
+  ▼ 이미지 2 [실사 – 전체 장면]
+  [주제] 연습하는 전체 장면 / 한국인 모델 / 실용음악학원 내부 배경 /
+  매우 밝고 깨끗한 화이트톤 / 담백한 색감 /
+  아이폰 카메라 특유의 선명하고 정돈된 질감 /
+  따뜻한 자연광 / 배경 흐릿하게 처리 / 텍스트·라벨 없음
 
-  2. 소제목1 🎸 – 핵심 개념 설명
-  3. 소제목2 💡 – 실전 팁 또는 연습법
-
-  ▼ 이미지 2 생성 [실사 – 전체 장면]
-  [주제] 연습하는 전체 장면 /
-  한국인 모델 /
-  실용음악학원 내부 배경 /
-  매우 밝고 깨끗한 화이트톤 배경 /
-  인위적이지 않은 담백한 색감 /
-  실제 아이폰 카메라 특유의 선명하면서도 정돈된 질감 /
-  따뜻한 자연광 /
-  배경은 흐릿하게 처리 /
-  텍스트·말풍선·라벨·설명 일체 없음 /
-  주제에 집중
-
-  4. 소제목3 ✅ – 흔한 실수 또는 Q&A
+  4. 소제목3 ✅ 흔한 실수 또는 Q&A
   5. 마무리 – 격려 + 학원 수강 유도 CTA
-
-  ▼ 이미지 3 생성 [실사 – 클로즈업]
-  [주제] 핵심 부분 클로즈업 장면 /
-  한국인 모델 /
-  실용음악학원 내부 배경 /
-  매우 밝고 깨끗한 화이트톤 배경 /
-  인위적이지 않은 담백한 색감 /
-  실제 아이폰 카메라 특유의 선명하면서도 정돈된 질감 /
-  따뜻한 자연광 /
-  배경은 흐릿하게 처리 /
-  깔끔하고 단순한 구도 /
-  상세한 질감이 느껴지는 고해상도 /
-  텍스트·말풍선·라벨·설명 일체 없음
+  ▼ 이미지 3 [실사 – 클로즈업]
+  [주제] 핵심 부분 클로즈업 / 한국인 모델 / 실용음악학원 내부 배경 /
+  매우 밝고 깨끗한 화이트톤 / 담백한 색감 /
+  아이폰 카메라 특유의 선명하고 정돈된 질감 /
+  따뜻한 자연광 / 배경 흐릿 / 고해상도 / 텍스트·라벨 없음
 
 - 해시태그 10개 글 맨 끝에 추가</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('prompt-realistic', this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('prompt-realistic', this)">접기 ▲</button>
+            </div>
+            <div class="card-footer">
+              <button class="copy-btn" onclick="copyPrompt('prompt-realistic',this)">📋 복사하기</button>
+              <button class="toggle-btn" onclick="togglePrompt('prompt-realistic',this)">접기 ▲</button>
+            </div>
           </div>
         </div>
 
-      </div><!-- /prompt-grid -->
+        <div class="divider"></div>
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--accent3)"></div>
+          <div class="section-title">1년치 기타 블로그 주제 캘린더</div>
+          <div class="section-desc">주제 클릭 → 복사</div>
+        </div>
+        <div class="calendar-wrap" id="calendar"></div>
+      </div><!-- /inst-guitar -->
 
-      <div class="divider"></div>
+      <div id="inst-drum" class="panel">
+        <div class="coming-soon"><div class="icon">🥁</div><h3>드럼 콘텐츠 준비중</h3><p>드럼 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p></div>
+      </div>
+      <div id="inst-vocal" class="panel">
+        <div class="coming-soon"><div class="icon">🎤</div><h3>보컬 콘텐츠 준비중</h3><p>보컬 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p></div>
+      </div>
+      <div id="inst-bass" class="panel">
+        <div class="coming-soon"><div class="icon">🎵</div><h3>베이스 콘텐츠 준비중</h3><p>베이스 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p></div>
+      </div>
+    </div><!-- /content-lesson -->
 
-      <!-- 1년 주제 캘린더 -->
-      <div class="section-header">
-        <div class="section-dot" style="background:var(--accent3)"></div>
-        <div class="section-title">1년치 블로그 주제 캘린더</div>
-        <div class="section-desc">주제 클릭 → 복사</div>
+    <!-- 학원 홍보 -->
+    <div id="content-promo" style="display:none;">
+      <div class="instrument-tabs">
+        <button class="inst-tab active-guitar" onclick="switchPromoInst('promo-guitar',this)">🎸 기타 홍보</button>
+        <button class="inst-tab" onclick="switchPromoInst('promo-drum',this)">🥁 드럼 홍보 (준비중)</button>
+        <button class="inst-tab" onclick="switchPromoInst('promo-vocal',this)">🎤 보컬 홍보 (준비중)</button>
+        <button class="inst-tab" onclick="switchPromoInst('promo-bass',this)">🎵 베이스 홍보 (준비중)</button>
       </div>
-      <div class="calendar-wrap" id="calendar"></div>
 
-    </div><!-- /inst-guitar -->
+      <div id="promo-guitar" class="panel active">
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--promo)"></div>
+          <div class="section-title">🎸 기타 학원 홍보 Gemini 프롬프트</div>
+          <div class="section-desc">수요일 발행용</div>
+        </div>
+        <div class="prompt-grid">
+          <div class="prompt-card">
+            <div class="card-header">
+              <div class="card-meta">
+                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 콘텐츠</div>
+                <div class="card-title">기타 학원 홍보 블로그 글 + 이미지</div>
+                <div class="card-sub">수강 모집 · 이벤트 · 학원 소개 · 실제 학원 사진 삽입</div>
+              </div>
+              <div class="day-badge">🗓 수요일 사용</div>
+            </div>
+            <div class="card-body">
+              <div class="prompt-text" id="prompt-promo-guitar">너는 실용음악학원 네이버 블로그 홍보 전문 작가야.
+아래 조건에 따라 학원 홍보 블로그 글을 써줘.
+※ 이미지는 실제 학원 사진을 직접 삽입할 예정이므로
+   이미지 생성 없이 삽입 위치와 추천 사진 안내만 표시해줘.
 
-    <!-- 드럼/보컬/베이스 준비중 -->
-    <div id="inst-drum" class="panel">
-      <div class="coming-soon">
-        <div class="icon">🥁</div>
-        <h3>드럼 콘텐츠 준비중</h3>
-        <p>드럼 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p>
+────────────────────────────────────────
+[홍보 정보 입력]
+- 홍보 주제: [예: 기타 입문반 수강생 모집 / 이달의 이벤트 / 수강생 성장 후기]
+- 홍보 목적: [신규 모집 / 이벤트 안내 / 브랜드 신뢰 구축]
+- 시즌: [없음 / 봄 신학기 / 여름방학 / 가을 / 연말]
+- 특이사항: [예: 첫 달 50% 할인 / 무료 체험 레슨 / 정원 5명 한정]
+────────────────────────────────────────
+
+[글 작성 조건]
+- 분량: 800~1,000자 / 따뜻하고 신뢰감 있는 구어체
+- 핵심 키워드 기타학원, 기타레슨, 기타배우기 자연스럽게 포함
+- 구성:
+
+  1. 도입부 – 독자의 니즈 공감
+
+  📸 [이미지 1 삽입 위치 – 도입부]
+  → 추천 사진: 레슨실 전경 또는 선생님과 수강생 수업 장면
+
+  2. 🎸 우리 학원 기타 레슨 소개
+  3. 💡 수강하면 이런 점이 달라져요
+
+  📸 [이미지 2 삽입 위치 – 본문 중간]
+  → 추천 사진: 수강생이 기타를 연주하는 모습 또는 레슨 장면
+
+  4. 📌 모집 안내 / 이벤트 정보
+  5. 마무리 – 문의 유도 CTA
+
+  📸 [이미지 3 삽입 위치 – 마무리]
+  → 추천 사진: 학원 외관 또는 수강 문의 안내 이미지
+
+- 해시태그 10개 글 맨 끝에 추가 (기타학원, 기타레슨, 기타배우기 포함)</div>
+            </div>
+            <div class="card-footer">
+              <button class="copy-btn" onclick="copyPrompt('prompt-promo-guitar',this)">📋 복사하기</button>
+              <button class="toggle-btn" onclick="togglePrompt('prompt-promo-guitar',this)">접기 ▲</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /promo-guitar -->
+        <div class="divider"></div>
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--promo)"></div>
+          <div class="section-title">🎸 기타 학원 홍보 1년치 주제 캘린더</div>
+          <div class="section-desc">주제 클릭 → 복사</div>
+        </div>
+        <div class="calendar-wrap" id="promo-calendar-guitar"></div>
+      </div><!-- /promo-guitar-wrap -->
+
+      <div id="promo-drum" class="panel">
+        <div class="coming-soon"><div class="icon">🥁</div><h3>드럼 홍보 콘텐츠 준비중</h3><p>드럼 학원 홍보용 프롬프트를<br>곧 추가할 예정이에요!</p></div>
+        <div class="calendar-wrap" id="promo-calendar-drum"></div>
       </div>
-    </div>
-    <div id="inst-vocal" class="panel">
-      <div class="coming-soon">
-        <div class="icon">🎤</div>
-        <h3>보컬 콘텐츠 준비중</h3>
-        <p>보컬 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p>
+      <div id="promo-vocal" class="panel">
+        <div class="coming-soon"><div class="icon">🎤</div><h3>보컬 홍보 콘텐츠 준비중</h3><p>보컬 학원 홍보용 프롬프트를<br>곧 추가할 예정이에요!</p></div>
+        <div class="calendar-wrap" id="promo-calendar-vocal"></div>
       </div>
-    </div>
-    <div id="inst-bass" class="panel">
-      <div class="coming-soon">
-        <div class="icon">🎵</div>
-        <h3>베이스 콘텐츠 준비중</h3>
-        <p>베이스 레슨 관련 프롬프트와 주제를<br>곧 추가할 예정이에요!</p>
+      <div id="promo-bass" class="panel">
+        <div class="coming-soon"><div class="icon">🎵</div><h3>베이스 홍보 콘텐츠 준비중</h3><p>베이스 학원 홍보용 프롬프트를<br>곧 추가할 예정이에요!</p></div>
+        <div class="calendar-wrap" id="promo-calendar-bass"></div>
       </div>
-    </div>
+    </div><!-- /content-promo -->
 
   </div><!-- /panel-blog -->
 
@@ -717,17 +757,200 @@ function switchChannel(ch, btn) {
   document.getElementById('panel-'+ch).classList.add('active');
 }
 
-// 악기 전환
+// 콘텐츠 유형 전환 (레슨 / 학원홍보)
+function switchContentType(type, btn) {
+  document.querySelectorAll('#panel-blog .ch-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('content-lesson').style.display = type === 'lesson' ? '' : 'none';
+  document.getElementById('content-promo').style.display = type === 'promo' ? '' : 'none';
+}
+
+// 레슨 악기 탭 전환
 let currentInst = 'guitar';
 function switchInst(inst, btn) {
-  document.querySelectorAll('.inst-tab').forEach(b => b.className = 'inst-tab');
+  const tabs = document.querySelectorAll('#content-lesson .inst-tab');
+  tabs.forEach(b => b.className = 'inst-tab');
   document.querySelectorAll('[id^="inst-"]').forEach(p => p.classList.remove('active'));
   btn.className = `inst-tab active-${inst}`;
   document.getElementById('inst-'+inst).classList.add('active');
   currentInst = inst;
 }
 
+// 홍보 악기 탭 전환은 아래 promoTopics 섹션에서 정의됨
+
 renderCalendar();
+
+// ── 학원 홍보 주제 데이터 ─────────────────────────
+const promoTopics = {
+  guitar: [
+    { q:1, label:"1분기 — 신규 모집 & 브랜드 소개 (1~13주)", weeks:[
+      {w:1, items:[{t:"기타 레슨 이런 분들께 딱 맞아요 – 입문자 모집 안내"},{t:"우리 학원 기타 레슨실 소개 – 공간이 달라요"},{t:"기타 배우고 싶었는데 망설였다면? 지금이 딱입니다"},{t:"기타 무료 체험 레슨 신청 안내"}]},
+      {w:2, items:[{t:"기타 선생님 소개 – 경력과 레슨 스타일"},{t:"수강생 후기 – 한 달 만에 첫 곡 완성했어요"},{t:"기타 입문반 커리큘럼 공개"},{t:"학원 위치·주차·오시는 길 안내"}]},
+      {w:3, items:[{t:"기타 레슨 1:1 vs 그룹 – 우리 학원은 이렇게 운영해요"},{t:"기타 배우기 전 꼭 알아야 할 것들 – 학원이 알려드려요"},{t:"이달의 기타 수강생 성장 스토리"},{t:"기타 레슨 수강료 안내 및 등록 방법"}]},
+      {w:4, items:[{t:"봄 신학기 기타 입문반 모집 시작!"},{t:"기타 학원 시설 투어 – 레슨실 내부 공개"},{t:"기타 레슨 첫 달 이벤트 안내"},{t:"수강생 인터뷰 – 기타 배우길 잘했어요"}]},
+      {w:5, items:[{t:"기타 레슨, 나이 제한 없어요 – 성인 입문 환영"},{t:"어린이·청소년 기타 레슨 안내"},{t:"기타 레슨 선물권 이벤트 안내"},{t:"학원 SNS 팔로우 이벤트 공지"}]},
+      {w:6, items:[{t:"기타 레슨 정원 마감 임박 – 서두르세요"},{t:"수강생 첫 발표회 후기 공개"},{t:"기타 레슨 상담 무료로 받아보세요"},{t:"기타 배우는 이유 – 수강생들의 솔직한 이야기"}]},
+      {w:7, items:[{t:"기타 레슨 등록 절차 한눈에 보기"},{t:"우리 학원만의 기타 레슨 특징 3가지"},{t:"기타 레슨 재등록률이 높은 이유"},{t:"이달의 기타 우수 수강생 소개"}]},
+      {w:8, items:[{t:"기타 레슨 레벨 테스트 안내 – 내 실력은?"},{t:"기타 입문반 이번 달 커리큘럼 미리보기"},{t:"수강생 연주 영상 공개 – 3개월 차 실력"},{t:"기타 레슨 온라인 상담 신청 방법"}]},
+      {w:9, items:[{t:"기타 레슨, 직장인도 가능해요 – 저녁반 안내"},{t:"주말 기타 레슨반 모집 공고"},{t:"기타 학원 봄 이벤트 – 등록 시 혜택 공개"},{t:"수강생 후기 모음 – 실력이 이렇게 늘었어요"}]},
+      {w:10, items:[{t:"기타 레슨 장기 수강 할인 안내"},{t:"기타 학원 친구 추천 이벤트 공지"},{t:"이달의 기타 레슨 베스트 수강생"},{t:"기타 레슨 궁금한 점 Q&A 총정리"}]},
+      {w:11, items:[{t:"기타 레슨 수강생 발표회 준비 현장 공개"},{t:"기타 학원 새 시설 오픈 안내"},{t:"기타 레슨 특별반 모집 – 집중 코스"},{t:"수강생 성장 일지 – 입문 후 2개월 변화"}]},
+      {w:12, items:[{t:"기타 레슨 봄 학기 마감 임박 공지"},{t:"기타 학원 오픈 기념 할인 이벤트"},{t:"기타 레슨 수강생 연주회 초대 안내"},{t:"기타 배우고 달라진 일상 – 수강생 인터뷰"}]},
+      {w:13, items:[{t:"1분기 기타 레슨 수강생 성과 총정리"},{t:"기타 레슨 2분기 신규 모집 예고"},{t:"기타 학원 봄 이벤트 마무리 안내"},{t:"기타 레슨 등록 문의 연락처 안내"}]},
+    ]},
+    { q:2, label:"2분기 — 시즌 이벤트 & 수강 확대 (14~26주)", weeks:[
+      {w:14, items:[{t:"봄 기타 레슨 신규반 개강 안내"},{t:"기타 레슨 2분기 커리큘럼 공개"},{t:"수강생 후기 – 봄에 시작해서 잘했어요"},{t:"기타 학원 봄 할인 이벤트 시작"}]},
+      {w:15, items:[{t:"기타 레슨 어린이날 특별 이벤트"},{t:"가족과 함께하는 기타 레슨 안내"},{t:"기타 학원 5월 수강 혜택 공개"},{t:"수강생 연주 영상 – 봄 감성 연주"}]},
+      {w:16, items:[{t:"기타 레슨 중급반 모집 안내"},{t:"기타 학원 스승의 날 이벤트"},{t:"수강생 성장 스토리 – 6개월 차 실력"},{t:"기타 레슨 선물하기 – 이벤트 안내"}]},
+      {w:17, items:[{t:"기타 레슨 여름 학기 사전 예약 안내"},{t:"기타 학원 6월 신규 모집 공고"},{t:"수강생 인터뷰 – 기타로 버스킹 도전했어요"},{t:"기타 레슨 그룹 앙상블 수업 소개"}]},
+      {w:18, items:[{t:"기타 학원 여름방학 특강 안내"},{t:"청소년 기타 방학 집중반 모집"},{t:"기타 레슨 여름 이벤트 공개"},{t:"수강생 발표회 준비 현장 스케치"}]},
+      {w:19, items:[{t:"기타 레슨 현수막·포스터 이벤트 공지"},{t:"기타 학원 여름 할인 패키지 안내"},{t:"수강생 후기 – 방학 동안 실력이 폭발했어요"},{t:"기타 레슨 온라인 문의 이벤트"}]},
+      {w:20, items:[{t:"기타 학원 여름방학 특강 마감 임박"},{t:"기타 레슨 성인 입문반 추가 모집"},{t:"수강생 연주 영상 – 여름 감성"},{t:"기타 학원 시설 업그레이드 안내"}]},
+      {w:21, items:[{t:"기타 레슨 하반기 계획 미리 공개"},{t:"기타 학원 7월 이벤트 안내"},{t:"수강생 성장 스토리 – 1년 차 소감"},{t:"기타 레슨 재등록 혜택 안내"}]},
+      {w:22, items:[{t:"기타 학원 여름 수강생 모집 마감 공지"},{t:"기타 레슨 특별 프로그램 안내"},{t:"수강생 인터뷰 – 기타로 인생이 바뀌었어요"},{t:"기타 학원 8월 신규 이벤트 예고"}]},
+      {w:23, items:[{t:"기타 레슨 8월 집중반 모집 안내"},{t:"기타 학원 여름 마무리 이벤트"},{t:"수강생 발표회 후기 공개"},{t:"기타 레슨 가을 학기 사전 신청 안내"}]},
+      {w:24, items:[{t:"기타 학원 가을 학기 얼리버드 할인"},{t:"기타 레슨 신규 강사 소개"},{t:"수강생 후기 – 2분기 성과 총정리"},{t:"기타 학원 9월 개강 예고"}]},
+      {w:25, items:[{t:"기타 레슨 가을 신규반 모집 시작"},{t:"기타 학원 리뉴얼 오픈 이벤트"},{t:"수강생 연주 영상 – 여름 마무리"},{t:"기타 레슨 등록 문의 안내"}]},
+      {w:26, items:[{t:"2분기 기타 레슨 수강생 성과 총정리"},{t:"기타 학원 하반기 커리큘럼 공개"},{t:"기타 레슨 3분기 이벤트 예고"},{t:"수강 문의 연락처 및 SNS 안내"}]},
+    ]},
+    { q:3, label:"3분기 — 가을 시즌 & 발표회 (27~39주)", weeks:[
+      {w:27, items:[{t:"기타 레슨 가을 학기 개강 안내"},{t:"기타 학원 9월 신규 모집 공고"},{t:"수강생 후기 – 가을에 기타 배우기 딱이에요"},{t:"기타 레슨 가을 이벤트 공개"}]},
+      {w:28, items:[{t:"기타 학원 추석 연휴 레슨 일정 안내"},{t:"기타 레슨 가을 특강 모집"},{t:"수강생 성장 스토리 – 가을 감성 연주"},{t:"기타 학원 10월 신규반 예고"}]},
+      {w:29, items:[{t:"기타 레슨 10월 신규 모집 안내"},{t:"기타 학원 가을 할인 패키지"},{t:"수강생 인터뷰 – 가을에 더 열심히 해요"},{t:"기타 레슨 발표회 준비 안내"}]},
+      {w:30, items:[{t:"기타 학원 발표회 일정 공개"},{t:"기타 레슨 발표회 참가 수강생 모집"},{t:"수강생 연주 영상 – 가을 감성"},{t:"기타 학원 핼러윈 이벤트 예고"}]},
+      {w:31, items:[{t:"기타 학원 핼러윈 이벤트 안내"},{t:"기타 레슨 11월 신규반 모집"},{t:"수강생 발표회 준비 현장 스케치"},{t:"기타 학원 가을 수강생 성과 공개"}]},
+      {w:32, items:[{t:"기타 레슨 발표회 D-30 안내"},{t:"기타 학원 11월 이벤트 공개"},{t:"수강생 인터뷰 – 발표회 준비 중이에요"},{t:"기타 레슨 겨울 학기 사전 예약 안내"}]},
+      {w:33, items:[{t:"기타 레슨 발표회 D-14 준비 현장"},{t:"기타 학원 겨울 얼리버드 이벤트"},{t:"수강생 후기 – 발표회 준비 소감"},{t:"기타 레슨 12월 신규 모집 예고"}]},
+      {w:34, items:[{t:"기타 학원 연간 발표회 성황리 개최 후기"},{t:"기타 레슨 발표회 수강생 연주 영상 공개"},{t:"발표회 참가 수강생 소감 인터뷰"},{t:"기타 학원 겨울 학기 신규 모집 시작"}]},
+      {w:35, items:[{t:"기타 레슨 연말 특강 안내"},{t:"기타 학원 12월 이벤트 공개"},{t:"수강생 성장 스토리 – 3분기 총정리"},{t:"기타 레슨 새해 목표 이벤트 예고"}]},
+      {w:36, items:[{t:"기타 레슨 크리스마스 특강 모집"},{t:"기타 학원 연말 할인 패키지 안내"},{t:"수강생 연주 영상 – 크리스마스 캐럴"},{t:"기타 학원 12월 마감 임박 공지"}]},
+      {w:37, items:[{t:"기타 레슨 겨울방학 집중반 모집"},{t:"기타 학원 연말 감사 이벤트"},{t:"수강생 인터뷰 – 올 한 해 기타 배운 소감"},{t:"기타 레슨 내년 커리큘럼 예고"}]},
+      {w:38, items:[{t:"기타 학원 크리스마스 이벤트 안내"},{t:"기타 레슨 선물하기 – 연말 기프트"},{t:"수강생 후기 – 크리스마스에 기타 연주했어요"},{t:"기타 학원 새해 이벤트 예고"}]},
+      {w:39, items:[{t:"3분기 기타 레슨 수강생 성과 총정리"},{t:"기타 학원 연말 결산 이벤트"},{t:"수강생 올해의 연주 영상 공개"},{t:"기타 레슨 4분기 이벤트 예고"}]},
+    ]},
+    { q:4, label:"4분기 — 연말 & 새해 준비 (40~52주)", weeks:[
+      {w:40, items:[{t:"기타 학원 겨울방학 특강 정식 모집"},{t:"기타 레슨 12월 신규 등록 이벤트"},{t:"수강생 연말 연주회 안내"},{t:"기타 학원 겨울 패키지 할인 공개"}]},
+      {w:41, items:[{t:"기타 레슨 겨울방학 집중 코스 안내"},{t:"기타 학원 연말 감사 수강생 이벤트"},{t:"수강생 인터뷰 – 겨울방학 기타 도전"},{t:"기타 레슨 1월 신규반 사전 접수"}]},
+      {w:42, items:[{t:"기타 학원 새해 목표 이벤트 공지"},{t:"기타 레슨 새해 첫 달 할인 안내"},{t:"수강생 후기 – 겨울에 실력이 늘었어요"},{t:"기타 학원 내년 커리큘럼 공개"}]},
+      {w:43, items:[{t:"기타 레슨 크리스마스·연말 특강 마감"},{t:"기타 학원 새해 맞이 이벤트"},{t:"수강생 한 해 연주 하이라이트 공개"},{t:"기타 레슨 1월 개강 안내"}]},
+      {w:44, items:[{t:"기타 학원 크리스마스 이벤트 마감 임박"},{t:"기타 레슨 내년 봄 학기 얼리버드"},{t:"수강생 연말 연주회 현장 공개"},{t:"기타 학원 연간 수강생 성과 총정리"}]},
+      {w:45, items:[{t:"기타 학원 새해 다짐 이벤트"},{t:"기타 레슨 1월 신규 모집 공고"},{t:"수강생 인터뷰 – 내년엔 이런 걸 배우고 싶어요"},{t:"기타 학원 새해 커리큘럼 예고"}]},
+      {w:46, items:[{t:"기타 레슨 새해 첫 수업 안내"},{t:"기타 학원 1월 이벤트 공개"},{t:"수강생 새해 목표 인터뷰"},{t:"기타 레슨 신규 등록 혜택 안내"}]},
+      {w:47, items:[{t:"기타 학원 겨울방학 마지막 특강 안내"},{t:"기타 레슨 2월 신규반 예고"},{t:"수강생 후기 – 겨울방학 총정리"},{t:"기타 학원 설날 연휴 일정 안내"}]},
+      {w:48, items:[{t:"기타 레슨 설날 이벤트 안내"},{t:"기타 학원 2월 봄 학기 예약 모집"},{t:"수강생 연주 영상 – 겨울 감성"},{t:"기타 레슨 설 연휴 후 개강 안내"}]},
+      {w:49, items:[{t:"기타 학원 봄 학기 얼리버드 마감 임박"},{t:"기타 레슨 2월 특강 모집"},{t:"수강생 인터뷰 – 새해 첫 달 소감"},{t:"기타 학원 봄 이벤트 예고"}]},
+      {w:50, items:[{t:"기타 레슨 1년 수강생 감사 이벤트"},{t:"기타 학원 연간 베스트 수강생 시상"},{t:"수강생 1년 성장 스토리 공개"},{t:"기타 레슨 장기 수강 할인 안내"}]},
+      {w:51, items:[{t:"기타 학원 봄 학기 개강 D-7 안내"},{t:"기타 레슨 신규 모집 마감 임박"},{t:"수강생 후기 – 1년 총정리"},{t:"기타 학원 새 학기 이벤트 공개"}]},
+      {w:52, items:[{t:"기타 레슨 1년 총결산 – 우리 학원 이야기"},{t:"기타 학원 새 학기 오픈 안내"},{t:"수강생 감사 메시지 & 이벤트"},{t:"기타 레슨 등록 문의 안내 – 새 학기를 시작하세요!"}]},
+    ]},
+  ],
+  drum: [
+    { q:1, label:"1분기 (1~13주)", weeks:[
+      {w:1,items:[{t:"드럼 레슨 이런 분들께 딱 맞아요 – 입문자 모집"},{t:"드럼 레슨실 소개 – 방음 완벽해요"},{t:"드럼 배우고 싶었다면? 지금이 딱입니다"},{t:"드럼 무료 체험 레슨 신청 안내"}]},
+      {w:2,items:[{t:"드럼 선생님 소개 – 경력과 레슨 스타일"},{t:"수강생 후기 – 한 달 만에 박자 잡았어요"},{t:"드럼 입문반 커리큘럼 공개"},{t:"학원 위치·주차·오시는 길 안내"}]},
+      {w:3,items:[{t:"드럼 레슨 1:1 vs 그룹 운영 방식 안내"},{t:"드럼 배우기 전 꼭 알아야 할 것들"},{t:"이달의 드럼 수강생 성장 스토리"},{t:"드럼 레슨 수강료 및 등록 방법"}]},
+      {w:4,items:[{t:"봄 신학기 드럼 입문반 모집 시작!"},{t:"드럼 학원 시설 투어 – 레슨실 내부 공개"},{t:"드럼 레슨 첫 달 이벤트 안내"},{t:"수강생 인터뷰 – 드럼 배우길 잘했어요"}]},
+      {w:5,items:[{t:"드럼 레슨, 나이 제한 없어요"},{t:"어린이·청소년 드럼 레슨 안내"},{t:"드럼 레슨 선물권 이벤트 안내"},{t:"학원 SNS 팔로우 이벤트 공지"}]},
+      {w:6,items:[{t:"드럼 레슨 정원 마감 임박"},{t:"수강생 첫 발표회 후기"},{t:"드럼 레슨 상담 무료로 받아보세요"},{t:"드럼 배우는 이유 – 수강생 이야기"}]},
+      {w:7,items:[{t:"드럼 레슨 등록 절차 한눈에 보기"},{t:"우리 학원만의 드럼 레슨 특징 3가지"},{t:"드럼 레슨 재등록률이 높은 이유"},{t:"이달의 드럼 우수 수강생 소개"}]},
+      {w:8,items:[{t:"드럼 레슨 레벨 테스트 안내"},{t:"드럼 입문반 이번 달 커리큘럼 미리보기"},{t:"수강생 연주 영상 공개 – 3개월 차"},{t:"드럼 레슨 온라인 상담 신청 방법"}]},
+      {w:9,items:[{t:"드럼 레슨, 직장인도 가능해요 – 저녁반 안내"},{t:"주말 드럼 레슨반 모집"},{t:"드럼 학원 봄 이벤트 안내"},{t:"수강생 후기 모음"}]},
+      {w:10,items:[{t:"드럼 레슨 장기 수강 할인 안내"},{t:"드럼 학원 친구 추천 이벤트"},{t:"이달의 드럼 레슨 베스트 수강생"},{t:"드럼 레슨 Q&A 총정리"}]},
+      {w:11,items:[{t:"드럼 레슨 수강생 발표회 준비 현장"},{t:"드럼 학원 새 시설 오픈 안내"},{t:"드럼 레슨 특별반 모집"},{t:"수강생 성장 일지 – 2개월 변화"}]},
+      {w:12,items:[{t:"드럼 레슨 봄 학기 마감 임박"},{t:"드럼 학원 오픈 기념 할인"},{t:"드럼 레슨 수강생 연주회 초대"},{t:"드럼 배우고 달라진 일상"}]},
+      {w:13,items:[{t:"1분기 드럼 레슨 성과 총정리"},{t:"드럼 레슨 2분기 신규 모집 예고"},{t:"드럼 학원 봄 이벤트 마무리"},{t:"드럼 레슨 등록 문의 안내"}]},
+    ]},
+    { q:2, label:"2분기 (14~26주)", weeks: Array.from({length:13},(_, i)=>({w:i+14,items:[{t:`드럼 레슨 ${i+14}주차 홍보 – 이벤트 안내`},{t:`드럼 학원 ${i+14}주차 수강생 후기`},{t:`드럼 레슨 ${i+14}주차 신규 모집`},{t:`드럼 학원 ${i+14}주차 커리큘럼 공개`}]}))},
+    { q:3, label:"3분기 (27~39주)", weeks: Array.from({length:13},(_, i)=>({w:i+27,items:[{t:`드럼 레슨 ${i+27}주차 가을 이벤트`},{t:`드럼 학원 ${i+27}주차 수강생 성장 스토리`},{t:`드럼 레슨 ${i+27}주차 발표회 안내`},{t:`드럼 학원 ${i+27}주차 신규 모집`}]}))},
+    { q:4, label:"4분기 (40~52주)", weeks: Array.from({length:13},(_, i)=>({w:i+40,items:[{t:`드럼 레슨 ${i+40}주차 연말 이벤트`},{t:`드럼 학원 ${i+40}주차 수강생 후기`},{t:`드럼 레슨 ${i+40}주차 새해 모집`},{t:`드럼 학원 ${i+40}주차 겨울 특강`}]}))},
+  ],
+  vocal: [
+    { q:1, label:"1분기 (1~13주)", weeks:[
+      {w:1,items:[{t:"보컬 레슨 이런 분들께 딱 맞아요 – 입문자 모집"},{t:"보컬 레슨실 소개 – 방음·녹음 환경"},{t:"노래 배우고 싶었다면? 지금이 딱입니다"},{t:"보컬 무료 체험 레슨 신청 안내"}]},
+      {w:2,items:[{t:"보컬 선생님 소개 – 경력과 레슨 스타일"},{t:"수강생 후기 – 한 달 만에 음정이 달라졌어요"},{t:"보컬 입문반 커리큘럼 공개"},{t:"학원 위치·주차·오시는 길 안내"}]},
+      {w:3,items:[{t:"보컬 레슨 1:1 vs 그룹 운영 방식 안내"},{t:"보컬 배우기 전 꼭 알아야 할 것들"},{t:"이달의 보컬 수강생 성장 스토리"},{t:"보컬 레슨 수강료 및 등록 방법"}]},
+      {w:4,items:[{t:"봄 신학기 보컬 입문반 모집 시작!"},{t:"보컬 학원 시설 투어 – 레슨실 내부 공개"},{t:"보컬 레슨 첫 달 이벤트 안내"},{t:"수강생 인터뷰 – 보컬 배우길 잘했어요"}]},
+      {w:5,items:[{t:"보컬 레슨, 나이 제한 없어요"},{t:"어린이·청소년 보컬 레슨 안내"},{t:"보컬 레슨 선물권 이벤트 안내"},{t:"학원 SNS 팔로우 이벤트 공지"}]},
+      {w:6,items:[{t:"보컬 레슨 정원 마감 임박"},{t:"수강생 첫 발표회 후기"},{t:"보컬 레슨 상담 무료로 받아보세요"},{t:"보컬 배우는 이유 – 수강생 이야기"}]},
+      {w:7,items:[{t:"보컬 레슨 등록 절차 한눈에 보기"},{t:"우리 학원만의 보컬 레슨 특징 3가지"},{t:"보컬 레슨 재등록률이 높은 이유"},{t:"이달의 보컬 우수 수강생 소개"}]},
+      {w:8,items:[{t:"보컬 레슨 레벨 테스트 안내"},{t:"보컬 입문반 이번 달 커리큘럼 미리보기"},{t:"수강생 노래 영상 공개 – 3개월 차"},{t:"보컬 레슨 온라인 상담 신청 방법"}]},
+      {w:9,items:[{t:"보컬 레슨, 직장인도 가능해요 – 저녁반 안내"},{t:"주말 보컬 레슨반 모집"},{t:"보컬 학원 봄 이벤트 안내"},{t:"수강생 후기 모음"}]},
+      {w:10,items:[{t:"보컬 레슨 장기 수강 할인 안내"},{t:"보컬 학원 친구 추천 이벤트"},{t:"이달의 보컬 레슨 베스트 수강생"},{t:"보컬 레슨 Q&A 총정리"}]},
+      {w:11,items:[{t:"보컬 레슨 수강생 발표회 준비 현장"},{t:"보컬 학원 새 시설 오픈 안내"},{t:"보컬 레슨 특별반 모집"},{t:"수강생 성장 일지 – 2개월 변화"}]},
+      {w:12,items:[{t:"보컬 레슨 봄 학기 마감 임박"},{t:"보컬 학원 오픈 기념 할인"},{t:"보컬 레슨 수강생 연주회 초대"},{t:"보컬 배우고 달라진 일상"}]},
+      {w:13,items:[{t:"1분기 보컬 레슨 성과 총정리"},{t:"보컬 레슨 2분기 신규 모집 예고"},{t:"보컬 학원 봄 이벤트 마무리"},{t:"보컬 레슨 등록 문의 안내"}]},
+    ]},
+    { q:2, label:"2분기 (14~26주)", weeks: Array.from({length:13},(_, i)=>({w:i+14,items:[{t:`보컬 레슨 ${i+14}주차 이벤트 안내`},{t:`보컬 학원 ${i+14}주차 수강생 후기`},{t:`보컬 레슨 ${i+14}주차 신규 모집`},{t:`보컬 학원 ${i+14}주차 커리큘럼 공개`}]}))},
+    { q:3, label:"3분기 (27~39주)", weeks: Array.from({length:13},(_, i)=>({w:i+27,items:[{t:`보컬 레슨 ${i+27}주차 가을 이벤트`},{t:`보컬 학원 ${i+27}주차 수강생 성장 스토리`},{t:`보컬 레슨 ${i+27}주차 발표회 안내`},{t:`보컬 학원 ${i+27}주차 신규 모집`}]}))},
+    { q:4, label:"4분기 (40~52주)", weeks: Array.from({length:13},(_, i)=>({w:i+40,items:[{t:`보컬 레슨 ${i+40}주차 연말 이벤트`},{t:`보컬 학원 ${i+40}주차 수강생 후기`},{t:`보컬 레슨 ${i+40}주차 새해 모집`},{t:`보컬 학원 ${i+40}주차 겨울 특강`}]}))},
+  ],
+  bass: [
+    { q:1, label:"1분기 (1~13주)", weeks:[
+      {w:1,items:[{t:"베이스 레슨 이런 분들께 딱 맞아요 – 입문자 모집"},{t:"베이스 레슨실 소개 – 앰프·장비 완비"},{t:"베이스 배우고 싶었다면? 지금이 딱입니다"},{t:"베이스 무료 체험 레슨 신청 안내"}]},
+      {w:2,items:[{t:"베이스 선생님 소개 – 경력과 레슨 스타일"},{t:"수강생 후기 – 한 달 만에 첫 곡 완성"},{t:"베이스 입문반 커리큘럼 공개"},{t:"학원 위치·주차·오시는 길 안내"}]},
+      {w:3,items:[{t:"베이스 레슨 1:1 vs 그룹 운영 방식 안내"},{t:"베이스 배우기 전 꼭 알아야 할 것들"},{t:"이달의 베이스 수강생 성장 스토리"},{t:"베이스 레슨 수강료 및 등록 방법"}]},
+      {w:4,items:[{t:"봄 신학기 베이스 입문반 모집 시작!"},{t:"베이스 학원 시설 투어 – 레슨실 내부 공개"},{t:"베이스 레슨 첫 달 이벤트 안내"},{t:"수강생 인터뷰 – 베이스 배우길 잘했어요"}]},
+      {w:5,items:[{t:"베이스 레슨, 나이 제한 없어요"},{t:"어린이·청소년 베이스 레슨 안내"},{t:"베이스 레슨 선물권 이벤트 안내"},{t:"학원 SNS 팔로우 이벤트 공지"}]},
+      {w:6,items:[{t:"베이스 레슨 정원 마감 임박"},{t:"수강생 첫 발표회 후기"},{t:"베이스 레슨 상담 무료로 받아보세요"},{t:"베이스 배우는 이유 – 수강생 이야기"}]},
+      {w:7,items:[{t:"베이스 레슨 등록 절차 한눈에 보기"},{t:"우리 학원만의 베이스 레슨 특징 3가지"},{t:"베이스 레슨 재등록률이 높은 이유"},{t:"이달의 베이스 우수 수강생 소개"}]},
+      {w:8,items:[{t:"베이스 레슨 레벨 테스트 안내"},{t:"베이스 입문반 이번 달 커리큘럼 미리보기"},{t:"수강생 연주 영상 공개 – 3개월 차"},{t:"베이스 레슨 온라인 상담 신청 방법"}]},
+      {w:9,items:[{t:"베이스 레슨, 직장인도 가능해요 – 저녁반 안내"},{t:"주말 베이스 레슨반 모집"},{t:"베이스 학원 봄 이벤트 안내"},{t:"수강생 후기 모음"}]},
+      {w:10,items:[{t:"베이스 레슨 장기 수강 할인 안내"},{t:"베이스 학원 친구 추천 이벤트"},{t:"이달의 베이스 레슨 베스트 수강생"},{t:"베이스 레슨 Q&A 총정리"}]},
+      {w:11,items:[{t:"베이스 레슨 수강생 발표회 준비 현장"},{t:"베이스 학원 새 시설 오픈 안내"},{t:"베이스 레슨 특별반 모집"},{t:"수강생 성장 일지 – 2개월 변화"}]},
+      {w:12,items:[{t:"베이스 레슨 봄 학기 마감 임박"},{t:"베이스 학원 오픈 기념 할인"},{t:"베이스 레슨 수강생 연주회 초대"},{t:"베이스 배우고 달라진 일상"}]},
+      {w:13,items:[{t:"1분기 베이스 레슨 성과 총정리"},{t:"베이스 레슨 2분기 신규 모집 예고"},{t:"베이스 학원 봄 이벤트 마무리"},{t:"베이스 레슨 등록 문의 안내"}]},
+    ]},
+    { q:2, label:"2분기 (14~26주)", weeks: Array.from({length:13},(_, i)=>({w:i+14,items:[{t:`베이스 레슨 ${i+14}주차 이벤트 안내`},{t:`베이스 학원 ${i+14}주차 수강생 후기`},{t:`베이스 레슨 ${i+14}주차 신규 모집`},{t:`베이스 학원 ${i+14}주차 커리큘럼 공개`}]}))},
+    { q:3, label:"3분기 (27~39주)", weeks: Array.from({length:13},(_, i)=>({w:i+27,items:[{t:`베이스 레슨 ${i+27}주차 가을 이벤트`},{t:`베이스 학원 ${i+27}주차 수강생 성장 스토리`},{t:`베이스 레슨 ${i+27}주차 발표회 안내`},{t:`베이스 학원 ${i+27}주차 신규 모집`}]}))},
+    { q:4, label:"4분기 (40~52주)", weeks: Array.from({length:13},(_, i)=>({w:i+40,items:[{t:`베이스 레슨 ${i+40}주차 연말 이벤트`},{t:`베이스 학원 ${i+40}주차 수강생 후기`},{t:`베이스 레슨 ${i+40}주차 새해 모집`},{t:`베이스 학원 ${i+40}주차 겨울 특강`}]}))},
+  ],
+};
+
+// 홍보 캘린더 렌더링
+function renderPromoCalendar(inst) {
+  const calId = 'promo-calendar-' + inst;
+  const cal = document.getElementById(calId);
+  if (!cal) return;
+  if (cal.dataset.rendered) return;
+  cal.dataset.rendered = '1';
+  const data = promoTopics[inst];
+  if (!data) return;
+  data.forEach(q => {
+    const block = document.createElement('div');
+    block.className = 'quarter-block';
+    block.innerHTML = `<div class="quarter-title">Q${q.q} &nbsp; ${q.label} <div class="quarter-line"></div></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'topic-grid';
+    q.weeks.forEach(week => {
+      week.items.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'topic-item';
+        div.title = '클릭하면 복사됩니다';
+        div.onclick = () => copyTopic(item.t, div);
+        div.innerHTML = `
+          <div class="topic-week">${week.w}주<br>${idx+1}번</div>
+          <div><div class="topic-text">${item.t}</div></div>`;
+        grid.appendChild(div);
+      });
+    });
+    block.appendChild(grid);
+    cal.appendChild(block);
+  });
+}
+
+// 홍보 악기 탭 전환 (캘린더 렌더링 포함)
+function switchPromoInst(inst, btn) {
+  const tabs = document.querySelectorAll('#content-promo .inst-tab');
+  tabs.forEach(b => b.className = 'inst-tab');
+  document.querySelectorAll('[id^="promo-"]').forEach(p => p.classList.remove('active'));
+  const instKey = inst.replace('promo-','');
+  btn.className = `inst-tab active-${instKey}`;
+  document.getElementById(inst).classList.add('active');
+  renderPromoCalendar(instKey);
+}
+
+renderCalendar();
+renderPromoCalendar('guitar');
 </script>
 </body>
 </html>
