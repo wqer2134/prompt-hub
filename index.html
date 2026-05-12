@@ -1652,6 +1652,119 @@ STEP 2~3과 동일한 화이트톤·자연광·아이폰 카메라 질감.
           </div>
         </div>
 
+        <!-- 🎨 카드 A: 릴스 템플릿 PNG 생성기 (월요일) -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-meta">
+              <div class="card-label" style="color:var(--insta)">🎨 릴스 템플릿 PNG 생성기</div>
+              <div class="card-title">월요일 시안 — 상단 텍스트 + 하단 영상</div>
+              <div class="card-sub">한글 깨짐 0% · 시리즈 태그 · 메인 제목 · 서브 · 힌트</div>
+            </div>
+            <div class="day-badge" style="background:rgba(127,119,221,0.18);color:#7F77DD">🎨 디자인용</div>
+          </div>
+
+          <div class="input-guide">
+            <div class="input-guide-title">✍️ 입력 폼 — 캘린더 클릭 시 자동 입력 또는 직접 입력</div>
+            <ul>
+              <li>브라우저 Canvas로 직접 그려서 한글 깨짐 없음</li>
+              <li>다운받은 PNG를 파이널컷에 임포트 → 영상 위에 오버레이</li>
+            </ul>
+          </div>
+
+          <div class="design-inputs" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:rgba(127,119,221,0.06);border-radius:12px;margin:14px 0">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">시리즈 태그 (좌측 주황 막대 옆)</label>
+              <input type="text" id="design-series" value="초보자가 가장 많이 하는 실수" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">메인 제목 1줄 (큰 흰 글씨)</label>
+              <input type="text" id="design-title1" value="손가락이" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">메인 제목 2줄 (큰 흰 글씨)</label>
+              <input type="text" id="design-title2" value="왜 안 눌릴까요?" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">서브 정보 (악기 · 키워드)</label>
+              <input type="text" id="design-sub" value="기타 · F코드" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">힌트 (💡 자동 추가됨, 선택 — 비워두면 표시 안 됨)</label>
+              <input type="text" id="design-hint" value="손가락 끝으로 세워서 눌러보세요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:6px">
+              <button onclick="previewMonTemplate()" style="flex:1;padding:14px;background:rgba(127,119,221,0.2);border:1px solid rgba(127,119,221,0.5);border-radius:8px;color:#AFA9EC;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                👁 미리보기
+              </button>
+              <button onclick="downloadMonTemplate()" style="flex:1;padding:14px;background:linear-gradient(90deg,#7F77DD,#534AB7);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                💾 PNG 다운로드
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;margin:14px 0">
+            <canvas id="mon-canvas" width="1080" height="1920" style="width:300px;height:auto;border:1px solid rgba(127,119,221,0.3);border-radius:12px;background:#121212"></canvas>
+          </div>
+
+          <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:10px">
+            💡 미리보기는 작게 표시되지만, 다운로드는 1080×1920 원본 사이즈
+          </div>
+        </div>
+
+        <!-- 💬 카드 B: 자막 4장 GPT 프롬프트 (귀여운 손그림 자막) -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-meta">
+              <div class="card-label" style="color:var(--insta)">💬 자막 카드 4장 GPT 프롬프트</div>
+              <div class="card-title">월요일 — 귀여운 손그림 자막 (STEP 1~4)</div>
+              <div class="card-sub">후크·실수·해결책·마무리 4단 자막을 GPT로 한 장씩 순차 생성</div>
+            </div>
+            <div class="day-badge" style="background:rgba(127,119,221,0.18);color:#7F77DD">💬 자막용</div>
+          </div>
+
+          <div class="input-guide">
+            <div class="input-guide-title">✍️ 자막 4단 입력 — 캘린더 클릭 시 자동 입력</div>
+            <ul>
+              <li>각 자막에 핵심 단어 강조 (동그라미·밑줄·별표 등 손그림)</li>
+              <li>GPT가 STEP 1부터 4까지 순차적으로 PNG 1장씩 생성</li>
+              <li>※ 한글 깨짐 가능성 있음 — 깨지면 텍스트 짧게 줄여서 재시도</li>
+            </ul>
+          </div>
+
+          <div class="design-inputs" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:rgba(127,119,221,0.06);border-radius:12px;margin:14px 0">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">① 후크 (0~5초)</label>
+              <input type="text" id="design-hook" placeholder="예: 이거 나만 그래?" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">② 실수 소개 (5~25초)</label>
+              <input type="text" id="design-mistake" placeholder="예: 손가락이 옆 줄에 닿아 소리가 막혀요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">③ 해결책 (25~50초)</label>
+              <input type="text" id="design-solution" placeholder="예: 손가락 끝을 세워서 누르세요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">④ 마무리 (50~60초)</label>
+              <input type="text" id="design-ending" placeholder="예: 이거 하나만 바꾸면 끝!" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+
+            <button onclick="currentDesignPromptType='subtitle'; generateDesignPrompt()" style="width:100%;padding:14px;background:linear-gradient(90deg,#7F77DD,#534AB7);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;font-family:inherit">
+              ✨ GPT 자막 4장 프롬프트 생성하기
+            </button>
+          </div>
+
+          <div class="prompt-text" id="prompt-insta-mon-design">👆 위 자막 4단을 채우고 [✨ 프롬프트 생성] 버튼을 눌러주세요.
+
+생성된 프롬프트를 GPT에 붙여넣으면 STEP 1~4 순차적으로 PNG 4장을 만들어줍니다.</div>
+
+          <div class="card-footer">
+            <button class="copy-btn" onclick="copyPrompt('prompt-insta-mon-design',this)">📋 복사하기</button>
+            <button class="toggle-btn" onclick="togglePrompt('prompt-insta-mon-design',this)">접기 ▲</button>
+          </div>
+        </div>
+
         <!-- 실사 썸네일 카드 -->
 
       </div>
@@ -2102,7 +2215,7 @@ STEP 2~3과 동일한 화이트톤·자연광·아이폰 카메라 질감.
       <div class="section-header">
         <div class="section-dot" style="background:var(--insta)"></div>
         <div class="section-title">🎬 릴스 프롬프트 · 수요일</div>
-        <div class="section-desc">이거 치면 실력자 소리 들어요 · 일렉기타 프레이즈 · B 레이아웃</div>
+        <div class="section-desc">실력자 소리 듣는 한 구절 · 일렉기타 프레이즈 · B 레이아웃</div>
       </div>
       <div class="prompt-grid">
 
@@ -2144,6 +2257,64 @@ STEP 2~3과 동일한 화이트톤·자연광·아이폰 카메라 질감.
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-wed-caption',this)">📋 복사하기</button>
             <button class="toggle-btn" onclick="togglePrompt('prompt-insta-wed-caption',this)">접기 ▲</button>
+          </div>
+        </div>
+
+        <!-- 🎨 수요일 릴스 템플릿 PNG 생성기 -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-meta">
+              <div class="card-label" style="color:var(--insta)">🎨 릴스 템플릿 PNG 생성기</div>
+              <div class="card-title">시안 그대로 — 한글 깨짐 0% · 즉시 다운로드</div>
+              <div class="card-sub">상단 영상 자리 + 하단 정보 (시리즈 태그 · 노래 제목 · 코드 진행)</div>
+            </div>
+            <div class="day-badge" style="background:rgba(127,119,221,0.18);color:#7F77DD">🎨 디자인용</div>
+          </div>
+
+          <div class="input-guide">
+            <div class="input-guide-title">✍️ 입력 폼 — 텍스트 입력 후 [PNG 다운로드] 버튼 클릭</div>
+            <ul>
+              <li>모든 한글 텍스트가 깨짐 없이 정확히 표기됩니다 (브라우저 Canvas로 직접 그림)</li>
+              <li>다운받은 PNG를 파이널컷에 임포트해서 사용</li>
+              <li>영상은 PNG 위쪽 1085px 회색 영역에 배치하세요</li>
+            </ul>
+          </div>
+
+          <div class="design-inputs" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:rgba(127,119,221,0.06);border-radius:12px;margin:14px 0">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">시리즈 태그 (좌측 주황 막대 옆 텍스트)</label>
+              <input type="text" id="wed-series" value="실력자 소리 듣는 한 구절" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">노래 제목 1줄 (큰 주황 글씨)</label>
+              <input type="text" id="wed-phrase1" value="Am 펜타토닉" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">노래 제목 2줄 (큰 주황 글씨)</label>
+              <input type="text" id="wed-phrase2" value="블루스 릭" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">코드 진행</label>
+              <input type="text" id="wed-genre" value="E → C#m7 → G#m → A" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:6px">
+              <button onclick="previewWedTemplate()" style="flex:1;padding:14px;background:rgba(127,119,221,0.2);border:1px solid rgba(127,119,221,0.5);border-radius:8px;color:#AFA9EC;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                👁 미리보기
+              </button>
+              <button onclick="downloadWedTemplate()" style="flex:1;padding:14px;background:linear-gradient(90deg,#7F77DD,#534AB7);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                💾 PNG 다운로드
+              </button>
+            </div>
+          </div>
+
+          <!-- 미리보기 canvas -->
+          <div style="display:flex;justify-content:center;margin:14px 0">
+            <canvas id="wed-canvas" width="1080" height="1920" style="width:300px;height:auto;border:1px solid rgba(127,119,221,0.3);border-radius:12px;background:#121212"></canvas>
+          </div>
+
+          <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:10px">
+            💡 미리보기는 작게 표시되지만, 다운로드는 1080×1920 원본 사이즈로 됩니다
           </div>
         </div>
 
@@ -2502,6 +2673,71 @@ STEP 2~3과 동일한 화이트톤·자연광·아이폰 카메라 질감.
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-caption',this)">📋 복사하기</button>
             <button class="toggle-btn" onclick="togglePrompt('prompt-insta-thu-caption',this)">접기 ▲</button>
+          </div>
+        </div>
+
+        <!-- 🎨 목요일 1장 영상 + 자막 PNG 생성기 -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-meta">
+              <div class="card-label" style="color:var(--insta)">🎨 1장 · 영상 자막 PNG 생성기</div>
+              <div class="card-title">캐러셀 1장 — 풀스크린 영상 + 하단 자막</div>
+              <div class="card-sub">좌상단 학원 태그 + 하단 자막 (핵심 단어 주황색 강조)</div>
+            </div>
+            <div class="day-badge" style="background:rgba(127,119,221,0.18);color:#7F77DD">🎨 디자인용</div>
+          </div>
+
+          <div class="input-guide">
+            <div class="input-guide-title">✍️ 입력 폼 — 4가지 톤 프리셋 또는 직접 입력</div>
+            <ul>
+              <li>풀스크린 영상 위에 자막이 얹히는 구조</li>
+              <li>핵심 단어 1개를 [[대괄호]]로 감싸면 주황색으로 강조됨</li>
+              <li>예: "이 노래 [[기억]]하세요?" → "기억"만 주황</li>
+            </ul>
+          </div>
+
+          <!-- 톤 프리셋 4종 버튼 -->
+          <div style="display:flex;gap:8px;margin:14px 0 6px;flex-wrap:wrap">
+            <button onclick="applyThuPreset('intro')" style="padding:8px 14px;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.3);border-radius:6px;color:#AFA9EC;font-size:12px;cursor:pointer;font-family:inherit">🎵 곡 소개형</button>
+            <button onclick="applyThuPreset('question')" style="padding:8px 14px;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.3);border-radius:6px;color:#AFA9EC;font-size:12px;cursor:pointer;font-family:inherit">❓ 질문형</button>
+            <button onclick="applyThuPreset('challenge')" style="padding:8px 14px;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.3);border-radius:6px;color:#AFA9EC;font-size:12px;cursor:pointer;font-family:inherit">🔥 도전형</button>
+            <button onclick="applyThuPreset('emotion')" style="padding:8px 14px;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.3);border-radius:6px;color:#AFA9EC;font-size:12px;cursor:pointer;font-family:inherit">🌙 감성형</button>
+          </div>
+
+          <div class="design-inputs" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:rgba(127,119,221,0.06);border-radius:12px;margin:14px 0">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">좌상단 학원 태그</label>
+              <input type="text" id="thu-brand" value="이 달의 연주곡 · 11월" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">메인 자막 1줄 ([[]]로 핵심 단어 강조)</label>
+              <input type="text" id="thu-cap1" value="[[잔나비]]" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">메인 자막 2줄</label>
+              <input type="text" id="thu-cap2" value="주저하는 연인들에게" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">보조 자막 (작은 회색)</label>
+              <input type="text" id="thu-sub" value="학원에서 직접 연주했어요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:6px">
+              <button onclick="previewThuTemplate()" style="flex:1;padding:14px;background:rgba(127,119,221,0.2);border:1px solid rgba(127,119,221,0.5);border-radius:8px;color:#AFA9EC;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                👁 미리보기
+              </button>
+              <button onclick="downloadThuTemplate()" style="flex:1;padding:14px;background:linear-gradient(90deg,#7F77DD,#534AB7);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+                💾 PNG 다운로드
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:center;margin:14px 0">
+            <canvas id="thu-canvas" width="1080" height="1920" style="width:300px;height:auto;border:1px solid rgba(127,119,221,0.3);border-radius:12px"></canvas>
+          </div>
+
+          <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:10px">
+            💡 다운로드는 1080×1920 원본 사이즈 · 파이널컷에서 영상 위에 오버레이
           </div>
         </div>
 
@@ -5216,12 +5452,256 @@ function fillInstaMonPrompt(data, el) {
     reels.closest('.prompt-card')?.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
+  // 🎨 디자인 카드 입력란도 자동으로 채우기
+  // 메인 제목을 2줄로 분리 (주제가 길면 콤마·괄호·공백 기준으로)
+  let title1 = data.topic || '';
+  let title2 = '';
+  if (title1.includes('\n')) {
+    [title1, title2] = title1.split('\n');
+  } else if (title1.length > 10) {
+    // 대충 절반에서 가장 가까운 공백으로 나눔
+    const mid = Math.floor(title1.length / 2);
+    const left = title1.lastIndexOf(' ', mid);
+    const right = title1.indexOf(' ', mid);
+    const cut = (left > 0 && (mid - left) <= (right > 0 ? right - mid : 99)) ? left : (right > 0 ? right : -1);
+    if (cut > 0) {
+      title2 = title1.slice(cut + 1);
+      title1 = title1.slice(0, cut);
+    }
+  }
+
+  const designInputs = {
+    'design-series':   data.series || '초보자가 가장 많이 하는 실수',
+    'design-title1':   title1,
+    'design-title2':   title2,
+    'design-sub':      data.inst ? data.inst.replace(/[🎸🥁🎤🎵]\s*/, '') : '',
+    'design-hint':     data.solution || '',
+    'design-hook':     data.hook || '',
+    'design-mistake':  data.mistake || '',
+    'design-solution': data.solution || '',
+    'design-ending':   data.ending || '',
+  };
+  Object.entries(designInputs).forEach(([id, val]) => {
+    const input = document.getElementById(id);
+    if (input && val) input.value = val;
+  });
+
+  // 미리보기 자동 갱신
+  if (typeof previewMonTemplate === 'function') previewMonTemplate();
+
   el.style.borderColor = 'var(--accent3)';
   el.style.background = 'rgba(106,247,184,0.18)';
   setTimeout(() => {
     el.style.borderColor = '';
     el.style.background = '';
   }, 1500);
+}
+
+// 🎨 디자인 프롬프트 종류 (탭) 전환
+let currentDesignPromptType = 'overlay';
+function switchDesignPrompt(type, btn) {
+  currentDesignPromptType = type;
+  // 탭 활성화 스타일 토글
+  document.querySelectorAll('.design-prompt-tab').forEach(t => {
+    t.style.background = 'rgba(127,119,221,0.06)';
+    t.style.border = '1px solid rgba(127,119,221,0.2)';
+    t.style.color = 'var(--text2)';
+    t.classList.remove('active');
+  });
+  btn.style.background = 'rgba(127,119,221,0.2)';
+  btn.style.border = '1px solid rgba(127,119,221,0.5)';
+  btn.style.color = '#AFA9EC';
+  btn.classList.add('active');
+  // 입력값이 있으면 새 종류로 프롬프트 재생성
+  const out = document.getElementById('prompt-insta-mon-design');
+  if (out && out.textContent.includes('GPT')) return;  // 아직 생성 전이면 그대로
+  generateDesignPrompt();
+}
+
+// 🎨 입력값 → GPT 디자인 프롬프트 자동 생성
+function generateDesignPrompt() {
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const series   = v('design-series')   || '[시리즈 태그 입력 필요]';
+  const title    = v('design-title')    || '[메인 제목 입력 필요]';
+  const sub      = v('design-sub')      || '[악기·키워드 입력 필요]';
+  const hint     = v('design-hint')     || '[힌트 텍스트 입력 필요]';
+  const hook     = v('design-hook')     || '[후크 자막]';
+  const mistake  = v('design-mistake')  || '[실수 소개 자막]';
+  const solution = v('design-solution') || '[해결책 자막]';
+  const ending   = v('design-ending')   || '[마무리 자막]';
+
+  let prompt = '';
+
+  if (currentDesignPromptType === 'overlay') {
+    prompt = `너는 카운트베이시실용음악학원 인스타그램 릴스의 상단 텍스트 오버레이를 디자인하는 그래픽 디자이너야.
+이 PNG는 영상 위에 겹쳐서 사용하는 용도야 (영상의 상단 30%를 덮음).
+
+[⚠️ KOREAN TEXT — USE ONLY THESE EXACT STRINGS]
+Use ONLY these short Korean texts in the image. Do not add, modify, or invent any other Korean text:
+
+1. Series tag: "${series}"
+2. Main title: "${title}"
+3. Sub: "${sub}"
+4. Hint: "${hint}"
+
+[KOREAN TYPOGRAPHY RULES]
+- All Korean text must be perfectly readable.
+- Clean professional Korean typography only — no handwritten or stylized fake text.
+- No distorted characters.
+- Large bold Korean font only (Pretendard ExtraBold, Nanum Gothic ExtraBold, or similar).
+- Render every Hangul syllable correctly (initial + vowel + final consonant combined).
+- If a string is too long to render accurately, you may shorten it but never break the characters.
+
+[캔버스 사양]
+- 크기: 1080 × 576 픽셀 (가로 1080, 세로 1920의 30%)
+- 배경: 다크 그레이 #121212 솔리드
+- 하단 60px는 #121212에서 투명으로 페이드아웃
+- 출력: PNG, 투명 배경 지원
+
+[레이아웃 — 좌측 정렬, 패딩 60px · 모든 글자 크게]
+
+· 1행 시리즈 태그 (Y=60):
+  - 좌측 주황 세로 막대: 너비 8px, 높이 56px, 색상 #EF9F27
+  - 막대 우측 20px 간격 텍스트: "${series}"
+  - 색 #EF9F27, 크기 56px (✓ 작지 않게), 굵기 700
+  - 글자 수가 12자 이상이면 줄여서 명확하게
+
+· 2행 메인 제목 (Y=160~360, 2줄):
+  - 폰트: Pretendard ExtraBold 또는 Nanum Gothic ExtraBold
+  - 색상 #FFFFFF, 크기 100px, 줄 간격 1.2, 자간 -0.02em
+  - 텍스트: "${title}"
+
+· 3행 서브 (Y=410):
+  - 색 #BBBBBB (살짝 밝게), 크기 50px (✓ 크게), 굵기 500
+  - 텍스트: "${sub}"
+
+· 4행 힌트 (Y=480~530):
+  - ⚠️ 박스 없이 그냥 텍스트만! (작은 박스는 한글 깨짐 원인)
+  - 텍스트 앞에 💡 이모지
+  - 색 #BBBBBB, 크기 44px (✓ 크게), 굵기 500
+  - 텍스트: "💡 ${hint}"
+  - 힌트가 25자 이상이면 핵심만 남기고 줄일 것
+
+[스타일 가이드]
+- 좌측 정렬, 미니멀
+- 3색만 사용: 다크그레이·흰색·앰버(#EF9F27)
+- 모든 텍스트 44px 이상 (작은 글씨 금지 — 한글 깨짐 방지)
+- 광택·그라데이션·그림자 없음
+
+[제목 톤 — 자연스럽게 변주]
+주제에 따라 아래 톤 중 하나로 메인 제목을 다듬어줘:
+- 질문형: "왜 ~ 까요?"
+- 명령형: "이렇게 해보세요"
+- 약속형: "이거 하나만 바꾸세요"
+- 공감형: "처음엔 다 그래요"
+→ 변형안 1~2개 함께 제안
+
+[손그림·일러스트 강조 — 한글 옆에만 추가]
+- 메인 제목 핵심 단어에 손그림 동그라미·밑줄 (#EF9F27, 두께 5~7px)
+- 또는 제목 옆에 큰 손그림 별표(★) 또는 느낌표(!) — 크기 80px 이상
+- 손그림은 한글 위에 겹치지 말 것 (글자 가독성 우선)
+- 정교한 벡터 아닌 손맛 있는 라인
+
+[애니메이션 가정 (영상 변환 시 등장 순서)]
+- 시리즈 태그: 좌측에서 슬라이드 인 (0.0~0.3초)
+- 메인 제목: 한 줄씩 페이드 + 위로 슬라이드 (0.3~0.8초)
+- 손그림 강조: 그려지듯 등장 (0.8~1.2초)
+- 서브·힌트: 마지막에 페이드 인 (1.2~1.5초)
+
+[출력]
+PNG 1장 (1080×576, 배경 투명 지원)
+※ 한글 글자가 정확히 표기되었는지 출력 전 반드시 확인할 것
+※ 이 PNG는 파이널컷에서 영상 위 V2 트랙에 올려서 사용`;
+  }
+  else if (currentDesignPromptType === 'subtitle') {
+    prompt = `너는 카운트베이시실용음악학원 인스타그램 릴스의 4단 자막 카드를 디자인하는 그래픽 디자이너야.
+STEP 1부터 STEP 4까지 자막 PNG를 한 장씩 순차적으로 생성해줘.
+각 STEP은 PNG 1장만 만들고, 사용자가 "STEP N 진행"이라고 입력하면 다음 STEP을 진행해.
+
+[⚠️ KOREAN TEXT — USE ONLY THESE EXACT STRINGS]
+Each STEP uses ONLY ONE Korean text. Do not add, modify, or invent any other Korean text.
+
+STEP 1 (Hook · 0~5s): "${hook}"
+STEP 2 (Mistake · 5~25s): "${mistake}"
+STEP 3 (Solution · 25~50s): "${solution}"
+STEP 4 (Ending · 50~60s): "${ending}"
+
+[KOREAN TYPOGRAPHY RULES]
+- All Korean text must be perfectly readable.
+- Clean professional Korean typography only — no handwritten or stylized fake text.
+- No distorted characters.
+- Large bold Korean font only (Pretendard ExtraBold, Nanum Gothic ExtraBold, or similar).
+- Render every Hangul syllable correctly.
+- If a string is too long to render accurately, you may shorten it but never break the characters.
+
+[공통 캔버스 사양 — 4 STEP 모두 동일]
+- 크기: 1080 × 1920 (9:16 세로)
+- 배경: 완전 투명 (PNG 알파 채널)
+- 출력: STEP당 PNG 1장
+
+[공통 자막 스타일]
+- 위치: 화면 정중앙 (Y=960 기준 위아래)
+- 텍스트 영역 너비: 화면 80% (좌우 패딩 108px)
+- 색상: 흰색 #FFFFFF
+- 외곽선: 검정 #000000, 8px 두께
+- 그림자: 검정, 흐림 12px, 불투명도 60%
+- 폰트: Pretendard ExtraBold 또는 Nanum Gothic ExtraBold
+- 크기: 100~120px, 줄 간격 1.3, 자간 -0.02em
+- 텍스트 정렬: 가운데
+- 자연스러운 위치에서 줄바꿈 (긴 문장은 2~3줄로)
+
+────────────────────────────────────────
+
+▼ STEP 1. 자막 ① 후크 (0~5초)
+- 텍스트: "${hook}"
+- 톤: 질문형·충격형 (호기심 유발)
+- 손그림 강조:
+  · 핵심 단어 1개에 손그림 동그라미 또는 밑줄 (#EF9F27, 두께 5~7px, 자연스러운 라인)
+  · 자막 옆 우측 상단에 손그림 물음표(?) 심볼 — #EF9F27, 80~100px
+- 한 PNG 1장만 생성 → 사용자가 "STEP 2 진행"이라고 입력하면 다음 단계 실행.
+
+▼ STEP 2. 자막 ② 실수 소개 (5~25초)
+- 텍스트: "${mistake}"
+- 톤: 공감형 ("처음엔 다 그래요" 느낌)
+- 손그림 강조:
+  · 핵심 단어 1개에 손그림 동그라미 또는 하이라이트 (반투명 노란색 #F9CB42 50%)
+  · 자막 옆 우측에 손그림 느낌표(!) 또는 ⚠️ 심볼 — #EF9F27, 80~100px
+- 한 PNG 1장만 생성 → "STEP 3 진행" 입력 시 다음 단계.
+
+▼ STEP 3. 자막 ③ 해결책 (25~50초)
+- 텍스트: "${solution}"
+- 톤: 명령·약속형 ("이렇게 해보세요", "이것만 바꾸면 끝")
+- 손그림 강조:
+  · 핵심 단어 1개에 손그림 밑줄 (#EF9F27, 두께 5~7px)
+  · 자막 옆 우측에 손그림 체크(✓) 심볼 — #EF9F27, 80~100px
+- 한 PNG 1장만 생성 → "STEP 4 진행" 입력 시 다음 단계.
+
+▼ STEP 4. 자막 ④ 마무리 (50~60초)
+- 텍스트: "${ending}"
+- 톤: 격려·약속형 ("진짜 달라져요", "오늘부터 해봐요")
+- 손그림 강조:
+  · 핵심 단어 1개에 손그림 동그라미 (#EF9F27)
+  · 자막 옆 우측에 손그림 별표(★) 심볼 — #EF9F27, 80~100px
+- 한 PNG 1장만 생성하고 작업 완료.
+
+────────────────────────────────────────
+
+[스타일 가이드 — 4 STEP 공통]
+- 흰색 글자 + 검정 외곽선 + 옅은 그림자 = 어떤 배경 영상 위에서도 가독성 확보
+- 배경 투명 (영상 위 오버레이용)
+- 한글 정확히 표기 (자모 분리·받침 깨짐 금지)
+- 손그림은 한글 위에 겹치지 말 것 (글자 가독성 우선)
+- 정교한 벡터가 아닌 손맛 있는 라인
+
+[애니메이션 가정 — 영상에서 등장할 효과]
+- 텍스트: 한 줄씩 페이드 + 살짝 위로 슬라이드 (0.3초)
+- 손그림 강조: 텍스트 등장 직후 그려지듯 (0.5초 후)
+- 옆 심볼: 마지막에 톡 튀어나오듯 (스케일 0→1.2→1)
+→ 각 요소가 시간차로 등장할 수 있도록 레이어 분리 가능한 구도로`;
+  }
+
+  const out = document.getElementById('prompt-insta-mon-design');
+  if (out) out.textContent = prompt;
 }
 
 
@@ -5719,6 +6199,422 @@ const promoTopics = {
 };
 
 // 홍보 캘린더 렌더링
+// ─── 목요일 1장 영상 자막 PNG 생성 (Canvas) ───
+const THU_PRESETS = {
+  intro: {
+    brand: '이 달의 연주곡 · 11월',
+    cap1: '[[잔나비]]',
+    cap2: '주저하는 연인들에게',
+    sub:  '학원에서 직접 연주했어요'
+  },
+  question: {
+    brand: '우리 학원에서 지금 이 노래가?',
+    cap1: '이 노래',
+    cap2: '[[기억]]하세요?',
+    sub:  '잔나비 - 주저하는 연인들에게'
+  },
+  challenge: {
+    brand: '이 달의 한 곡 마스터하기',
+    cap1: '이 곡',
+    cap2: '[[한 달]] 안에 끝내요',
+    sub:  '체계적인 1:1 레슨으로'
+  },
+  emotion: {
+    brand: '이 계절에 듣고 싶은',
+    cap1: '이 곡이',
+    cap2: '[[떠오를]] 거예요',
+    sub:  '11월의 추천곡'
+  }
+};
+
+function applyThuPreset(name) {
+  const p = THU_PRESETS[name];
+  if (!p) return;
+  document.getElementById('thu-brand').value = p.brand;
+  document.getElementById('thu-cap1').value = p.cap1;
+  document.getElementById('thu-cap2').value = p.cap2;
+  document.getElementById('thu-sub').value = p.sub;
+  previewThuTemplate();
+}
+
+// [[강조]] 파싱 → 세그먼트로 분리
+function parseHighlight(text) {
+  // [[...]] 부분을 split해서 {text, highlight} 배열로
+  const segments = [];
+  const regex = /\[\[(.+?)\]\]/g;
+  let lastIdx = 0;
+  let m;
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index > lastIdx) {
+      segments.push({ text: text.slice(lastIdx, m.index), highlight: false });
+    }
+    segments.push({ text: m[1], highlight: true });
+    lastIdx = regex.lastIndex;
+  }
+  if (lastIdx < text.length) {
+    segments.push({ text: text.slice(lastIdx), highlight: false });
+  }
+  return segments.length > 0 ? segments : [{ text: text, highlight: false }];
+}
+
+function drawHighlightedLine(ctx, segments, x, y, font, normalColor, highlightColor) {
+  ctx.font = font;
+  ctx.textBaseline = 'middle';
+  let curX = x;
+  for (const seg of segments) {
+    ctx.fillStyle = seg.highlight ? highlightColor : normalColor;
+    ctx.fillText(seg.text, curX, y);
+    curX += ctx.measureText(seg.text).width;
+  }
+}
+
+function drawThuTemplate(canvas, transparent) {
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const W = 1080, H = 1920;
+
+  const brand = document.getElementById('thu-brand')?.value || '이 달의 연주곡';
+  const cap1 = document.getElementById('thu-cap1')?.value || '';
+  const cap2 = document.getElementById('thu-cap2')?.value || '';
+  const sub  = document.getElementById('thu-sub')?.value || '';
+
+  // 배경 — transparent 모드면 비워두고, 아니면 회색 채움
+  ctx.clearRect(0, 0, W, H);
+  if (!transparent) {
+    ctx.fillStyle = '#0E0E0E';
+    ctx.fillRect(0, 0, W, H);
+
+    // 영상 자리 안내 (미리보기용만)
+    ctx.fillStyle = '#282828';
+    ctx.font = '34px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('▶  영상 자리 (풀스크린)', W/2, H/2);
+  }
+
+  // 상단 검정 페이드 — 좌상단 태그 가독성 확보 (Y=0~350)
+  const topFadeEnd = 350;
+  const topGrad = ctx.createLinearGradient(0, 0, 0, topFadeEnd);
+  topGrad.addColorStop(0, 'rgba(0,0,0,0.95)');
+  topGrad.addColorStop(0.3, 'rgba(0,0,0,0.8)');
+  topGrad.addColorStop(0.7, 'rgba(0,0,0,0.4)');
+  topGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, topFadeEnd);
+
+  // 좌상단 학원 태그
+  ctx.fillStyle = '#EF9F27';
+  ctx.fillRect(60, 75, 10, 64);
+  ctx.font = '42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#EF9F27';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(brand, 90, 107);
+
+  // 하단 검정 페이드 — 영상 끝나는 지점(Y=900)부터 자연스럽게 어두워짐
+  const fadeStartY = 900;
+  const grad = ctx.createLinearGradient(0, fadeStartY, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(0.4, 'rgba(0,0,0,0.4)');
+  grad.addColorStop(0.7, 'rgba(0,0,0,0.8)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.98)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, fadeStartY, W, H - fadeStartY);
+
+  // 메인 자막
+  const mainFont = 'bold 90px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  const segs1 = parseHighlight(cap1);
+  const segs2 = parseHighlight(cap2);
+
+  drawHighlightedLine(ctx, segs1, 60, 1520, mainFont, '#FFFFFF', '#EF9F27');
+  drawHighlightedLine(ctx, segs2, 60, 1650, mainFont, '#FFFFFF', '#EF9F27');
+
+  // 보조 자막
+  ctx.font = '40px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#AAAAAA';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(sub, 60, 1780);
+
+  // 진행바
+  ctx.fillStyle = '#222222';
+  ctx.fillRect(0, 1910, W, 4);
+  ctx.fillStyle = '#EF9F27';
+  ctx.fillRect(0, 1910, W * 0.35, 4);
+}
+
+function previewThuTemplate() {
+  const c = document.getElementById('thu-canvas');
+  if (c) drawThuTemplate(c, false);  // 미리보기: 회색 배경
+}
+
+function downloadThuTemplate() {
+  const c = document.getElementById('thu-canvas');
+  if (!c) return;
+
+  // 캔버스를 완전히 초기화하고 투명 모드로 fresh 하게 다시 그림
+  const ctx = c.getContext('2d', { alpha: true });
+  ctx.clearRect(0, 0, c.width, c.height);
+  drawThuTemplate(c, true);  // 다운로드: 투명 배경 ⭐
+
+  // ─── 진단: 캔버스의 실제 알파값 확인 ───
+  const probe = ctx.getImageData(540, 500, 1, 1).data;
+  const probeBottom = ctx.getImageData(540, 1800, 1, 1).data;
+  console.log('[진단] Y=500 (투명이어야):', [...probe], '| Y=1800 (페이드):', [...probeBottom]);
+  // 캔버스 자체가 검정으로 채워져 있으면 경고
+  if (probe[3] !== 0) {
+    console.warn('⚠️ 캔버스가 투명하지 않음! alpha=' + probe[3] + ' — 코드 문제');
+  }
+
+  const cap1 = (document.getElementById('thu-cap1')?.value || '').replace(/\[\[|\]\]/g, '');
+  const cap2 = (document.getElementById('thu-cap2')?.value || '').replace(/\[\[|\]\]/g, '');
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const fname = `목요일_1장_${cap1}_${cap2}_${ts}.png`.replace(/[\\/:*?"<>|]/g, '_');
+
+  // toBlob 명시적으로 PNG type 지정, quality 무시
+  c.toBlob(function(blob) {
+    if (!blob) {
+      console.error('⚠️ toBlob이 null 반환 — 캔버스 export 실패');
+      alert('PNG 생성 실패');
+      return;
+    }
+    console.log('[진단] Blob type:', blob.type, '| size:', blob.size);
+
+    // ─── Blob의 실제 바이트 헤더 검증 ───
+    blob.arrayBuffer().then(buf => {
+      const bytes = new Uint8Array(buf).slice(0, 8);
+      const hex = Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join(' ');
+      const isPNG = bytes[0]===0x89 && bytes[1]===0x50 && bytes[2]===0x4E && bytes[3]===0x47;
+      const isJPEG = bytes[0]===0xFF && bytes[1]===0xD8;
+      console.log('[진단] Blob 헤더 hex:', hex);
+      console.log('[진단] 진짜 PNG?', isPNG, '| JPEG?', isJPEG);
+      if (isJPEG) {
+        alert('⚠️ Blob이 JPEG로 생성됨! Chrome 환경 문제 — 콘솔 확인');
+      } else if (isPNG) {
+        console.log('✅ Blob은 진짜 PNG. 다운로드 후 변환된다면 시스템/iCloud 문제.');
+      }
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setTimeout(() => drawThuTemplate(c, false), 100);
+  }, 'image/png');
+}
+
+// 페이지 로드 시 자동 미리보기
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const c = document.getElementById('thu-canvas');
+    if (c) drawThuTemplate(c, false);
+  }, 300);
+});
+
+// ─── 월요일 릴스 템플릿 PNG 생성 (Canvas) ───
+function drawMonTemplate(canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = 1080, H = 1920;
+
+  // 입력값
+  const series = document.getElementById('design-series')?.value || '초보자가 가장 많이 하는 실수';
+  const title1 = document.getElementById('design-title1')?.value || '손가락이';
+  const title2 = document.getElementById('design-title2')?.value || '왜 안 눌릴까요?';
+  const sub    = document.getElementById('design-sub')?.value || '기타 · F코드';
+  const hint   = (document.getElementById('design-hint')?.value || '').trim();
+
+  // 배경 #121212
+  ctx.fillStyle = '#121212';
+  ctx.fillRect(0, 0, W, H);
+
+  // 시리즈 태그 (Y=220) — 주황 막대 + 텍스트
+  ctx.fillStyle = '#EF9F27';
+  ctx.fillRect(60, 195, 10, 55);
+  ctx.font = 'bold 42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(series, 92, 222);
+
+  // 메인 제목 1줄 (흰색, 92px) + 2줄 (80px 살짝 작게 위계)
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 92px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillText(title1, 60, 360);
+  const lineGap = Math.round(92 * 1.15);
+  ctx.font = 'bold 80px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillText(title2, 60, 360 + lineGap);
+
+  // 서브 (회색)
+  ctx.font = '42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#888888';
+  const subY = 360 + lineGap + 90;
+  ctx.fillText(sub, 60, subY);
+
+  // 힌트 박스 (있을 때만 그림)
+  if (hint) {
+    const hintFullText = '💡 ' + hint;
+    ctx.font = '32px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+    const textW = ctx.measureText(hintFullText).width;
+    const hintY = subY + 65;
+    const padX = 30, padY = 18;
+    const boxX1 = 60, boxY1 = hintY;
+    const boxX2 = boxX1 + textW + padX * 2;
+    const boxY2 = boxY1 + 64;
+
+    ctx.strokeStyle = '#2A2A2A';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(boxX1, boxY1, boxX2 - boxX1, boxY2 - boxY1);
+
+    ctx.fillStyle = '#888888';
+    ctx.fillText(hintFullText, boxX1 + padX, (boxY1 + boxY2) / 2);
+  }
+
+  // 분리선
+  ctx.fillStyle = '#2A2A2A';
+  ctx.fillRect(0, 766, W, 4);
+
+  // 하단 영상 영역 (Y=770~1920) — 회색 톤
+  ctx.fillStyle = '#1C1C1C';
+  ctx.fillRect(0, 770, W, 1150);
+  ctx.font = '34px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#3C3C3C';
+  ctx.textAlign = 'center';
+  ctx.fillText('▶  영상 자리', W/2, 1345);
+
+  // 워터마크
+  ctx.font = '26px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#6E6E6E';
+  ctx.fillText('카운트베이시실용음악학원', W/2, 1860);
+}
+
+function previewMonTemplate() {
+  const c = document.getElementById('mon-canvas');
+  if (c) drawMonTemplate(c);
+}
+
+function downloadMonTemplate() {
+  const c = document.getElementById('mon-canvas');
+  if (!c) return;
+  drawMonTemplate(c);
+
+  const t1 = document.getElementById('design-title1')?.value || 'title';
+  const t2 = document.getElementById('design-title2')?.value || '';
+  const fname = `월요일_릴스_${t1}_${t2}.png`.replace(/[\\/:*?"<>|]/g, '_');
+
+  c.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+// 페이지 로드 시 자동 미리보기
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const c = document.getElementById('mon-canvas');
+    if (c) drawMonTemplate(c);
+  }, 250);
+});
+
+// ─── 수요일 릴스 템플릿 PNG 생성 (Canvas) ───
+function drawWedTemplate(canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = 1080, H = 1920;
+
+  // 입력값
+  const series   = document.getElementById('wed-series').value || '실력자 소리 듣는 한 구절';
+  const phrase1  = document.getElementById('wed-phrase1').value || 'Am 펜타토닉';
+  const phrase2  = document.getElementById('wed-phrase2').value || '블루스 릭';
+  const genre    = document.getElementById('wed-genre').value || 'E → C#m7 → G#m → A';
+
+  // 배경 #121212
+  ctx.fillStyle = '#121212';
+  ctx.fillRect(0, 0, W, H);
+
+  // 상단 영상 영역 (회색 톤)
+  ctx.fillStyle = '#1C1C1C';
+  ctx.fillRect(0, 0, W, 1085);
+  ctx.fillStyle = '#3C3C3C';
+  ctx.font = '32px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('▶  영상 자리', W/2, 540);
+
+  // 분리선
+  ctx.fillStyle = '#2A2A2A';
+  ctx.fillRect(0, 1083, W, 4);
+
+  // 시리즈 태그 — 주황 막대
+  ctx.fillStyle = '#EF9F27';
+  ctx.fillRect(60, 1135, 8, 50);
+  // 시리즈 태그 텍스트
+  ctx.font = 'bold 38px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#EF9F27';
+  ctx.fillText(series, 86, 1160);
+
+  // 노래 제목 1줄 (85px) + 2줄 (72px 작게)
+  ctx.fillStyle = '#EF9F27';
+  ctx.font = 'bold 85px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillText(phrase1, 60, 1255);
+  const lineGap = Math.round(85 * 1.15);
+  ctx.font = 'bold 72px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillText(phrase2, 60, 1255 + lineGap);
+
+  // 코드 진행
+  ctx.font = '42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#969696';
+  const genreY = 1255 + lineGap + 95;
+  ctx.fillText(genre, 60, genreY);
+
+  // 워터마크
+  ctx.font = '26px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+  ctx.fillStyle = '#6E6E6E';
+  ctx.fillText('카운트베이시실용음악학원', W/2, 1820);
+}
+
+function previewWedTemplate() {
+  const canvas = document.getElementById('wed-canvas');
+  if (canvas) drawWedTemplate(canvas);
+}
+
+function downloadWedTemplate() {
+  const canvas = document.getElementById('wed-canvas');
+  if (!canvas) return;
+  drawWedTemplate(canvas);
+
+  // 파일명: 노래 제목 합쳐서
+  const phrase1 = document.getElementById('wed-phrase1').value || 'phrase';
+  const phrase2 = document.getElementById('wed-phrase2').value || '';
+  const fname = `수요일_릴스_${phrase1}_${phrase2}.png`.replace(/[\\/:*?"<>|]/g, '_');
+
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+// 페이지 로드 시 자동 미리보기
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const c = document.getElementById('wed-canvas');
+    if (c) drawWedTemplate(c);
+  }, 200);
+});
+
 // ─── 학원 홍보 카드 자동 채우기 (주제 키워드 기반 분류) ───
 function classifyPromoTopic(topic) {
   // 우선순위: 이벤트 > 신규 모집 > 브랜드 신뢰 (기본값)
@@ -6179,91 +7075,91 @@ function renderBassCalendar() {
 // 시리즈: 흔한 실수 / 한끗 차이 / 자세 점검 / 5분 루틴 / 미신 깨기 / 처음의 벽
 const instaMonTopics = [
   { q:1, label:"1분기 (1~13주) · 새해 첫걸음, 흔한 실수 시리즈", weeks:[
-    {w:1,  inst:"🎸 기타", series:"흔한 실수",
+    {w:1,  inst:"🎸 기타", series:"초보자 흔한 실수",
      topic:"기타 초보가 코드 잡을 때 손가락이 옆 줄에 닿는 실수",
      scene:"A) 왼손 코드 잡은 손가락 클로즈업 고정샷 · 천천히 미세 움직임",
      hook:"이거 나만 그래?",
      mistake:"코드 잡으면 손가락이 옆 줄에 닿아서 소리가 뭉개져요.",
      solution:"손가락 끝을 세워서 누르세요. 손톱이 천장을 향하게.",
      ending:"이거 하나로 소리가 달라져요."},
-    {w:2,  inst:"🥁 드럼", series:"흔한 실수",
+    {w:2,  inst:"🥁 드럼", series:"초보자 흔한 실수",
      topic:"드럼 초보가 메트로놈 없이 느낌으로만 치는 실수",
      scene:"E) 스틱이 스네어를 치는 슬로우 모션 클로즈업",
      hook:"박자가 자꾸 빨라져요?",
      mistake:"메트로놈 없이 느낌으로만 치면 자기도 모르게 템포가 어긋나요.",
      solution:"느린 60BPM부터 메트로놈에 정확히 맞추는 연습부터 시작하세요.",
      ending:"이게 진짜 박자의 시작이에요."},
-    {w:3,  inst:"🎤 보컬", series:"흔한 실수",
+    {w:3,  inst:"🎤 보컬", series:"초보자 흔한 실수",
      topic:"노래 초보가 가슴으로 숨 쉬는 호흡 실수",
      scene:"D) 의자에 앉은 보컬리스트의 옆모습 고정샷 · 어깨 라인 강조",
      hook:"고음이 안 올라가요?",
      mistake:"가슴으로 숨 쉬면 어깨만 들썩이고 소리에 힘이 안 실려요.",
      solution:"배가 풍선처럼 부풀게 숨 쉬세요. 어깨는 절대 안 움직입니다.",
      ending:"호흡이 바뀌면 노래가 바뀌어요."},
-    {w:4,  inst:"🎵 베이스", series:"흔한 실수",
+    {w:4,  inst:"🎵 베이스", series:"초보자 흔한 실수",
      topic:"베이스 초보가 손목 전체로 피킹하는 실수",
      scene:"A) 오른손 피킹 클로즈업 고정샷 · 천천히 미세 움직임",
      hook:"손목이 너무 아파요?",
      mistake:"손목 전체를 흔들면서 피킹하면 금방 지치고 속도도 안 나와요.",
      solution:"손가락 끝만 줄을 살짝 당기듯 튕기세요. 손목은 가만히.",
      ending:"이걸 알면 2배는 편해져요."},
-    {w:5,  inst:"🎸 기타", series:"한끗 차이",
+    {w:5,  inst:"🎸 기타", series:"실력 바뀌는 한끗 차이",
      topic:"스트로크 잘하는 사람과 못하는 사람의 한끗 차이",
      scene:"E) 피크가 줄을 훑고 지나가는 슬로우 모션 클로즈업",
      hook:"왜 내 스트로크는 어색할까?",
      mistake:"팔꿈치 전체로 휘두르면 박자가 둔하고 소리가 거칠어요.",
      solution:"손목 스냅만 사용하세요. 팔꿈치는 거의 고정.",
      ending:"손목 하나로 리듬이 살아나요."},
-    {w:6,  inst:"🥁 드럼", series:"자세 점검",
+    {w:6,  inst:"🥁 드럼", series:"자세 점검 가이드",
      topic:"드럼 의자 높이 잘못 맞춰서 킥이 안 되는 문제",
      scene:"D) 의자에 앉은 드러머의 옆모습 고정샷 · 무릎 각도 강조",
      hook:"킥이 자꾸 늦어져요?",
      mistake:"의자가 너무 높거나 낮으면 무릎 각도가 틀려서 발이 안 따라줘요.",
      solution:"허벅지가 살짝 아래로 기울 정도. 90도보다 조금 더 펴진 각도.",
      ending:"의자만 맞춰도 실력이 늘어요."},
-    {w:7,  inst:"🎤 보컬", series:"흔한 실수",
+    {w:7,  inst:"🎤 보컬", series:"초보자 흔한 실수",
      topic:"고음 낼 때 목에 힘 잔뜩 주는 실수",
      scene:"A) 마이크 잡은 손과 입 클로즈업 고정샷",
      hook:"고음에서 목이 찢어져요?",
      mistake:"목에 힘 주고 소리치면 성대가 상하고 음정도 흔들려요.",
      solution:"힘을 빼고 두성으로 가볍게 올리세요. 하품할 때 느낌처럼.",
      ending:"힘 빼는 게 진짜 실력이에요."},
-    {w:8,  inst:"🎵 베이스", series:"흔한 실수",
+    {w:8,  inst:"🎵 베이스", series:"초보자 흔한 실수",
      topic:"베이스 줄 뮤트 안 해서 소리 지저분해지는 문제",
      scene:"A) 오른손 손바닥이 줄에 살짝 닿는 클로즈업 고정샷",
      hook:"베이스 소리가 지저분해요?",
      mistake:"연주 안 하는 줄이 같이 울려서 음이 뭉쳐 들려요.",
      solution:"오른손 손바닥으로 안 쓰는 줄을 가볍게 덮으세요.",
      ending:"뮤트가 베이스의 절반이에요."},
-    {w:9,  inst:"🎸 기타", series:"5분 루틴",
+    {w:9,  inst:"🎸 기타", series:"5분 연습 루틴",
      topic:"매일 5분 튜닝만 잘해도 음감이 늘어요",
      scene:"B) 헤드머신 페그 돌리는 클로즈업 고정샷 · 아주 느린 줌인",
      hook:"5분 투자로 음감 키우는 법",
      mistake:"튜닝 없이 연습하면 틀린 음정에 귀가 익숙해져요.",
      solution:"연습 전 매번 튜너로 6줄 다 맞추세요. 5분이면 충분해요.",
      ending:"음감의 시작은 튜닝이에요."},
-    {w:10, inst:"🥁 드럼", series:"한끗 차이",
+    {w:10, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"리바운드 살리는 그립과 죽이는 그립의 차이",
      scene:"A) 스틱 쥔 손가락 클로즈업 고정샷",
      hook:"스틱이 자꾸 손에서 튀나요?",
      mistake:"스틱을 꽉 쥐면 리바운드가 죽어서 손목에 무리가 와요.",
      solution:"엄지·검지로만 지지하고 나머지 손가락은 가볍게 감싸세요.",
      ending:"그립이 바뀌면 사운드가 바뀌어요."},
-    {w:11, inst:"🎤 보컬", series:"흔한 실수",
+    {w:11, inst:"🎤 보컬", series:"초보자 흔한 실수",
      topic:"입을 작게 열고 노래해서 발음 뭉개지는 실수",
      scene:"A) 입 모양 클로즈업 고정샷 · 정면",
      hook:"가사가 안 들린대요?",
      mistake:"입을 작게 열면 자음이 흐려져서 가사가 뭉개져요.",
      solution:"손가락 두 개가 세로로 들어갈 만큼 입을 여세요.",
      ending:"입만 잘 열어도 노래가 또렷해져요."},
-    {w:12, inst:"🎵 베이스", series:"흔한 실수",
+    {w:12, inst:"🎵 베이스", series:"초보자 흔한 실수",
      topic:"베이스 초보가 음정에만 집중해서 박자 흔들리는 실수",
      scene:"E) 메트로놈 LED와 손가락 움직임이 한 화면에 들어오는 고정샷",
      hook:"음은 맞는데 어색해요?",
      mistake:"음 찾는 데 신경 쓰다 박자가 늦거나 빨라져요.",
      solution:"베이스는 리듬 악기예요. 드럼 킥에 발 맞추듯 연주하세요.",
      ending:"베이스의 본업은 리듬이에요."},
-    {w:13, inst:"🎸 기타", series:"한끗 차이",
+    {w:13, inst:"🎸 기타", series:"실력 바뀌는 한끗 차이",
      topic:"느리게 완벽히 vs 빠르게 대충 — 정답은?",
      scene:"E) 코드 전환 손가락 슬로우 모션 클로즈업",
      hook:"빨리 치려는데 왜 안 될까?",
@@ -6272,91 +7168,91 @@ const instaMonTopics = [
      ending:"느린 게 빠른 길이에요."},
   ]},
   { q:2, label:"2분기 (14~26주) · 한끗 차이로 실력 점프", weeks:[
-    {w:14, inst:"🥁 드럼", series:"한끗 차이",
+    {w:14, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"손에 집중하다 발이 늦어지는 드럼 초보의 함정",
      scene:"D) 의자에 앉은 드러머 뒷모습 고정샷 · 발 페달 라인",
      hook:"발이 자꾸 늦어요?",
      mistake:"손 패턴 익히는 데 집중하느라 발은 따로 연습 안 하니까 늦어요.",
      solution:"킥 페달만 단독으로 200번. 그 후 손과 합쳐보세요.",
      ending:"발이 잡히면 그루브가 살아요."},
-    {w:15, inst:"🎤 보컬", series:"흔한 실수",
+    {w:15, inst:"🎤 보컬", series:"초보자 흔한 실수",
      topic:"마이크 헤드를 손으로 감싸쥐어 소리 먹히는 실수",
      scene:"A) 마이크 잡은 손 클로즈업 고정샷",
      hook:"왜 내 마이크는 소리가 작죠?",
      mistake:"헤드 부분을 손으로 덮으면 마이크 특성이 죽어요.",
      solution:"몸통만 가볍게 쥐고 헤드 그릴은 손에서 떼세요.",
      ending:"잡는 법이 사운드를 결정해요."},
-    {w:16, inst:"🎵 베이스", series:"미신 깨기",
+    {w:16, inst:"🎵 베이스", series:"잘못 알려진 미신",
      topic:"베이스도 고음 위주로 쳐야 멋있다? 큰 오해",
      scene:"B) 베이스 4번 줄(저음줄) 클로즈업 고정샷 · 느린 트래킹",
      hook:"베이스 = 고음? 큰 오해",
      mistake:"기타처럼 고음 위주로 치면 밴드 사운드가 비어버려요.",
      solution:"루트와 5도 위주로 저음 라인을 단단히 깔아주세요.",
      ending:"베이스는 저음이 본 자리예요."},
-    {w:17, inst:"🎸 기타", series:"자세 점검",
+    {w:17, inst:"🎸 기타", series:"자세 점검 가이드",
      topic:"손목을 뒤로 꺾으면 코드가 안 잡혀요",
      scene:"A) 왼손 손목 옆에서 본 클로즈업 고정샷",
      hook:"코드 잡으면 손이 아파요?",
      mistake:"손목을 뒤로 꺾으면 손가락에 힘이 안 들어가요.",
      solution:"손목을 자연스럽게 앞으로 내밀고 손가락만 구부리세요.",
      ending:"손목이 답이에요."},
-    {w:18, inst:"🥁 드럼", series:"5분 루틴",
+    {w:18, inst:"🥁 드럼", series:"5분 연습 루틴",
      topic:"매일 5분 메트로놈 연습이 만드는 차이",
      scene:"E) 메트로놈 LED 점멸과 스틱 박자의 슬로우 모션",
      hook:"5분으로 박자감 마스터?",
      mistake:"메트로놈 없이 감으로만 치면 박자가 점점 흔들려요.",
      solution:"매일 5분만 메트로놈에 정확히 맞춰 8비트 연습하세요.",
      ending:"5분이 1년 후 실력을 만들어요."},
-    {w:19, inst:"🎤 보컬", series:"자세 점검",
+    {w:19, inst:"🎤 보컬", series:"자세 점검 가이드",
      topic:"워밍업 없이 바로 고음 내면 성대가 다쳐요",
      scene:"D) 의자에 앉은 보컬리스트 정면 고정샷 · 어깨/턱 라인",
      hook:"노래 전에 이거 꼭 하세요",
      mistake:"워밍업 없이 고음 내면 성대 근육이 굳어 있어서 다쳐요.",
      solution:"허밍과 립트릴 5분으로 성대를 풀어주세요.",
      ending:"준비 운동이 목을 지켜요."},
-    {w:20, inst:"🎵 베이스", series:"한끗 차이",
+    {w:20, inst:"🎵 베이스", series:"실력 바뀌는 한끗 차이",
      topic:"루트만 치는 베이스와 루트+5도 치는 베이스의 차이",
      scene:"B) 베이스 지판 위 손가락 클로즈업 고정샷 · 느린 줌인",
      hook:"베이스 라인이 단조롭다고요?",
      mistake:"루트 음만 반복하면 연주가 평면적으로 들려요.",
      solution:"루트 + 5도 + 옥타브 조합으로 라인에 입체감을 더하세요.",
      ending:"3개 음이 베이스를 살려요."},
-    {w:21, inst:"🎸 기타", series:"흔한 실수",
+    {w:21, inst:"🎸 기타", series:"초보자 흔한 실수",
      topic:"피크 너무 세게 쥐면 스트로크가 딱딱해져요",
      scene:"A) 피크 쥔 손가락 클로즈업 고정샷",
      hook:"스트로크가 어색해요?",
      mistake:"피크를 꽉 쥐면 줄에 걸리고 소리가 거칠어요.",
      solution:"피크를 살짝만 잡고 줄에 스치듯 흘리세요.",
      ending:"힘 빼는 게 진짜 기술이에요."},
-    {w:22, inst:"🥁 드럼", series:"자세 점검",
+    {w:22, inst:"🥁 드럼", series:"자세 점검 가이드",
      topic:"스틱 그립이 손목 회전을 막고 있어요",
      scene:"A) 스틱 쥔 손 클로즈업 고정샷 · 위에서 본 각도",
      hook:"스틱이 무겁게 느껴져요?",
      mistake:"스틱을 손바닥 전체로 감싸쥐면 손목이 안 돌아가요.",
      solution:"엄지와 검지가 지지점. 나머지 손가락은 부드럽게 감싸세요.",
      ending:"그립이 가벼우면 스틱이 날아요."},
-    {w:23, inst:"🎤 보컬", series:"미신 깨기",
+    {w:23, inst:"🎤 보컬", series:"잘못 알려진 미신",
      topic:"크게 부르면 잘 부르는 거다? 큰 오해",
      scene:"D) 마이크 앞에 선 보컬리스트 정면 고정샷",
      hook:"성량 = 실력? 아니에요",
      mistake:"크게만 부르려고 하면 음정과 표현이 무너져요.",
      solution:"작은 소리로 정확한 음정 부르기부터 마스터하세요.",
      ending:"디테일이 진짜 실력이에요."},
-    {w:24, inst:"🎵 베이스", series:"미신 깨기",
+    {w:24, inst:"🎵 베이스", series:"잘못 알려진 미신",
      topic:"앰프 볼륨 크면 실수가 묻힌다? 정반대예요",
      scene:"B) 앰프 노브 클로즈업 고정샷 · 느린 줌아웃",
      hook:"앰프 크게 하면 실수 가려진다?",
      mistake:"오히려 큰 볼륨에서 잡음과 뮤트 실수가 더 도드라져요.",
      solution:"작은 볼륨에서 깔끔하게 들리도록 먼저 연습하세요.",
      ending:"작아도 깔끔하면 그게 실력이에요."},
-    {w:25, inst:"🎸 기타", series:"한끗 차이",
+    {w:25, inst:"🎸 기타", series:"실력 바뀌는 한끗 차이",
      topic:"줄을 세게 누르는 사람 vs 적당히 누르는 사람",
      scene:"A) 왼손 손끝과 프렛 사이 클로즈업 고정샷",
      hook:"손가락 끝이 아프다고요?",
      mistake:"필요 이상 세게 누르면 손이 금방 지치고 속도도 안 나요.",
      solution:"소리가 깨끗하게 나는 최소한의 힘만 사용하세요.",
      ending:"힘 빼면 손이 오래 가요."},
-    {w:26, inst:"🥁 드럼", series:"한끗 차이",
+    {w:26, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"손발 따로 vs 한꺼번에 — 정답은?",
      scene:"D) 의자에 앉은 드러머 뒷모습 고정샷 · 손과 발 동시",
      hook:"손발 합치면 다 흔들려요?",
@@ -6365,91 +7261,91 @@ const instaMonTopics = [
      ending:"분리가 합치는 비결이에요."},
   ]},
   { q:3, label:"3분기 (27~39주) · 자세·습관·미신 깨기", weeks:[
-    {w:27, inst:"🎤 보컬", series:"미신 깨기",
+    {w:27, inst:"🎤 보컬", series:"잘못 알려진 미신",
      topic:"비브라토는 멋있어 보이려고 일찍 쓰면 안 돼요",
      scene:"A) 입 모양 클로즈업 고정샷 · 정면",
      hook:"비브라토 일찍 쓰면 손해?",
      mistake:"음정이 불안정한데 비브라토 넣으면 음 흔들림이 더 커져요.",
      solution:"롱톤으로 음정 안정시킨 뒤 비브라토를 자연스럽게 붙이세요.",
      ending:"기초 위에서만 멋이 나요."},
-    {w:28, inst:"🎵 베이스", series:"미신 깨기",
+    {w:28, inst:"🎵 베이스", series:"잘못 알려진 미신",
      topic:"슬랩 먼저 배우는 베이스 초보 — 큰 함정",
      scene:"E) 슬랩 손동작 슬로우 모션 클로즈업",
      hook:"슬랩부터 배우고 싶죠?",
      mistake:"핑거스타일 기초 없이 슬랩부터 하면 폼이 완전 망가져요.",
      solution:"핑거스타일로 6개월 이상 기초 다진 뒤 슬랩에 도전하세요.",
      ending:"기초가 슬랩을 살려요."},
-    {w:29, inst:"🎸 기타", series:"처음의 벽",
+    {w:29, inst:"🎸 기타", series:"누구나 막히는 벽",
      topic:"어려운 곡부터 도전하다 포기하는 패턴",
      scene:"C) 학원 복도 천천히 걸어가는 1인칭 워킹샷",
      hook:"좋아하는 곡인데 왜 포기하게 될까?",
      mistake:"좋아하는 곡이 너무 어려우면 좌절감으로 손을 놓게 돼요.",
      solution:"쉬운 곡으로 성취감 먼저 쌓고, 단계적으로 난이도 올리세요.",
      ending:"성취감이 실력을 만들어요."},
-    {w:30, inst:"🥁 드럼", series:"자세 점검",
+    {w:30, inst:"🥁 드럼", series:"자세 점검 가이드",
      topic:"림샷이 안 나는 이유 — 스틱 위치 문제",
      scene:"B) 스네어 림과 스틱이 만나는 지점 클로즈업 고정샷",
      hook:"림샷 소리가 안 나요?",
      mistake:"스틱이 헤드 중앙만 치고 림에 안 닿으면 림샷이 안 나요.",
      solution:"스틱 끝은 헤드에, 스틱 몸통은 림에 동시에 닿게 치세요.",
      ending:"한 번에 두 곳을 쳐야 림샷이에요."},
-    {w:31, inst:"🎤 보컬", series:"5분 루틴",
+    {w:31, inst:"🎤 보컬", series:"5분 연습 루틴",
      topic:"매일 5분 녹음만 해도 실력이 달라져요",
      scene:"B) 휴대폰 녹음 화면 클로즈업 고정샷 · 파형 강조",
      hook:"실력이 안 느는 이유?",
      mistake:"귀로 들을 때와 녹음으로 들을 때 음정·박자가 다르게 들려요.",
      solution:"매 연습마다 녹음하고 객관적으로 들어보세요.",
      ending:"녹음이 진짜 거울이에요."},
-    {w:32, inst:"🎵 베이스", series:"자세 점검",
+    {w:32, inst:"🎵 베이스", series:"자세 점검 가이드",
      topic:"핑거링 번호 무시하면 빠른 구간에서 막혀요",
      scene:"A) 왼손 손가락 클로즈업 고정샷 · 핑거링 번호 강조",
      hook:"빠른 곡에서 막혀요?",
      mistake:"편한 손가락만 쓰면 빠른 구간에서 손이 따라가지 못해요.",
      solution:"1·2·3·4 핑거링을 지켜서 연습하면 속도가 자연스럽게 붙어요.",
      ending:"규칙이 자유를 만들어요."},
-    {w:33, inst:"🎸 기타", series:"5분 루틴",
+    {w:33, inst:"🎸 기타", series:"5분 연습 루틴",
      topic:"하루 5분 스케일 연습으로 음감 키우기",
      scene:"A) 왼손 지판 위 손가락 클로즈업 고정샷 · 1프렛씩 이동",
      hook:"음감 어떻게 키워요?",
      mistake:"곡만 연습하면 즉흥 연주와 음감이 늘지 않아요.",
      solution:"하루 5분 메이저 스케일 한 가지만 메트로놈에 맞춰 연습.",
      ending:"5분이 음감을 만들어요."},
-    {w:34, inst:"🥁 드럼", series:"자세 점검",
+    {w:34, inst:"🥁 드럼", series:"자세 점검 가이드",
      topic:"드럼 의자 각도 — 허벅지 기울기가 핵심",
      scene:"D) 드러머 옆모습 고정샷 · 허벅지 라인 강조",
      hook:"의자 높이 어떻게 맞춰요?",
      mistake:"무릎이 직각이거나 위로 꺾이면 발 컨트롤이 안 돼요.",
      solution:"허벅지가 살짝 아래로 기울 정도가 정답이에요.",
      ending:"각도가 그루브를 만들어요."},
-    {w:35, inst:"🎤 보컬", series:"미신 깨기",
+    {w:35, inst:"🎤 보컬", series:"잘못 알려진 미신",
      topic:"음정만 맞으면 잘 부르는 노래다? 절반만 맞아요",
      scene:"A) 입과 마이크 클로즈업 고정샷 · 정면",
      hook:"음정 맞는데 왜 어색해?",
      mistake:"음정만 맞고 감정 없으면 로봇처럼 들려요.",
      solution:"가사의 의미를 이해하고 감정을 실어서 부르세요.",
      ending:"음정 + 감정 = 진짜 노래."},
-    {w:36, inst:"🎵 베이스", series:"한끗 차이",
+    {w:36, inst:"🎵 베이스", series:"실력 바뀌는 한끗 차이",
      topic:"드럼 킥과 베이스가 맞을 때 사운드가 살아요",
      scene:"E) 드럼 킥 페달과 베이스 손가락이 동시에 움직이는 슬로우 모션",
      hook:"베이스 그루브 어떻게 만들어요?",
      mistake:"베이스 따로 드럼 따로 가면 밴드가 흐물흐물해져요.",
      solution:"드럼 킥에 베이스 루트를 정확히 맞추는 연습을 해보세요.",
      ending:"맞을 때 비로소 그루브예요."},
-    {w:37, inst:"🎸 기타", series:"처음의 벽",
+    {w:37, inst:"🎸 기타", series:"누구나 막히는 벽",
      topic:"잘 안 되는 구간만 골라서 반복 연습하기",
      scene:"E) 손가락이 같은 자리에서 반복되는 슬로우 모션 클로즈업",
      hook:"왜 늘 똑같은 데서 막힐까?",
      mistake:"곡을 처음부터 끝까지 통째로만 치면 약한 구간이 안 늘어요.",
      solution:"막히는 마디 4박자만 메트로놈으로 20번 반복하세요.",
      ending:"약한 곳을 정조준해야 늘어요."},
-    {w:38, inst:"🥁 드럼", series:"한끗 차이",
+    {w:38, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"한 가지 패턴만 반복하는 드러머의 한계",
      scene:"D) 드러머 뒷모습 고정샷 · 양손 풀샷",
      hook:"한 패턴만 잘 친다고요?",
      mistake:"8비트만 반복하면 다른 장르에 적응 못 해요.",
      solution:"16비트, 셔플, 보사노바까지 골고루 연습하세요.",
      ending:"다양함이 음악성을 만들어요."},
-    {w:39, inst:"🎤 보컬", series:"자세 점검",
+    {w:39, inst:"🎤 보컬", series:"자세 점검 가이드",
      topic:"매일 고음 연습은 성대를 망가뜨려요",
      scene:"D) 의자에 앉은 보컬리스트 측면 고정샷 · 차분한 분위기",
      hook:"매일 연습이 답이라고요?",
@@ -6458,91 +7354,91 @@ const instaMonTopics = [
      ending:"쉼이 실력을 만들어요."},
   ]},
   { q:4, label:"4분기 (40~52주) · 1년 마무리, 기초 다시 점검", weeks:[
-    {w:40, inst:"🎵 베이스", series:"처음의 벽",
+    {w:40, inst:"🎵 베이스", series:"누구나 막히는 벽",
      topic:"빠른 곡 도전 전, 메트로놈 60% 룰",
      scene:"E) 메트로놈 LED와 베이스 손가락의 슬로우 모션",
      hook:"빠른 곡이 안 따라와요?",
      mistake:"원래 템포에서 바로 연습하면 박자가 다 밀려요.",
      solution:"60% 속도부터 메트로놈에 맞추고 10%씩 단계적으로 올리세요.",
      ending:"속도는 정확함의 결과예요."},
-    {w:41, inst:"🎸 기타", series:"처음의 벽",
+    {w:41, inst:"🎸 기타", series:"누구나 막히는 벽",
      topic:"코드 다이어그램 보는 법 — 줄과 프렛 헷갈리지 마세요",
      scene:"B) 코드 차트 종이 클로즈업 고정샷 · 느린 줌인",
      hook:"이 다이어그램 어떻게 봐?",
      mistake:"세로줄과 가로줄을 헷갈려서 엉뚱한 코드를 잡아요.",
      solution:"세로줄 = 6개 줄, 가로줄 = 프렛이에요. 외우지 말고 이해하세요.",
      ending:"기본을 알면 평생 안 잊어요."},
-    {w:42, inst:"🥁 드럼", series:"한끗 차이",
+    {w:42, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"심플한 필인이 화려한 필인보다 멋있는 이유",
      scene:"E) 스네어와 탐을 차례로 치는 슬로우 모션 클로즈업",
      hook:"필인은 화려해야 한다?",
      mistake:"기본 비트도 안 잡혔는데 화려한 필인 넣으면 박자가 다 무너져요.",
      solution:"심플한 4박 필인부터 박자에 정확히 들어가는 연습을 하세요.",
      ending:"심플함이 진짜 멋이에요."},
-    {w:43, inst:"🎤 보컬", series:"미신 깨기",
+    {w:43, inst:"🎤 보컬", series:"잘못 알려진 미신",
      topic:"원키로 부르는 게 멋있다? 자기 음역이 먼저",
      scene:"A) 마이크와 입 클로즈업 고정샷",
      hook:"원키 고집하다 목 다쳐요",
      mistake:"자기 음역보다 높은 키 억지로 올리면 성대가 다쳐요.",
      solution:"자기 음역에 맞게 키를 낮춰서 부르는 게 더 멋있어요.",
      ending:"음역을 알면 노래가 자유로워요."},
-    {w:44, inst:"🎵 베이스", series:"자세 점검",
+    {w:44, inst:"🎵 베이스", series:"자세 점검 가이드",
      topic:"왼손 엄지 — 넥 뒤 중앙이 정답이에요",
      scene:"A) 왼손 엄지가 넥 뒤에 있는 측면 클로즈업 고정샷",
      hook:"베이스 잡으면 손이 굳어요?",
      mistake:"엄지가 넥 위로 올라오면 손 전체가 굳고 음역이 좁아져요.",
      solution:"엄지는 넥 뒤 중앙. 손가락이 자유롭게 움직일 수 있어요.",
      ending:"엄지 위치가 자유를 줘요."},
-    {w:45, inst:"🎸 기타", series:"흔한 실수",
+    {w:45, inst:"🎸 기타", series:"초보자 흔한 실수",
      topic:"오픈 코드 칠 때 개방 줄을 막지 마세요",
      scene:"A) 오픈 코드 잡은 손가락 클로즈업 고정샷",
      hook:"코드 소리가 안 나는 줄이 있어요?",
      mistake:"개방으로 울려야 할 줄을 손가락으로 막아버리니까 소리가 약해요.",
      solution:"O 표시된 줄은 절대 손가락이 닿으면 안 돼요.",
      ending:"개방 줄이 코드 사운드의 핵심이에요."},
-    {w:46, inst:"🥁 드럼", series:"한끗 차이",
+    {w:46, inst:"🥁 드럼", series:"실력 바뀌는 한끗 차이",
      topic:"크래시 심벌, 세게 친다고 더 잘 들리지 않아요",
      scene:"B) 심벌 가장자리에 스틱이 닿는 클로즈업 고정샷",
      hook:"크래시가 깨지는 소리 나요?",
      mistake:"심벌 중앙을 세게 치면 소리가 퍼지고 심벌이 빨리 망가져요.",
      solution:"심벌 가장자리를 비스듬한 각도로 스치듯 치세요.",
      ending:"각도가 사운드를 만들어요."},
-    {w:47, inst:"🎤 보컬", series:"처음의 벽",
+    {w:47, inst:"🎤 보컬", series:"누구나 막히는 벽",
      topic:"멜로디와 가사 동시에 외우면 둘 다 흔들려요",
      scene:"D) 의자에 앉아 가사 종이를 보는 보컬리스트 측면 고정샷",
      hook:"가사가 자꾸 헷갈려요?",
      mistake:"멜로디도 불안한데 가사까지 같이 외우면 둘 다 안 돼요.",
      solution:"멜로디 먼저 100% 익히기 → 그다음 가사 붙이기.",
      ending:"순서가 외우는 비결이에요."},
-    {w:48, inst:"🎵 베이스", series:"미신 깨기",
+    {w:48, inst:"🎵 베이스", series:"잘못 알려진 미신",
      topic:"기타 TAB을 베이스로 그대로 보면 안 돼요",
      scene:"B) TAB 악보 클로즈업 고정샷 · 줄 번호 강조",
      hook:"베이스로 기타 TAB 봐도 돼?",
      mistake:"기타 TAB은 줄 번호 순서가 베이스와 달라서 엉뚱한 줄을 치게 돼요.",
      solution:"베이스용 TAB을 따로 찾아 보세요.",
      ending:"악기마다 TAB이 달라요."},
-    {w:49, inst:"🎸 기타", series:"한끗 차이",
+    {w:49, inst:"🎸 기타", series:"실력 바뀌는 한끗 차이",
      topic:"카포 한 개로 어려운 키도 쉽게 칠 수 있어요",
      scene:"B) 카포가 끼워진 넥 클로즈업 고정샷 · 느린 줌인",
      hook:"Bb, Eb 어려워서 포기?",
      mistake:"카포 없이 바레 코드만 계속 잡으려다 손목이 다쳐요.",
      solution:"카포를 활용하면 쉬운 오픈 코드 폼으로 다 칠 수 있어요.",
      ending:"카포는 초보의 친구예요."},
-    {w:50, inst:"🥁 드럼", series:"5분 루틴",
+    {w:50, inst:"🥁 드럼", series:"5분 연습 루틴",
      topic:"집에서 연습 패드 5분이 레슨 1시간을 살려요",
      scene:"A) 연습 패드 위 스틱 클로즈업 고정샷",
      hook:"집에서도 드럼 연습 가능?",
      mistake:"주 1~2회 레슨 때만 치면 실력이 안 늘어요.",
      solution:"연습 패드로 매일 5분 기초 루디먼트만 해도 차이가 커요.",
      ending:"매일 5분이 실력을 만들어요."},
-    {w:51, inst:"🎤 보컬", series:"자세 점검",
+    {w:51, inst:"🎤 보컬", series:"자세 점검 가이드",
      topic:"성대 건조 = 소리 갈라짐. 물 마시는 게 연습이에요",
      scene:"B) 미지근한 물 잔과 마이크가 한 화면에 있는 고정샷",
      hook:"소리가 갈라져요?",
      mistake:"건조한 성대로 노래하면 갈라지고 염증도 잘 생겨요.",
      solution:"미지근한 물을 자주 마시면서 연습하세요.",
      ending:"물 한 잔이 성대를 지켜요."},
-    {w:52, inst:"🎵 베이스", series:"처음의 벽",
+    {w:52, inst:"🎵 베이스", series:"누구나 막히는 벽",
      topic:"1년 마무리 — 자세·뮤트·메트로놈·핑거링 4가지 점검",
      scene:"D) 의자에 앉은 베이시스트 뒷모습 고정샷 · 차분한 분위기",
      hook:"1년 동안 놓친 기초 있나요?",
