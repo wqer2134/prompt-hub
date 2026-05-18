@@ -1020,14 +1020,26 @@ canvas{display:block;border-radius:6px;}
           <div class="prompt-card">
             <div class="card-header">
               <div class="card-meta">
-                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 콘텐츠</div>
-                <div class="card-title">기타 학원 홍보 블로그 글 + 이미지</div>
-                <div class="card-sub">수강 모집 · 이벤트 · 학원 소개 · GPT 이미지 3장 자동 생성</div>
+                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 블로그 (STEP 1·2·3 통합)</div>
+                <div class="card-title">🎸 기타 학원 홍보 블로그 글 + 이미지 2장</div>
+                <div class="card-sub">제목 · 본문 · 이미지 1 · 이미지 2 한 번에 · 이미지 3은 실사 직접 삽입</div>
               </div>
               <div class="day-badge">🗓 수요일 사용</div>
             </div>
             <div class="card-body">
-              <div class="prompt-text" id="prompt-promo-guitar">아래 순서대로 진행해줘. 설명하지 말고 바로 실행해줘. 글 쓰고 나서 멈추지 말고 이미지 3장까지 연속으로 바로 생성해줘.
+              <div class="input-guide">
+                <div class="input-guide-title">✍️ 입력 자리 (3곳) — 캘린더에서 주제 클릭 시 자동 입력</div>
+                <ul>
+                  <li><b>홍보 주제</b> · <b>홍보 목적</b> · <b>특이사항</b></li>
+                  <li>※ 사용 방법: 1) 학원 사진 GPT에 먼저 업로드 2) 카드 통째로 복사 → 붙여넣기 3) STEP 1 글 → STEP 2 이미지 1 → STEP 3 이미지 2 순차 진행</li>
+                </ul>
+              </div>
+              <div class="prompt-text" id="prompt-promo-guitar">너는 카운트베이시실용음악학원 네이버 블로그 홍보 전문 작가야.
+아래 정보로 학원 홍보 블로그 글 1편 + 이미지 2장을 STEP 1부터 STEP 3까지 순차적으로 생성해줘.
+
+📌 시작 전 필수:
+1. 학원 사진을 먼저 GPT에 업로드 (없으면 STEP 2·3 못 함)
+2. 이미지 생성 방식: 업로드한 학원 사진을 배경으로 사용 + 인물 합성
 
 ────────────────────────────────────────
 [홍보 정보]
@@ -1037,38 +1049,65 @@ canvas{display:block;border-radius:6px;}
 ────────────────────────────────────────
 
 ▼ STEP 1. 블로그 글 작성
+
+[제목]
+- 글 맨 위에 블로그 제목 1줄 작성
+- 위 "홍보 주제"를 그대로 또는 더 매력적으로 다듬어서 사용
+- 25~35자 / 클릭하고 싶은 후킹 멘트
+
+[글 작성 조건]
 - 분량: 800~1,000자 / 따뜻하고 신뢰감 있는 구어체
 - 핵심 키워드 기타학원, 기타레슨, 기타배우기 자연스럽게 포함
 - 구성:
   0. 말머리: "안녕하세요, 카운트베이시실용음악학원입니다 😊"
-  1. 도입부 – 독자의 니즈 공감 (👉 글 안에 "🎨 [이미지 1] 위치" 표시)
+  1. 도입부 – 독자의 니즈 공감
+     👉 글 안에 "🎨 [이미지 1 위치 — 수강생 연주 장면]" 표시
   2. 🎸 우리 학원 기타 레슨 소개
-  3. 💡 수강하면 이런 점이 달라져요 (👉 글 안에 "🎨 [이미지 2] 위치" 표시)
-  4. 📌 모집 안내 / 이벤트 정보 (👉 글 안에 "🎨 [이미지 3] 위치" 표시)
+  3. 💡 수강하면 이런 점이 달라져요
+     👉 글 안에 "🎨 [이미지 2 위치 — 1:1 레슨 장면]" 표시
+  4. 📌 모집 안내 / 이벤트 정보
+     👉 글 안에 "📸 [이미지 3 위치 — 학원 실사 사진 직접 삽입]" 표시
   5. 마무리 – 따뜻한 문의 유도
 - 해시태그 10개 글 맨 끝에 추가 (기타학원, 기타레슨, 기타배우기 포함)
 
 ▼ STEP 2. 이미지 1 생성 (1200×675 가로형 16:9) — 수강생 연주 장면
+
 한국인 수강생이 학원 레슨실에서 기타를 연주하는 자연스러운 장면을 실사 사진처럼 생성해줘.
-- 한국인 수강생, 자연스러운 표정 (얼굴 보여도 무방)
-- 깔끔한 실용음악학원 기타 레슨실 내부 (화이트톤, 우드 마루, 흡음재)
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 수강생 1명이 기타를 들고 연주하는 모습
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
 ▼ STEP 3. 이미지 2 생성 (1200×675 가로형 16:9) — 1:1 레슨 장면
+
 선생님이 수강생에게 기타 코드를 알려주는 1:1 레슨 장면을 실사 사진처럼 생성해줘.
-- STEP 2와 동일한 학원 공간·톤 유지
-- 선생님과 수강생 두 명 모두 자연스러운 표정·자세
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 선생님과 수강생 두 명 (선생님이 코드를 알려주는 자세)
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
+- STEP 2와 동일한 톤 · 동일한 공간 · 동일한 인물(수강생)
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
-▼ STEP 4. 이미지 3 생성 (1200×675 가로형 16:9) — 학원 분위기
-학원 입구 또는 외관 (간판이 보이는 깔끔한 학원 건물 입구)을 실사 사진처럼 생성해줘.
-- 깔끔하고 신뢰감 있는 분위기
-- 따뜻한 자연광 또는 부드러운 실내 조명
-- 아이폰 카메라 질감 / 담백한 색감 / 텍스트·라벨 없음</div>
+💡 참고: 이미지 3은 학원 실사 사진을 직접 삽입하세요 (GPT 생성 X)</div>
             </div>
             <div class="card-footer">
               <button class="copy-btn" onclick="copyPrompt('prompt-promo-guitar',this)">📋 복사하기</button>
@@ -1095,14 +1134,26 @@ canvas{display:block;border-radius:6px;}
           <div class="prompt-card">
             <div class="card-header">
               <div class="card-meta">
-                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 콘텐츠</div>
-                <div class="card-title">드럼 학원 홍보 블로그 글</div>
-                <div class="card-sub">수강 모집 · 이벤트 · 학원 소개 · GPT 이미지 3장 자동 생성</div>
+                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 블로그 (STEP 1·2·3 통합)</div>
+                <div class="card-title">🥁 드럼 학원 홍보 블로그 글 + 이미지 2장</div>
+                <div class="card-sub">제목 · 본문 · 이미지 1 · 이미지 2 한 번에 · 이미지 3은 실사 직접 삽입</div>
               </div>
               <div class="day-badge">🗓 수요일 사용</div>
             </div>
             <div class="card-body">
-              <div class="prompt-text" id="prompt-promo-drum">아래 순서대로 진행해줘. 설명하지 말고 바로 실행해줘. 글 쓰고 나서 멈추지 말고 이미지 3장까지 연속으로 바로 생성해줘.
+              <div class="input-guide">
+                <div class="input-guide-title">✍️ 입력 자리 (3곳) — 캘린더에서 주제 클릭 시 자동 입력</div>
+                <ul>
+                  <li><b>홍보 주제</b> · <b>홍보 목적</b> · <b>특이사항</b></li>
+                  <li>※ 사용 방법: 1) 학원 사진 GPT에 먼저 업로드 2) 카드 통째로 복사 → 붙여넣기 3) STEP 1 글 → STEP 2 이미지 1 → STEP 3 이미지 2 순차 진행</li>
+                </ul>
+              </div>
+              <div class="prompt-text" id="prompt-promo-drum">너는 카운트베이시실용음악학원 네이버 블로그 홍보 전문 작가야.
+아래 정보로 학원 홍보 블로그 글 1편 + 이미지 2장을 STEP 1부터 STEP 3까지 순차적으로 생성해줘.
+
+📌 시작 전 필수:
+1. 학원 사진을 먼저 GPT에 업로드 (없으면 STEP 2·3 못 함)
+2. 이미지 생성 방식: 업로드한 학원 사진을 배경으로 사용 + 인물 합성
 
 ────────────────────────────────────────
 [홍보 정보]
@@ -1112,38 +1163,65 @@ canvas{display:block;border-radius:6px;}
 ────────────────────────────────────────
 
 ▼ STEP 1. 블로그 글 작성
+
+[제목]
+- 글 맨 위에 블로그 제목 1줄 작성
+- 위 "홍보 주제"를 그대로 또는 더 매력적으로 다듬어서 사용
+- 25~35자 / 클릭하고 싶은 후킹 멘트
+
+[글 작성 조건]
 - 분량: 800~1,000자 / 따뜻하고 신뢰감 있는 구어체
 - 핵심 키워드 드럼학원, 드럼레슨, 드럼배우기 자연스럽게 포함
 - 구성:
   0. 말머리: "안녕하세요, 카운트베이시실용음악학원입니다 😊"
-  1. 도입부 – 독자의 니즈 공감 (👉 글 안에 "🎨 [이미지 1] 위치" 표시)
+  1. 도입부 – 독자의 니즈 공감
+     👉 글 안에 "🎨 [이미지 1 위치 — 수강생 연주 장면]" 표시
   2. 🥁 우리 학원 드럼 레슨 소개
-  3. 💡 수강하면 이런 점이 달라져요 (👉 글 안에 "🎨 [이미지 2] 위치" 표시)
-  4. 📌 모집 안내 / 이벤트 정보 (👉 글 안에 "🎨 [이미지 3] 위치" 표시)
+  3. 💡 수강하면 이런 점이 달라져요
+     👉 글 안에 "🎨 [이미지 2 위치 — 1:1 레슨 장면]" 표시
+  4. 📌 모집 안내 / 이벤트 정보
+     👉 글 안에 "📸 [이미지 3 위치 — 학원 실사 사진 직접 삽입]" 표시
   5. 마무리 – 따뜻한 문의 유도
 - 해시태그 10개 글 맨 끝에 추가 (드럼학원, 드럼레슨, 드럼배우기 포함)
 
 ▼ STEP 2. 이미지 1 생성 (1200×675 가로형 16:9) — 수강생 연주 장면
+
 한국인 수강생이 학원 드럼실에서 드럼을 연주하는 자연스러운 장면을 실사 사진처럼 생성해줘.
-- 한국인 수강생, 자연스러운 표정 (얼굴 보여도 무방)
-- 깔끔한 실용음악학원 드럼 레슨실 내부 (화이트톤, 우드 마루, 흡음재)
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 수강생 1명이 드럼 세트에서 연주하는 모습
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
 ▼ STEP 3. 이미지 2 생성 (1200×675 가로형 16:9) — 1:1 레슨 장면
+
 선생님이 수강생에게 드럼 비트·스틱 잡는 법을 알려주는 1:1 레슨 장면을 실사 사진처럼 생성해줘.
-- STEP 2와 동일한 학원 공간·톤 유지
-- 선생님과 수강생 두 명 모두 자연스러운 표정·자세
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 선생님과 수강생 두 명 (선생님이 스틱 잡는 법을 알려주는 자세)
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
+- STEP 2와 동일한 톤 · 동일한 공간 · 동일한 인물(수강생)
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
-▼ STEP 4. 이미지 3 생성 (1200×675 가로형 16:9) — 학원 분위기
-학원 입구 또는 외관 (간판이 보이는 깔끔한 학원 건물 입구)을 실사 사진처럼 생성해줘.
-- 깔끔하고 신뢰감 있는 분위기
-- 따뜻한 자연광 또는 부드러운 실내 조명
-- 아이폰 카메라 질감 / 담백한 색감 / 텍스트·라벨 없음</div>
+💡 참고: 이미지 3은 학원 실사 사진을 직접 삽입하세요 (GPT 생성 X)</div>
             </div>
             <div class="card-footer">
               <button class="copy-btn" onclick="copyPrompt('prompt-promo-drum',this)">📋 복사하기</button>
@@ -1170,14 +1248,26 @@ canvas{display:block;border-radius:6px;}
           <div class="prompt-card">
             <div class="card-header">
               <div class="card-meta">
-                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 콘텐츠</div>
-                <div class="card-title">보컬 학원 홍보 블로그 글</div>
-                <div class="card-sub">수강 모집 · 이벤트 · 학원 소개 · GPT 이미지 3장 자동 생성</div>
+                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 블로그 (STEP 1·2·3 통합)</div>
+                <div class="card-title">🎤 보컬 학원 홍보 블로그 글 + 이미지 2장</div>
+                <div class="card-sub">제목 · 본문 · 이미지 1 · 이미지 2 한 번에 · 이미지 3은 실사 직접 삽입</div>
               </div>
               <div class="day-badge">🗓 수요일 사용</div>
             </div>
             <div class="card-body">
-              <div class="prompt-text" id="prompt-promo-vocal">아래 순서대로 진행해줘. 설명하지 말고 바로 실행해줘. 글 쓰고 나서 멈추지 말고 이미지 3장까지 연속으로 바로 생성해줘.
+              <div class="input-guide">
+                <div class="input-guide-title">✍️ 입력 자리 (3곳) — 캘린더에서 주제 클릭 시 자동 입력</div>
+                <ul>
+                  <li><b>홍보 주제</b> · <b>홍보 목적</b> · <b>특이사항</b></li>
+                  <li>※ 사용 방법: 1) 학원 사진 GPT에 먼저 업로드 2) 카드 통째로 복사 → 붙여넣기 3) STEP 1 글 → STEP 2 이미지 1 → STEP 3 이미지 2 순차 진행</li>
+                </ul>
+              </div>
+              <div class="prompt-text" id="prompt-promo-vocal">너는 카운트베이시실용음악학원 네이버 블로그 홍보 전문 작가야.
+아래 정보로 학원 홍보 블로그 글 1편 + 이미지 2장을 STEP 1부터 STEP 3까지 순차적으로 생성해줘.
+
+📌 시작 전 필수:
+1. 학원 사진을 먼저 GPT에 업로드 (없으면 STEP 2·3 못 함)
+2. 이미지 생성 방식: 업로드한 학원 사진을 배경으로 사용 + 인물 합성
 
 ────────────────────────────────────────
 [홍보 정보]
@@ -1187,38 +1277,65 @@ canvas{display:block;border-radius:6px;}
 ────────────────────────────────────────
 
 ▼ STEP 1. 블로그 글 작성
+
+[제목]
+- 글 맨 위에 블로그 제목 1줄 작성
+- 위 "홍보 주제"를 그대로 또는 더 매력적으로 다듬어서 사용
+- 25~35자 / 클릭하고 싶은 후킹 멘트
+
+[글 작성 조건]
 - 분량: 800~1,000자 / 따뜻하고 신뢰감 있는 구어체
 - 핵심 키워드 보컬학원, 보컬레슨, 노래배우기 자연스럽게 포함
 - 구성:
   0. 말머리: "안녕하세요, 카운트베이시실용음악학원입니다 😊"
-  1. 도입부 – 독자의 니즈 공감 (👉 글 안에 "🎨 [이미지 1] 위치" 표시)
+  1. 도입부 – 독자의 니즈 공감
+     👉 글 안에 "🎨 [이미지 1 위치 — 수강생 연주 장면]" 표시
   2. 🎤 우리 학원 보컬 레슨 소개
-  3. 💡 수강하면 이런 점이 달라져요 (👉 글 안에 "🎨 [이미지 2] 위치" 표시)
-  4. 📌 모집 안내 / 이벤트 정보 (👉 글 안에 "🎨 [이미지 3] 위치" 표시)
+  3. 💡 수강하면 이런 점이 달라져요
+     👉 글 안에 "🎨 [이미지 2 위치 — 1:1 레슨 장면]" 표시
+  4. 📌 모집 안내 / 이벤트 정보
+     👉 글 안에 "📸 [이미지 3 위치 — 학원 실사 사진 직접 삽입]" 표시
   5. 마무리 – 따뜻한 문의 유도
 - 해시태그 10개 글 맨 끝에 추가 (보컬학원, 보컬레슨, 노래배우기 포함)
 
 ▼ STEP 2. 이미지 1 생성 (1200×675 가로형 16:9) — 수강생 연주 장면
+
 한국인 수강생이 학원 보컬 부스에서 마이크 앞에서 노래하는 자연스러운 장면을 실사 사진처럼 생성해줘.
-- 한국인 수강생, 자연스러운 표정 (얼굴 보여도 무방)
-- 깔끔한 실용음악학원 보컬 레슨실 내부 (화이트톤, 우드 마루, 흡음재)
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 수강생 1명이 마이크 앞에서 노래하는 모습
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
 ▼ STEP 3. 이미지 2 생성 (1200×675 가로형 16:9) — 1:1 레슨 장면
+
 선생님이 수강생에게 발성·호흡을 알려주는 1:1 레슨 장면을 실사 사진처럼 생성해줘.
-- STEP 2와 동일한 학원 공간·톤 유지
-- 선생님과 수강생 두 명 모두 자연스러운 표정·자세
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 선생님과 수강생 두 명 (선생님이 발성·호흡을 알려주는 자세)
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
+- STEP 2와 동일한 톤 · 동일한 공간 · 동일한 인물(수강생)
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
-▼ STEP 4. 이미지 3 생성 (1200×675 가로형 16:9) — 학원 분위기
-학원 입구 또는 외관 (간판이 보이는 깔끔한 학원 건물 입구)을 실사 사진처럼 생성해줘.
-- 깔끔하고 신뢰감 있는 분위기
-- 따뜻한 자연광 또는 부드러운 실내 조명
-- 아이폰 카메라 질감 / 담백한 색감 / 텍스트·라벨 없음</div>
+💡 참고: 이미지 3은 학원 실사 사진을 직접 삽입하세요 (GPT 생성 X)</div>
             </div>
             <div class="card-footer">
               <button class="copy-btn" onclick="copyPrompt('prompt-promo-vocal',this)">📋 복사하기</button>
@@ -1244,14 +1361,26 @@ canvas{display:block;border-radius:6px;}
           <div class="prompt-card">
             <div class="card-header">
               <div class="card-meta">
-                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 콘텐츠</div>
-                <div class="card-title">베이스 학원 홍보 블로그 글</div>
-                <div class="card-sub">수강 모집 · 이벤트 · 학원 소개 · GPT 이미지 3장 자동 생성</div>
+                <div class="card-label" style="color:var(--promo)">📢 학원 홍보 블로그 (STEP 1·2·3 통합)</div>
+                <div class="card-title">🎵 베이스 학원 홍보 블로그 글 + 이미지 2장</div>
+                <div class="card-sub">제목 · 본문 · 이미지 1 · 이미지 2 한 번에 · 이미지 3은 실사 직접 삽입</div>
               </div>
               <div class="day-badge">🗓 수요일 사용</div>
             </div>
             <div class="card-body">
-              <div class="prompt-text" id="prompt-promo-bass">아래 순서대로 진행해줘. 설명하지 말고 바로 실행해줘. 글 쓰고 나서 멈추지 말고 이미지 3장까지 연속으로 바로 생성해줘.
+              <div class="input-guide">
+                <div class="input-guide-title">✍️ 입력 자리 (3곳) — 캘린더에서 주제 클릭 시 자동 입력</div>
+                <ul>
+                  <li><b>홍보 주제</b> · <b>홍보 목적</b> · <b>특이사항</b></li>
+                  <li>※ 사용 방법: 1) 학원 사진 GPT에 먼저 업로드 2) 카드 통째로 복사 → 붙여넣기 3) STEP 1 글 → STEP 2 이미지 1 → STEP 3 이미지 2 순차 진행</li>
+                </ul>
+              </div>
+              <div class="prompt-text" id="prompt-promo-bass">너는 카운트베이시실용음악학원 네이버 블로그 홍보 전문 작가야.
+아래 정보로 학원 홍보 블로그 글 1편 + 이미지 2장을 STEP 1부터 STEP 3까지 순차적으로 생성해줘.
+
+📌 시작 전 필수:
+1. 학원 사진을 먼저 GPT에 업로드 (없으면 STEP 2·3 못 함)
+2. 이미지 생성 방식: 업로드한 학원 사진을 배경으로 사용 + 인물 합성
 
 ────────────────────────────────────────
 [홍보 정보]
@@ -1261,38 +1390,65 @@ canvas{display:block;border-radius:6px;}
 ────────────────────────────────────────
 
 ▼ STEP 1. 블로그 글 작성
+
+[제목]
+- 글 맨 위에 블로그 제목 1줄 작성
+- 위 "홍보 주제"를 그대로 또는 더 매력적으로 다듬어서 사용
+- 25~35자 / 클릭하고 싶은 후킹 멘트
+
+[글 작성 조건]
 - 분량: 800~1,000자 / 따뜻하고 신뢰감 있는 구어체
 - 핵심 키워드 베이스학원, 베이스레슨, 베이스배우기 자연스럽게 포함
 - 구성:
   0. 말머리: "안녕하세요, 카운트베이시실용음악학원입니다 😊"
-  1. 도입부 – 독자의 니즈 공감 (👉 글 안에 "🎨 [이미지 1] 위치" 표시)
+  1. 도입부 – 독자의 니즈 공감
+     👉 글 안에 "🎨 [이미지 1 위치 — 수강생 연주 장면]" 표시
   2. 🎵 우리 학원 베이스 레슨 소개
-  3. 💡 수강하면 이런 점이 달라져요 (👉 글 안에 "🎨 [이미지 2] 위치" 표시)
-  4. 📌 모집 안내 / 이벤트 정보 (👉 글 안에 "🎨 [이미지 3] 위치" 표시)
+  3. 💡 수강하면 이런 점이 달라져요
+     👉 글 안에 "🎨 [이미지 2 위치 — 1:1 레슨 장면]" 표시
+  4. 📌 모집 안내 / 이벤트 정보
+     👉 글 안에 "📸 [이미지 3 위치 — 학원 실사 사진 직접 삽입]" 표시
   5. 마무리 – 따뜻한 문의 유도
 - 해시태그 10개 글 맨 끝에 추가 (베이스학원, 베이스레슨, 베이스배우기 포함)
 
 ▼ STEP 2. 이미지 1 생성 (1200×675 가로형 16:9) — 수강생 연주 장면
+
 한국인 수강생이 학원 레슨실에서 베이스를 연주하는 자연스러운 장면을 실사 사진처럼 생성해줘.
-- 한국인 수강생, 자연스러운 표정 (얼굴 보여도 무방)
-- 깔끔한 실용음악학원 베이스 레슨실 내부 (화이트톤, 우드 마루, 흡음재)
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 수강생 1명이 베이스를 들고 연주하는 모습
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
 ▼ STEP 3. 이미지 2 생성 (1200×675 가로형 16:9) — 1:1 레슨 장면
+
 선생님이 수강생에게 베이스 핑거링·라인을 알려주는 1:1 레슨 장면을 실사 사진처럼 생성해줘.
-- STEP 2와 동일한 학원 공간·톤 유지
-- 선생님과 수강생 두 명 모두 자연스러운 표정·자세
+
+[합성 조건 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명·각도·색감을 그대로 살리면서 인물(사람)만 자연스럽게 추가
+- 새로운 배경을 만들지 않고, 업로드한 사진 위에 합성하는 방식
+- 추가할 인물: 한국인 선생님과 수강생 두 명 (선생님이 핑거링을 알려주는 자세)
+- 인물은 사진의 실제 공간 안에 자연스럽게 서 있거나 앉아 있어야 함
+- 사진 톤·해상도와 어울리게 합성
+
+[스타일]
+- STEP 2와 동일한 톤 · 동일한 공간 · 동일한 인물(수강생)
 - 아이폰 카메라 질감 / 따뜻한 자연광 / 담백한 색감
-- 깨끗하고 건강한 피부 (여드름·잡티 없음) / AI 느낌 없이 자연스러운 인물
+- 깨끗하고 건강한 피부 (여드름·잡티 없음)
+- AI 느낌 없이 완전히 자연스러운 인물
 - 텍스트·라벨 없음
 
-▼ STEP 4. 이미지 3 생성 (1200×675 가로형 16:9) — 학원 분위기
-학원 입구 또는 외관 (간판이 보이는 깔끔한 학원 건물 입구)을 실사 사진처럼 생성해줘.
-- 깔끔하고 신뢰감 있는 분위기
-- 따뜻한 자연광 또는 부드러운 실내 조명
-- 아이폰 카메라 질감 / 담백한 색감 / 텍스트·라벨 없음</div>
+💡 참고: 이미지 3은 학원 실사 사진을 직접 삽입하세요 (GPT 생성 X)</div>
             </div>
             <div class="card-footer">
               <button class="copy-btn" onclick="copyPrompt('prompt-promo-bass',this)">📋 복사하기</button>
@@ -4111,17 +4267,45 @@ init();
             <div class="prompt-text" id="kakao-img-tue">A realistic, high-resolution square promotional photo for a music academy.
 Size: 300×300px (square format, 1:1 aspect ratio)
 
-[배경]
-A small, cozy guitar lesson room with clean white and off-white walls, bright and minimal.
-A music stand and several acoustic guitars visible in the background.
-Soft, warm natural lighting — similar to window light.
-Calm, focused, and inviting atmosphere.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal guitar lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: acoustic guitars, music stands, amplifier, tuner
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
 
-[인물]
-Korean high school student playing the instrument.
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
+
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic iPhone camera shot style. Sharp, high-resolution.
@@ -4167,18 +4351,49 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="google-img-tue">A realistic, high-resolution horizontal banner image for Google Ads.
 Size: 1200×628px (landscape format)
 
-[배경]
-A clean, minimal guitar lesson room with white and off-white walls. Music stand and acoustic guitars visible. Bright natural window lighting.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal guitar lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: acoustic guitars, music stands, amplifier, tuner
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
 
 [구도 – 가로형 1200×628]
 - 배경이 화면 전체에 꽉 차게 이어지도록
 - 텍스트는 하단 바에만 들어가므로 화면 전체를 사진으로 채울 것
 
-[인물]
-Korean high school student playing the instrument.
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic photo style, sharp, high-resolution, horizontal composition.
@@ -4431,17 +4646,45 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="kakao-img-thu">A realistic, high-resolution square promotional photo for a music academy.
 Size: 300×300px (square format, 1:1 aspect ratio)
 
-[배경]
-A bright, modern drum lesson room.
-- Wall: vertical wood slat panels in warm beige/cream oak tone
-- White text lettering "카운트베이시실용음악학원" on the wood slat wall
-- A full professional drum set in the room
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal drum lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: drum set, drum stands, cymbals, sticks, music stand
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
 
-[인물]
-Korean high school student playing the instrument.
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
+
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic iPhone camera shot style. Sharp, high-resolution.
@@ -4487,22 +4730,50 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="google-img-thu">A realistic, high-resolution horizontal banner image for Google Ads.
 Size: 1200×628px (landscape format)
 
-[배경]
-A bright, modern drum lesson room.
-- Wall: vertical wood slat panels in warm beige/cream oak tone
-- White text lettering "카운트베이시실용음악학원" on the wood slat wall
-- A full professional drum set in the room
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal drum lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: drum set, drum stands, cymbals, sticks, music stand
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
 
 [구도 – 가로형 1200×628]
 - 배경이 화면 전체에 꽉 차게 이어지도록
 - 텍스트는 하단 바에만 들어가므로 화면 전체를 사진으로 채울 것
 - 좌측 공간을 비우지 말 것 — 배경이 전체를 채워야 함
 
-[인물]
-Korean high school student playing the instrument.
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic photo style, sharp, high-resolution, horizontal composition.
@@ -4756,17 +5027,45 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="kakao-img-fri">A realistic, high-resolution square promotional photo for a music academy.
 Size: 300×300px (square format, 1:1 aspect ratio)
 
-[배경]
-A bright vocal lesson room with warm beige walls and white ceiling.
-"STUDIO B" label visible on the frosted glass door.
-A microphone stand with mic, a keyboard/piano in the foreground.
-Soft, warm natural lighting from the window. Clean and inviting.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal vocal lesson booth with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: microphone with stand, music stand, acoustic panels, monitor speaker
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
 
-[인물]
-Korean high school student playing the instrument.
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
+
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic iPhone camera shot style. Sharp, high-resolution.
@@ -4812,17 +5111,48 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="google-img-fri">A realistic, high-resolution horizontal banner image for Google Ads.
 Size: 1200×628px (landscape format)
 
-[배경]
-A bright vocal lesson room with warm beige walls. STUDIO B label on frosted glass door. Microphone stand, keyboard in foreground. Soft natural lighting.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal vocal lesson booth with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: microphone with stand, music stand, acoustic panels, monitor speaker
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
 
 [구도 – 가로형 1200×628]
 - 배경이 화면 전체에 꽉 차게 이어지도록
 
-[인물]
-Korean high school student playing the instrument.
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic photo style, sharp, high-resolution, horizontal composition.
@@ -5074,18 +5404,45 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="kakao-img-sat">A realistic, high-resolution square promotional photo for a music academy.
 Size: 300×300px (square format, 1:1 aspect ratio)
 
-[배경]
-A modern music studio room labeled "ACADEMY STUDIO 2".
-A computer, audio interface, and recording equipment on a desk.
-Several bass guitars and electric guitars on stands.
-Bright, clean white walls with warm natural light from outside.
-Modern and professional atmosphere.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal bass lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: bass guitar, amplifier, music stand, tuner
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
 
-[인물]
-Korean high school student playing the instrument.
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
+
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic iPhone camera shot style. Sharp, high-resolution.
@@ -5131,17 +5488,48 @@ Place the following texts directly over the dark gradient area:
             <div class="prompt-text" id="google-img-sat">A realistic, high-resolution horizontal banner image for Google Ads.
 Size: 1200×628px (landscape format)
 
-[배경]
-A modern music studio labeled ACADEMY STUDIO 2. Computer, audio interface, recording equipment. Bass guitars and electric guitars on stands. Bright clean white walls.
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal bass lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: bass guitar, amplifier, music stand, tuner
+- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 4종 중 랜덤 선택]
+- Soft morning natural light through window (slightly cool)
+- Bright afternoon natural light (clear)
+- Warm late afternoon golden hour light
+- Cozy indoor warm lighting (lamps + soft ceiling light)
+
+[톤 유지]
+- White walls + warm wood floor (always)
+- Bright, clean, inviting atmosphere
+- Different background detail from previous weeks
 
 [구도 – 가로형 1200×628]
 - 배경이 화면 전체에 꽉 차게 이어지도록
 
-[인물]
-Korean high school student playing the instrument.
+[인물 — 매번 다르게 선택]
+※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
+
+[인물 타입 — 3종 중 랜덤 선택]
+- 한국인 중고등학생 (남/여, 교복 차림)
+- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
+
+[자세 — 6종 중 랜덤 선택]
+- 정면 미디엄샷 (집중한 표정)
+- 측면 45도 (악기에 시선)
+- 살짝 미소 지으며 연주
+- 손·악기 클로즈업 (얼굴 일부만)
+- 로우앵글 (살짝 아래에서 위로)
+- 와이드샷 (학원 공간 함께)
+
+[공통 표현]
 Clean, healthy skin — no acne, no blemishes.
-Neatly styled black hair. Detailed skin texture and facial expression.
+Detailed skin texture and natural facial expression.
 Completely natural, not AI-looking.
+Different person and pose from previous weeks.
 
 [스타일]
 Realistic photo style, sharp, high-resolution, horizontal composition.
