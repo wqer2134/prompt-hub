@@ -1650,28 +1650,29 @@ canvas{display:block;border-radius:6px;}
           <div class="input-guide">
             <div class="input-guide-title">✍️ 자막 4단 입력 — 캘린더 클릭 시 자동 입력</div>
             <ul>
+              <li><b>각 자막은 8자 이하</b> 짧고 강한 한 줄 (릴스에서 한 번에 읽혀야 함)</li>
               <li>각 자막에 핵심 단어 강조 (동그라미·밑줄·별표 등 손그림)</li>
               <li>GPT가 STEP 1부터 4까지 순차적으로 PNG 1장씩 생성</li>
-              <li>※ 한글 깨짐 가능성 있음 — 깨지면 텍스트 짧게 줄여서 재시도</li>
+              <li>※ 자동 입력된 자막이 길면 8자 이하로 줄여서 사용</li>
             </ul>
           </div>
 
           <div class="design-inputs" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:rgba(127,119,221,0.06);border-radius:12px;margin:14px 0">
             <div>
-              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">① 후크 (0~5초)</label>
-              <input type="text" id="design-hook" placeholder="예: 이거 나만 그래?" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">① 후크 (0~5초) · 8자 이하</label>
+              <input type="text" id="design-hook" placeholder="예: 나만 그래?" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
             <div>
-              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">② 실수 소개 (5~25초)</label>
-              <input type="text" id="design-mistake" placeholder="예: 손가락이 옆 줄에 닿아 소리가 막혀요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">② 실수 소개 (5~25초) · 8자 이하</label>
+              <input type="text" id="design-mistake" placeholder="예: 옆 줄에 닿아요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
             <div>
-              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">③ 해결책 (25~50초)</label>
-              <input type="text" id="design-solution" placeholder="예: 손가락 끝을 세워서 누르세요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">③ 해결책 (25~50초) · 8자 이하</label>
+              <input type="text" id="design-solution" placeholder="예: 끝을 세워요" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
             <div>
-              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">④ 마무리 (50~60초)</label>
-              <input type="text" id="design-ending" placeholder="예: 이거 하나만 바꾸면 끝!" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">④ 마무리 (50~60초) · 8자 이하</label>
+              <input type="text" id="design-ending" placeholder="예: 오늘부터 OK" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
 
             <button onclick="currentDesignPromptType='subtitle'; generateDesignPrompt()" style="width:100%;padding:14px;background:linear-gradient(90deg,#7F77DD,#534AB7);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;font-family:inherit">
@@ -2384,67 +2385,41 @@ canvas{display:block;border-radius:6px;}
                 <li><b>이번 주 주제 / 악기</b> — 페이지 하단 52주 캘린더 클릭 시 둘 다 자동 입력</li>
               </ul>
             </div>
-            <div class="prompt-text" id="prompt-insta-thu-slide0">너는 카운트베이시실용음악학원의 인스타그램 캐러셀 카피라이터야.
-아래 입력을 바탕으로 목요일 캐러셀(연주곡 소개)에 들어갈 모든 텍스트 자리를 한 번에 채워줘.
-캐러셀 주제: "요즘 우리 학원에서 가장 많이 연주되는 곡". 1장 영상 후킹 → 2장 곡 소개 → 3장 재후킹 → 4장 매력 → 5장 CTA로 흐름이 이어짐을 의식하고 작성할 것.
-톤은 입력한 곡의 분위기(장르·시즌·가사·템포)에 맞춰 자연스럽게 정할 것 — "봄 감성"처럼 특정 시즌·계절에 고정하지 말 것.
-악기에 맞는 표현을 사용할 것 — 기타면 "코드/리프/스트로크", 드럼이면 "비트/필인/그루브", 보컬이면 "멜로디/고음/음정", 베이스면 "베이스 라인/그루브/슬랩" 등.
+            <div class="prompt-text" id="prompt-insta-thu-slide0">너는 카운트베이시실용음악학원 인스타그램의 카피라이터야.
+음악 잡지 같은 톤으로 "이 달의 연주곡 추천" 캐러셀의 카피를 자유롭게 써줘.
 
-────────────────────────────────────────
-[입력]
-- 곡 제목: <span class="fill-here">👉 여기에 "벚꽃엔딩" 형식으로 입력</span>
-- 아티스트: <span class="fill-here">👉 여기에 "버스커버스커" 형식으로 입력</span>
-- 이번 주 주제: <span class="fill-here" data-slot="topic">이 리프 들어본 적 있죠? 한 달이면 칠 수 있어요</span>
+[캐러셀 컨셉]
+"요즘 학원에서 많이 연주되는 노래"를 추천하는 캐러셀.
+음악 잡지의 "이 달의 추천곡" 코너처럼 곡 자체를 소개하면서,
+학원에서 그 곡을 연주하는 모습을 자연스럽게 곁들이는 느낌.
+음악 이야기 나누는 친구 같은 톤.
+
+[곡 정보]
+- 곡 제목: <span class="fill-here">👉 "영원은 그렇듯" 형식</span>
+- 아티스트: <span class="fill-here">👉 "리도어" 형식</span>
+- 이번 주 톤: <span class="fill-here" data-slot="topic">한 번 들으면 마음에 남는 그 노래</span>
 - 악기: <span class="fill-here" data-slot="instrument">🎸 기타</span>
-────────────────────────────────────────
 
-[출력 규칙]
-- 아래 6개 블록을 모두 채워서 출력해. 각 블록은 "───── N장 ─────" 헤더로 구분.
-- 입력한 "이번 주 주제"의 톤·뉘앙스를 1장 영상 텍스트와 캡션 본문에 자연스럽게 녹여낼 것.
-- 곡 분위기·장르·시즌·가사 톤을 곡 제목과 아티스트에서 추론해서 모든 멘트에 일관되게 적용 (잔잔한 발라드면 차분하게, 신나는 곡이면 경쾌하게).
-- "봄" "벚꽃" 같은 계절 표현은 곡이 그 시즌과 직결되는 경우에만 사용. 평소엔 곡 자체의 분위기를 따를 것.
-- 이모지 1~2개만 자연스럽게. 과하게 쓰지 말 것.
-- 1장(영상)은 파이널컷에서 직접 작업하니, 영상에 얹을 짧은 텍스트만 출력.
+[톤 규칙 — 매우 중요]
+- ⚠️ 음악 이론 단어 사용 금지: "코드", "리프", "비트", "그루브", "멜로디", "베이스 라인", "스트로크", "필인" 등
+- 대신 감성·일상 이야기로: "이 노래 들으면 마음이 ~", "이 곡 한 번 들으면 ~"
+- 광고·홍보 톤 ❌ · 학원 자랑 ❌ · 직접 CTA ❌
+- 곡 자체의 감정·여운·기억에 집중
+- 이모지 1~2개만 자연스럽게, "~해요" 존댓말
 
-────────────────────────────────────────
-[출력 형식 — 그대로 따라 출력]
+[각 장의 역할]
+1장 (영상 자막): 곡을 들어본 적 있을 거란 호기심 한 줄
+2장 (앨범 사진): 곡 제목 + 감성 한 줄 카피 (곡이 주는 감정·여운)
+3장 (학원 연주 모습): "요즘 우리 학원에서 자주 들려요" 톤 + 보조 멘트
+4장 (학원 디테일): 이 곡이 왜 좋은지 감성적 매력 (가사·분위기·기억)
+5장 (학원 분위기): 부드러운 권유 ("함께 해볼래요?" 톤)
 
-───── 1장 · 영상 (파이널컷용 텍스트) ─────
-- 영상 제목 (크게 한 줄): (곡 제목을 멋지게 강조하는 짧은 문구)
-- 주제 (제목 아래 한 줄): (곡의 매력·시즌·감성 키워드 한 줄)
+[마지막]
+- 캡션 본문 150자 이내 (음악 잡지 톤, 곡 감성→일상 연결→부드러운 마무리)
+- 해시태그 15개 (곡명·아티스트·실용음악·레슨 위주)
 
-───── 2장 · 앨범 곡 소개 ─────
-- 감성 한 줄 카피: (곡 분위기에 맞춘 짧은 한 줄)
-
-───── 3장 · 재후킹 (사실 환기) ─────
-- 후킹 멘트 (중앙, 크게): "지금 학원에서 가장 많이 연주되고 있어요" 톤으로, 1장 영상의 후킹을 텍스트로 한 번 더 못 박는 한 줄
-- 보조 멘트 (하단, 작게): 곡 분위기에 맞는 짧은 보조 한 줄
-
-───── 4장 · 곡의 매력 ─────
-- 매력 멘트 (중앙, 크게): 이 곡이 왜 학원에서 사랑받는지 핵심 매력을 한 줄로 (예: 코드 진행이 쉬워서, 멜로디가 좋아서, 가사가 시즌에 맞아서 등 — 곡에 맞게 추론)
-- 보조 멘트 (하단, 작게): 곡의 매력을 보강하는 짧은 한 줄
-
-───── 5장 · CTA (무료 체험) ─────
-- 상단 작은 멘트: (가볍게 권하는 한 줄)
-- 중앙 큰 멘트: (행동 유도 한 줄, 예: "무료 체험 레슨 신청")
-- 중앙 보조: (부담을 덜어주는 한 줄)
-
-───── 캡션·해시태그 (피드 본문) ─────
-- 캡션 본문 (150자 이내):
-  · 첫 줄: 공감 또는 호기심 유도 문장
-  · 본문: 이 곡의 매력 + 배울 수 있다는 희망 메시지
-  · 마지막 줄: 카운트베이시실용음악학원 🎵
-- 해시태그 15개:
-  · 대중 태그 5개 (팔로워 100만 이상)
-  · 중간 태그 5개 (팔로워 10만~100만)
-  · 소규모 태그 5개 (팔로워 1만~10만)
-  · 악기·실용음악·레슨 관련 태그 위주로
-────────────────────────────────────────
-
-[작성 톤]
-- "~해요" 존댓말 일관.
-- 각 항목 짧고 명확하게 한 줄 이내.
-- 과장·영어 남용·미사여구 금지.</div>
+→ 곡 분위기에 맞게 자유롭게 카피라이터처럼 써줘.
+   음악 이론보다 감정·일상 이야기로.</div>
           </div>
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-slide0',this)">📋 복사하기</button>
@@ -2452,47 +2427,66 @@ canvas{display:block;border-radius:6px;}
           </div>
         </div>
 
+                <!-- 🎵 2장 — 곡 공개 (앨범) -->
         <div class="prompt-card">
           <div class="card-header">
             <div class="card-meta">
-              <div class="card-label" style="color:var(--insta)">🎵 2장 · 앨범 사진 업로드 → 곡 소개</div>
-              <div class="card-title">2장 — 곡 소개 슬라이드</div>
-              <div class="card-sub">앨범 사진 업로드 필수 · 곡 제목 + 감성 카피</div>
+              <div class="card-label" style="color:var(--insta)">🎵 2장 · 앨범 사진</div>
+              <div class="card-title">2장 — 곡 공개 슬라이드</div>
+              <div class="card-sub">앨범 사진 업로드 · 0장 결과 사용</div>
             </div>
             <div class="day-badge">🗓 목요일 2장</div>
           </div>
           <div class="card-body">
             <div class="input-guide">
-              <div class="input-guide-title">✍️ 입력 자리 (2곳) — 0장 시나리오 결과 사용</div>
+              <div class="input-guide-title">✍️ 사용법</div>
               <ul>
-                <li><b>곡 제목</b> — 원장님이 선택한 곡 직접 입력</li>
-                <li><b>감성 한 줄 카피</b> — 0장 결과의 "2장 · 감성 한 줄 카피" 그대로</li>
-                <li>※ <b>업로드</b>: 곡 앨범 사진을 ChatGPT에 먼저 업로드</li>
+                <li>먼저 <b>0장 시나리오</b>에서 GPT 결과 받기</li>
+                <li>곡 앨범 사진을 ChatGPT에 업로드</li>
+                <li>이 카드 복사 → 붙여넣기 (0장 결과의 "2장 카피" 함께)</li>
               </ul>
             </div>
-            <div class="prompt-text" id="prompt-insta-thu-slide2">────────────────────────────────────────
-[입력 정보]
-- 곡 제목: <span class="fill-here" data-slot="song">👉 여기에 "벚꽃엔딩" 형식으로 입력</span>
-- 감성 한 줄 카피: <span class="fill-here">👉 여기에 "봄바람처럼 가볍게 스며드는 그 노래" 형식으로 입력</span>
-────────────────────────────────────────
+            <div class="prompt-text" id="prompt-insta-thu-slide2">너는 카운트베이시실용음악학원 인스타그램 캐러셀 디자이너야.
+업로드한 앨범 사진으로 "이 달의 추천곡" 2장 슬라이드를 학원 브랜드 톤으로 디자인해줘.
 
-업로드한 앨범 사진을 활용해서 인스타그램 캐러셀 슬라이드 이미지를 만들어줘.
-정사각형 1080x1080.
+[카피 정보 — 0장 결과 사용]
+- 곡 제목 + 아티스트: <span class="fill-here">👉 "영원은 그렇듯 — 리도어" 형식</span>
+- 감성 한 줄 카피: <span class="fill-here">👉 0장 결과 "2장 감성 한 줄" 그대로</span>
 
-[구도]
-- 앨범 사진을 중앙에 정사각형으로 배치
-- 배경은 앨범 사진 컬러에서 추출한 그라데이션으로 자연스럽게 채우기
-- 앨범 사진 주변에 살짝 그림자 효과
+[브랜드 톤 — 1장 영상과 통일]
+- 배경: 다크 톤 (검정 #121212, 다크그레이 또는 학원 사진의 어두운 부분)
+- 메인 텍스트: 흰색 #FFFFFF
+- 포인트 컬러: 주황 #EF9F27 (라벨·강조·언더라인용)
+- 폰트: Pretendard ExtraBold (제목) + Regular (본문)
+- 광고 ❌ · 미니멀 ✓ · 모던 매거진 톤
 
-[텍스트 구성]
-- 상단 작게: "이 곡 알아요? 🎵"
-- 앨범 아래 크게: 위 입력 곡 제목
-- 그 아래 작게: 위 입력 감성 한 줄 카피
-- 하단 작게: "카운트베이시실용음악학원"
+[디자인 원칙]
+- 1장 영상의 검정·흰·주황 톤을 그대로 이어가기
+- 학원 사진 사용 시 살짝 어둡게 또는 다크 오버레이
+- 흰 텍스트 + 주황 강조 (작은 라벨·언더라인)
+- 차분하고 신뢰감 있는 톤
+- Z세대도 OK · 어른도 OK · 누구든 깔끔하게 보이는 톤
 
-[스타일]
-업로드한 곡의 분위기(장르·템포·느낌)에 어울리는 톤으로 자연스럽게 — 잔잔한 곡이면 차분하게, 신나는 곡이면 경쾌하게.
-홍보 느낌 없이 음악 감성으로.</div>
+[캔버스]
+1080 × 1080 정사각
+
+[디자인 — 다크 매거진 표지]
+- 배경: 다크 톤 (검정 #121212 또는 다크그레이)
+- 상단: 작은 주황 막대 + "이 달의 추천곡 · 5월" (라벨 톤)
+- 앨범 사진: 중앙 또는 좌측에 큼지막하게 (살짝 그림자)
+- 곡 제목: 큰 흰색 굵은 산세리프 (Pretendard ExtraBold)
+- 아티스트: 곡 제목 아래 흰색 작게
+- 감성 한 줄 카피: 흰색 작게, 여백 살려서
+- 핵심 단어 1~2개에 주황 #EF9F27 강조 (밑줄 또는 색 변경)
+- 하단 작게: "🎸 [악기] · 카운트베이시실용음악학원"
+
+[금지]
+- 흰색·파스텔 배경 ❌
+- 채도 높은 다채로운 색 ❌
+- 손그림·스티커·낙서 ❌
+- 광고 톤 ❌
+
+→ 1장 영상의 검정+흰+주황 톤 그대로 이어가는 모던 매거진 표지로.</div>
           </div>
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-slide2',this)">📋 복사하기</button>
@@ -2500,54 +2494,79 @@ canvas{display:block;border-radius:6px;}
           </div>
         </div>
 
+        <!-- 📷 3장 — 곡의 매력 (학원 사진) -->
         <div class="prompt-card">
           <div class="card-header">
             <div class="card-meta">
-              <div class="card-label" style="color:var(--insta)">📷 3장 · 학원 사진 → 재후킹 (사람 합성)</div>
-              <div class="card-title">3장 — 재후킹 슬라이드 (사실 환기)</div>
-              <div class="card-sub">학원 사진 업로드 → GPT가 연주하는 사람 합성 · "지금 학원에서 가장 많이 연주" 톤</div>
+              <div class="card-label" style="color:var(--insta)">📷 3장 · 학원 사진</div>
+              <div class="card-title">3장 — 곡의 매력 슬라이드</div>
+              <div class="card-sub">학원 사진 업로드 · 0장 결과 사용</div>
             </div>
             <div class="day-badge">🗓 목요일 3장</div>
           </div>
           <div class="card-body">
             <div class="input-guide">
-              <div class="input-guide-title">✍️ 입력 자리 (2곳) — 0장 시나리오 결과 사용</div>
+              <div class="input-guide-title">✍️ 사용법</div>
               <ul>
-                <li><b>후킹 멘트 (중앙)</b> — 0장 결과의 "3장 · 후킹 멘트(중앙, 크게)" 그대로</li>
-                <li><b>보조 멘트 (하단)</b> — 0장 결과의 "3장 · 보조 멘트(하단, 작게)" 그대로</li>
-                <li>※ <b>업로드</b>: 학원 사진 (레슨실/연습실/대기실). 사람이 이미 찍힌 사진이면 그대로 사용, 빈 공간 사진이면 GPT가 사람을 합성</li>
+                <li>0장 시나리오 결과의 "3장 곡 매력" 카피 사용</li>
+                <li>학원 사진 (레슨실·연주 모습) 업로드</li>
+                <li>이 카드 복사 → 붙여넣기</li>
               </ul>
             </div>
-            <div class="prompt-text" id="prompt-insta-thu-slide3">────────────────────────────────────────
-[입력 정보]
-- 후킹 멘트 (중앙): <span class="fill-here">👉 여기에 "지금 학원에서 가장 많이 연주되고 있어요" 형식으로 입력</span>
-- 보조 멘트 (하단): <span class="fill-here">👉 여기에 "이번 주, 이 곡이 가장 인기예요" 형식으로 입력</span>
-────────────────────────────────────────
+            <div class="prompt-text" id="prompt-insta-thu-slide3">너는 카운트베이시실용음악학원 인스타그램 캐러셀 디자이너야.
+업로드한 학원 사진을 배경으로 와스러운 연주 모습의 3장 슬라이드를 학원 브랜드 톤으로 디자인해줘.
 
-업로드한 학원 사진을 활용해서 인스타그램 캐러셀 3장 슬라이드 이미지를 만들어줘.
-정사각형 1080x1080.
+[카피 정보 — 0장 결과 사용]
+- 중앙 멘트: <span class="fill-here">👉 0장 결과 "3장 중앙 멘트" 그대로</span>
+- 보조 멘트: <span class="fill-here">👉 0장 결과 "3장 보조 멘트" 그대로</span>
 
-[사진 처리 — 중요]
-- 업로드 사진에 이미 사람이 있으면: 그대로 사용
-- 업로드 사진에 사람이 없으면: 0장에 입력한 악기를 연주하는 사람을 자연스럽게 합성. 얼굴 노출 없이 뒷모습/측면/손 클로즈업 톤.
-  · 기타: 기타 들고 의자에 앉아 연주 / 코드 잡는 손
-  · 드럼: 드럼 세트 앞에서 스틱 잡고 연주 / 스틱을 든 손
-  · 보컬: 마이크 앞에 서서 노래 / 마이크 잡은 손
-  · 베이스: 베이스 들고 연주 / 줄 위 손
-- 합성 시 학원 공간의 조명·각도·분위기와 자연스럽게 어울리도록
-- 사람보다 공간이 너무 부각되지 않게 — 사람과 공간이 같이 보이는 비율
+[배경 + 인물 합성 — 매우 중요]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명 그대로 살리면서 인물 1명 자연스럽게 합성
+- 새 배경 만들지 말 것
+- 사진 위에 다크 그래디언트 오버레이 (텍스트 가독성 확보)
 
-[크롭 & 구도]
-- 사람과 학원 공간이 균형 있게 보이도록 크롭
-- 하단 50% 검정 그라데이션 페이드 적용 — 텍스트 가독성 확보
-- 사진 자체가 자연스럽게 어두워지는 느낌, 별도 박스 없이
+[인물 — 3종 중 랜덤]
+- 한국인 중고등학생 (남/여, 교복)
+- 한국인 대학생 (남/여, 캐주얼)
+- 한국인 20대 직장인 (남/여, 셔츠·블라우스)
 
-[텍스트 오버레이]
-- 중앙: 위 입력 후킹 멘트 — 흰색, ExtraBold, 가장 크게
-- 하단: 위 입력 보조 멘트 — 흰색, Regular, 작게
+[인물 자세 — 와스러운 연주]
+- 음악에 빠진 자연스러운 표정 (집중·살짝 미소)
+- 카메라 의식 X · 일상적인 연주 컷
+- 옆모습 또는 살짝 비스듬한 각도
 
-[스타일]
-곡 분위기(장르·템포·느낌)에 맞춰 폰트 분위기를 정할 것.</div>
+[브랜드 톤 — 1장 영상과 통일]
+- 배경: 다크 톤 (검정 #121212, 다크그레이 또는 학원 사진의 어두운 부분)
+- 메인 텍스트: 흰색 #FFFFFF
+- 포인트 컬러: 주황 #EF9F27 (라벨·강조·언더라인용)
+- 폰트: Pretendard ExtraBold (제목) + Regular (본문)
+- 광고 ❌ · 미니멀 ✓ · 모던 매거진 톤
+
+[디자인 원칙]
+- 1장 영상의 검정·흰·주황 톤을 그대로 이어가기
+- 학원 사진 사용 시 살짝 어둡게 또는 다크 오버레이
+- 흰 텍스트 + 주황 강조 (작은 라벨·언더라인)
+- 차분하고 신뢰감 있는 톤
+- Z세대도 OK · 어른도 OK · 누구든 깔끔하게 보이는 톤
+
+[캔버스]
+1080 × 1080 정사각
+
+[디자인 — 학원 일상 컷]
+- 인물·악기는 사진의 1/2~2/3 차지
+- 하단 또는 우측: 텍스트 영역 (다크 오버레이 위)
+- 중앙 멘트: 흰색 큰 산세리프
+- 핵심 단어 주황 #EF9F27 강조 (1~2개)
+- 보조 멘트: 흰색 작게
+- 하단 가장자리: "카운트베이시실용음악학원" (흰색 작게)
+
+[금지]
+- 흰색·파스텔 배경 ❌
+- 화려한 색 ❌ · 손그림 ❌
+- 광고 톤 ❌
+
+→ 1장 영상과 같은 다크 톤 매거진 페이지처럼.</div>
           </div>
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-slide3',this)">📋 복사하기</button>
@@ -2555,54 +2574,74 @@ canvas{display:block;border-radius:6px;}
           </div>
         </div>
 
+        <!-- 🎵 4장 — 가능성 (학원 사진 다른 컷) -->
         <div class="prompt-card">
           <div class="card-header">
             <div class="card-meta">
-              <div class="card-label" style="color:var(--insta)">🎵 4장 · 곡의 매력 (손/연주 합성)</div>
-              <div class="card-title">4장 — 곡 매력 어필 슬라이드</div>
-              <div class="card-sub">손/연주 클로즈업 사진 또는 학원 사진 + GPT 합성</div>
+              <div class="card-label" style="color:var(--insta)">🎵 4장 · 학원 사진</div>
+              <div class="card-title">4장 — 가능성 슬라이드</div>
+              <div class="card-sub">학원 사진 (다른 컷) · 0장 결과 사용</div>
             </div>
             <div class="day-badge">🗓 목요일 4장</div>
           </div>
           <div class="card-body">
             <div class="input-guide">
-              <div class="input-guide-title">✍️ 입력 자리 (2곳) — 0장 시나리오 결과 사용</div>
+              <div class="input-guide-title">✍️ 사용법</div>
               <ul>
-                <li><b>매력 멘트 (중앙)</b> — 0장 결과의 "4장 · 매력 멘트(중앙, 크게)" 그대로</li>
-                <li><b>보조 멘트 (하단)</b> — 0장 결과의 "4장 · 보조 멘트(하단, 작게)" 그대로</li>
-                <li>※ <b>업로드</b>: 코드 잡는 손/악보 보는 손/헤드폰 쓴 학생 등 연주 관련 클로즈업 사진. 없으면 학원 공간 사진 업로드하고 GPT가 손/연주 합성</li>
+                <li>0장 시나리오 결과의 "4장 가능성" 카피 사용</li>
+                <li>학원 사진 (악기 클로즈업 또는 연주 모습) 업로드</li>
+                <li>이 카드 복사 → 붙여넣기</li>
               </ul>
             </div>
-            <div class="prompt-text" id="prompt-insta-thu-slide4">────────────────────────────────────────
-[입력 정보]
-- 매력 멘트 (중앙): <span class="fill-here">👉 여기에 "코드 3개로 시작해서 끝까지 갈 수 있는 곡" 형식으로 입력</span>
-- 보조 멘트 (하단): <span class="fill-here">👉 여기에 "익숙한 멜로디라 더 빨리 늘어요" 형식으로 입력</span>
-────────────────────────────────────────
+            <div class="prompt-text" id="prompt-insta-thu-slide4">너는 카운트베이시실용음악학원 인스타그램 캐러셀 디자이너야.
+업로드한 학원 사진을 배경으로 손·악기 클로즈업의 4장 슬라이드를 학원 브랜드 톤으로 디자인해줘.
 
-업로드한 사진을 활용해서 인스타그램 캐러셀 4장 슬라이드 이미지를 만들어줘.
-정사각형 1080x1080.
+[카피 정보 — 0장 결과 사용]
+- 중앙 멘트: <span class="fill-here">👉 0장 결과 "4장 매력 멘트" 그대로</span>
+- 보조 멘트: <span class="fill-here">👉 0장 결과 "4장 보조 멘트" 그대로</span>
 
-[사진 처리 — 중요]
-- 업로드 사진에 이미 손/연주 클로즈업이 있으면: 그대로 사용
-- 업로드 사진이 빈 학원 공간이면: 0장에 입력한 악기를 연주하는 클로즈업을 자연스럽게 합성. 손/팔까지만 보이게, 얼굴 노출 없이.
-  · 기타: 코드 잡는 손 / 줄 위 손가락 / 악보 위 손
-  · 드럼: 스틱을 잡은 손 / 스네어·하이햇 두드리는 순간 / 페달 밟는 발 클로즈업
-  · 보컬: 마이크 잡은 손 / 악보 든 손 / 헤드폰 쓴 옆모습
-  · 베이스: 줄 위 손 / 슬랩 자세 / 핑거링 클로즈업
-- 합성 시 학원 공간의 조명·각도·분위기와 자연스럽게 어울리도록
-- "연주의 매력"을 시각적으로 전달 — 악기와 손의 움직임이 살아 있는 한 장면
+[배경 + 인물 합성]
+- 업로드한 학원 사진을 배경으로 사용
+- 사진의 가구·소품·조명 그대로 살리면서 손·악기 디테일 합성
+- 새 배경 만들지 말 것
+- 사진 위에 다크 그래디언트 오버레이
 
-[크롭 & 구도]
-- 손/악기/악보가 화면의 시선을 끌도록 구성
-- 하단 50% 검정 그라데이션 페이드 적용 — 텍스트 가독성 확보
-- 사진 자체가 자연스럽게 어두워지는 느낌, 별도 박스 없이
+[인물 — 디테일 컷 (얼굴 X)]
+- 손·악기 클로즈업 (영화 같은 디테일 컷)
+- 한국인 인물 (학생·대학생·직장인 중 랜덤)
+- 연주에 몰입한 자연스러운 손 동작
 
-[텍스트 오버레이]
-- 중앙: 위 입력 매력 멘트 — 흰색, ExtraBold, 가장 크게
-- 하단: 위 입력 보조 멘트 — 흰색, Regular, 작게
+[브랜드 톤 — 1장 영상과 통일]
+- 배경: 다크 톤 (검정 #121212, 다크그레이 또는 학원 사진의 어두운 부분)
+- 메인 텍스트: 흰색 #FFFFFF
+- 포인트 컬러: 주황 #EF9F27 (라벨·강조·언더라인용)
+- 폰트: Pretendard ExtraBold (제목) + Regular (본문)
+- 광고 ❌ · 미니멀 ✓ · 모던 매거진 톤
 
-[스타일]
-곡 분위기(장르·템포·느낌)에 맞춰 폰트 분위기를 정할 것.</div>
+[디자인 원칙]
+- 1장 영상의 검정·흰·주황 톤을 그대로 이어가기
+- 학원 사진 사용 시 살짝 어둡게 또는 다크 오버레이
+- 흰 텍스트 + 주황 강조 (작은 라벨·언더라인)
+- 차분하고 신뢰감 있는 톤
+- Z세대도 OK · 어른도 OK · 누구든 깔끔하게 보이는 톤
+
+[캔버스]
+1080 × 1080 정사각
+
+[디자인 — 영화 같은 디테일 컷]
+- 손·악기가 사진의 1/2 차지
+- 나머지 1/2: 텍스트 영역 (다크 오버레이)
+- 중앙 멘트: 흰색 큰 산세리프
+- 핵심 단어 주황 #EF9F27 강조
+- 보조 멘트: 흰색 작게
+- 하단 가장자리: "카운트베이시실용음악학원"
+
+[금지]
+- 흰색·파스텔 배경 ❌
+- 화려한 색 ❌ · 손그림 ❌
+- 광고 톤 ❌
+
+→ 영화 같은 정적 분위기 + 학원 브랜드 톤.</div>
           </div>
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-slide4',this)">📋 복사하기</button>
@@ -2610,53 +2649,76 @@ canvas{display:block;border-radius:6px;}
           </div>
         </div>
 
+        <!-- 🎨 5장 — 자연스러운 권유 (학원 전체) -->
         <div class="prompt-card">
           <div class="card-header">
             <div class="card-meta">
-              <div class="card-label" style="color:var(--insta)">🎨 5장 · 디자인 · CTA</div>
-              <div class="card-title">5장 — 무료체험 CTA 슬라이드</div>
-              <div class="card-sub">학원 사진 업로드 · 텍스트 오버레이 · 연락처 포함</div>
+              <div class="card-label" style="color:var(--insta)">🎨 5장 · 학원 전체</div>
+              <div class="card-title">5장 — 자연스러운 권유 슬라이드</div>
+              <div class="card-sub">학원 분위기 사진 · 0장 결과 사용</div>
             </div>
             <div class="day-badge">🗓 목요일 5장</div>
           </div>
           <div class="card-body">
             <div class="input-guide">
-              <div class="input-guide-title">✍️ 입력 자리 (3곳) — 0장 시나리오 결과 사용</div>
+              <div class="input-guide-title">✍️ 사용법</div>
               <ul>
-                <li><b>상단 작은 멘트</b> — 0장 결과의 "5장 · 상단 작은 멘트" 그대로</li>
-                <li><b>중앙 큰 멘트</b> — 0장 결과의 "5장 · 중앙 큰 멘트" 그대로</li>
-                <li><b>중앙 보조 멘트</b> — 0장 결과의 "5장 · 중앙 보조" 그대로</li>
-                <li>※ <b>업로드</b>: 학원/레슨실/대기실 사진 등 배경으로 쓸 사진을 ChatGPT에 먼저 업로드</li>
+                <li>0장 시나리오 결과의 "5장 권유" 카피 사용</li>
+                <li>학원 분위기 사진 업로드 (전체 분위기 보이는 컷)</li>
+                <li>이 카드 복사 → 붙여넣기</li>
               </ul>
             </div>
-            <div class="prompt-text" id="prompt-insta-thu-slide5">────────────────────────────────────────
-[입력 정보]
-- 상단 작은 멘트: <span class="fill-here">👉 여기에 "통기타 처음이어도 괜찮아요" 형식으로 입력</span>
-- 중앙 큰 멘트: <span class="fill-here">👉 여기에 "무료 체험 레슨 신청" 형식으로 입력</span>
-- 중앙 보조 멘트: <span class="fill-here">👉 여기에 "부담 없이 편하게 시작해보세요 🎵" 형식으로 입력</span>
-────────────────────────────────────────
+            <div class="prompt-text" id="prompt-insta-thu-slide5">너는 카운트베이시실용음악학원 인스타그램 캐러셀 디자이너야.
+업로드한 학원 사진을 배경으로 와이드샷의 5장 슬라이드(마무리)를 학원 브랜드 톤으로 디자인해줘.
 
-업로드한 사진을 배경으로 인스타그램 캐러셀 5장 슬라이드 이미지를 만들어줘.
-정사각형 1080x1080.
+[카피 정보 — 0장 결과 사용]
+- 상단 작은 멘트: <span class="fill-here">👉 0장 결과 "5장 상단 멘트" 그대로</span>
+- 중앙 큰 멘트: <span class="fill-here">👉 0장 결과 "5장 중앙 멘트" 그대로</span>
 
-[배경 — 업로드 사진 활용]
-- 업로드한 사진을 전체 배경으로 사용
-- 텍스트 가독성을 위해 사진 전체에 50~60% 어두운 오버레이 적용
-- 텍스트가 들어갈 중앙 영역은 추가로 살짝 더 어둡게 페이드 처리
-- 별도 박스·테두리 없이 사진 위에 자연스럽게 텍스트가 얹히도록
+[배경 + 인물 합성]
+- 업로드한 학원 사진을 배경으로 사용 (와이드 컷)
+- 사진의 가구·소품·조명 그대로 살리면서 인물 작게 합성
+- 새 배경 만들지 말 것
+- 사진 위에 다크 그래디언트 오버레이
 
-[텍스트 구성]
-- 상단: 위 입력 상단 작은 멘트 — 흰색, 감성 폰트, 작게~중간
-- 중앙 크게: 위 입력 중앙 큰 멘트 — 흰색, ExtraBold, 가장 크게
-- 중앙 아래: 위 입력 중앙 보조 멘트 — 흰색, Regular, 작게
-- 하단 좌: "카운트베이시실용음악학원" — 흰색, Regular, 작게
-- 하단 우: "📞 032)463-3455" — 흰색, Regular, 작게
+[인물 — 와이드샷 (작게)]
+- 학원 공간이 크게, 인물은 작게 (1:3 정도)
+- 한국인 인물 (학생·대학생·직장인 중 랜덤)
+- 연주에 몰입한 자연스러운 모습
+- 뒷모습 또는 옆모습이 자연스러움
 
-[스타일]
-업로드한 곡의 분위기에 어울리는 톤으로 — 1~4장과 일관성 있게.
-홍보 느낌 없이 음악 감성으로.
+[브랜드 톤 — 1장 영상과 통일]
+- 배경: 다크 톤 (검정 #121212, 다크그레이 또는 학원 사진의 어두운 부분)
+- 메인 텍스트: 흰색 #FFFFFF
+- 포인트 컬러: 주황 #EF9F27 (라벨·강조·언더라인용)
+- 폰트: Pretendard ExtraBold (제목) + Regular (본문)
+- 광고 ❌ · 미니멀 ✓ · 모던 매거진 톤
 
-다음 슬라이드로 이어지는 화살표 또는 스와이프 유도 문구 없음.</div>
+[디자인 원칙]
+- 1장 영상의 검정·흰·주황 톤을 그대로 이어가기
+- 학원 사진 사용 시 살짝 어둡게 또는 다크 오버레이
+- 흰 텍스트 + 주황 강조 (작은 라벨·언더라인)
+- 차분하고 신뢰감 있는 톤
+- Z세대도 OK · 어른도 OK · 누구든 깔끔하게 보이는 톤
+
+[캔버스]
+1080 × 1080 정사각
+
+[디자인 — 매거진 마지막 페이지]
+- 학원 공간이 사진의 2/3 차지 (여백 많이)
+- 인물은 작게
+- 상단 작은 멘트: 흰색 작게 (라벨 톤)
+- 중앙 큰 멘트: 흰색 큰 산세리프
+- 핵심 단어 주황 #EF9F27 강조
+- 하단 좌: "카운트베이시실용음악학원" (흰색 작게)
+- 하단 우: "📞 032)463-3455" (흰색 작게)
+
+[금지]
+- 흰색·파스텔 배경 ❌
+- 화려한 색 ❌ · 손그림 ❌
+- 광고 톤 ❌
+
+→ 영화 엔딩 같은 차분한 톤 + 학원 브랜드 컬러.</div>
           </div>
           <div class="card-footer">
             <button class="copy-btn" onclick="copyPrompt('prompt-insta-thu-slide5',this)">📋 복사하기</button>
@@ -6249,13 +6311,23 @@ PNG 1장 (1080×576, 배경 투명 지원)
 STEP 1부터 STEP 4까지 자막 PNG를 한 장씩 순차적으로 생성해줘.
 각 STEP은 PNG 1장만 만들고, 사용자가 "STEP N 진행"이라고 입력하면 다음 STEP을 진행해.
 
+[⚠️ 자막 길이 규칙 — 매우 중요]
+- 각 자막은 반드시 8자 이하로 작성할 것
+- 입력된 자막이 8자를 넘으면 핵심만 남기고 8자 이하로 줄여서 사용
+- 짧고 강한 한 줄 (릴스 화면에서 한 번에 읽혀야 함)
+- 예시:
+  · "손가락이 왜 안 눌릴까요?" → "안 눌리는 이유"
+  · "이렇게 잡으면 됩니다" → "이렇게 잡아요"
+  · "오늘부터 바뀝니다" → "오늘부터 OK"
+
 [⚠️ KOREAN TEXT — USE ONLY THESE EXACT STRINGS]
-Each STEP uses ONLY ONE Korean text. Do not add, modify, or invent any other Korean text.
+Each STEP uses ONLY ONE Korean text (8 characters or less).
 
 STEP 1 (Hook · 0~5s): "${hook}"
 STEP 2 (Mistake · 5~25s): "${mistake}"
 STEP 3 (Solution · 25~50s): "${solution}"
 STEP 4 (Ending · 50~60s): "${ending}"
+※ 위 텍스트가 8자를 넘으면 GPT가 알아서 8자 이하로 줄여서 사용할 것.
 
 [KOREAN TYPOGRAPHY RULES]
 - All Korean text must be perfectly readable.
@@ -6263,28 +6335,27 @@ STEP 4 (Ending · 50~60s): "${ending}"
 - No distorted characters.
 - Large bold Korean font only (Pretendard ExtraBold, Nanum Gothic ExtraBold, or similar).
 - Render every Hangul syllable correctly.
-- If a string is too long to render accurately, you may shorten it but never break the characters.
 
 [공통 캔버스 사양 — 4 STEP 모두 동일]
 - 크기: 1080 × 1920 (9:16 세로)
 - 배경: 완전 투명 (PNG 알파 채널)
 - 출력: STEP당 PNG 1장
 
-[공통 자막 스타일]
+[공통 자막 스타일 — 8자 이하라 글자가 더 커야 함]
 - 위치: 화면 정중앙 (Y=960 기준 위아래)
 - 텍스트 영역 너비: 화면 80% (좌우 패딩 108px)
 - 색상: 흰색 #FFFFFF
 - 외곽선: 검정 #000000, 8px 두께
 - 그림자: 검정, 흐림 12px, 불투명도 60%
 - 폰트: Pretendard ExtraBold 또는 Nanum Gothic ExtraBold
-- 크기: 100~120px, 줄 간격 1.3, 자간 -0.02em
+- 크기: 140~160px (8자 이하라 큼지막하게), 줄 간격 1.3, 자간 -0.02em
 - 텍스트 정렬: 가운데
-- 자연스러운 위치에서 줄바꿈 (긴 문장은 2~3줄로)
+- 한 줄로 표시 (8자 이하라 줄바꿈 거의 불필요)
 
 ────────────────────────────────────────
 
 ▼ STEP 1. 자막 ① 후크 (0~5초)
-- 텍스트: "${hook}"
+- 텍스트: "${hook}" (8자 이하)
 - 톤: 질문형·충격형 (호기심 유발)
 - 손그림 강조:
   · 핵심 단어 1개에 손그림 동그라미 또는 밑줄 (#EF9F27, 두께 5~7px, 자연스러운 라인)
@@ -6292,7 +6363,7 @@ STEP 4 (Ending · 50~60s): "${ending}"
 - 한 PNG 1장만 생성 → 사용자가 "STEP 2 진행"이라고 입력하면 다음 단계 실행.
 
 ▼ STEP 2. 자막 ② 실수 소개 (5~25초)
-- 텍스트: "${mistake}"
+- 텍스트: "${mistake}" (8자 이하)
 - 톤: 공감형 ("처음엔 다 그래요" 느낌)
 - 손그림 강조:
   · 핵심 단어 1개에 손그림 동그라미 또는 하이라이트 (반투명 노란색 #F9CB42 50%)
@@ -6300,7 +6371,7 @@ STEP 4 (Ending · 50~60s): "${ending}"
 - 한 PNG 1장만 생성 → "STEP 3 진행" 입력 시 다음 단계.
 
 ▼ STEP 3. 자막 ③ 해결책 (25~50초)
-- 텍스트: "${solution}"
+- 텍스트: "${solution}" (8자 이하)
 - 톤: 명령·약속형 ("이렇게 해보세요", "이것만 바꾸면 끝")
 - 손그림 강조:
   · 핵심 단어 1개에 손그림 밑줄 (#EF9F27, 두께 5~7px)
@@ -6308,7 +6379,7 @@ STEP 4 (Ending · 50~60s): "${ending}"
 - 한 PNG 1장만 생성 → "STEP 4 진행" 입력 시 다음 단계.
 
 ▼ STEP 4. 자막 ④ 마무리 (50~60초)
-- 텍스트: "${ending}"
+- 텍스트: "${ending}" (8자 이하)
 - 톤: 격려·약속형 ("진짜 달라져요", "오늘부터 해봐요")
 - 손그림 강조:
   · 핵심 단어 1개에 손그림 동그라미 (#EF9F27)
@@ -6396,8 +6467,9 @@ function copyTopic(text, el, instrument) {
   }, 1500);
 }
 
-// 목요일 캐러셀: 캘린더 주제 클릭 → 모든 목요일 카드의 'topic' 슬롯 갱신
+// 목요일 캐러셀: 캘린더 주제 클릭 → 모든 목요일 카드의 'topic' 슬롯 + PNG 입력 폼 갱신
 function applyThuTopic(topicText, instText, el) {
+  // 1) 기존 span data-slot 갱신 (시나리오 생성기 + 캡션 카드)
   document.querySelectorAll('#insta-thu [data-slot="topic"]').forEach(slot => {
     slot.textContent = topicText;
   });
@@ -6406,6 +6478,50 @@ function applyThuTopic(topicText, instText, el) {
       slot.textContent = instText;
     });
   }
+
+  // 2) PNG 1장 자막 생성기 카드 input 자동 입력
+  // - 좌상단 학원 태그: 현재 분기 정보 (변동 X)
+  // - 메인 자막 1줄: 주제에서 핵심 단어 추출 (악기명 또는 첫 키워드)
+  // - 메인 자막 2줄: 주제 본문
+  // - 보조 자막: 학원 안내 문구 (변동 X)
+  const thuBrand = document.getElementById('thu-brand');
+  const thuCap1  = document.getElementById('thu-cap1');
+  const thuCap2  = document.getElementById('thu-cap2');
+  const thuSub   = document.getElementById('thu-sub');
+
+  if (thuCap1 && thuCap2) {
+    // 주제를 두 줄로 자연스럽게 분리
+    // 예: "이 비트 들어본 적 있죠? 한 달이면 칠 수 있어요"
+    //  → cap1: "이 비트 들어본 적 있죠?" (강조 부분만 [[]])
+    //  → cap2: "한 달이면 칠 수 있어요"
+    const parts = topicText.split(/[?!。\.]\s+/);
+    if (parts.length >= 2) {
+      // 물음표·느낌표 기준 분리 성공
+      const first = parts[0] + (topicText.includes('?') ? '?' : '');
+      const rest = parts.slice(1).join(' ').trim();
+      thuCap1.value = first;
+      thuCap2.value = rest;
+    } else {
+      // 분리 안 되면 그냥 절반으로
+      const midPoint = Math.floor(topicText.length / 2);
+      const spaceIdx = topicText.indexOf(' ', midPoint);
+      if (spaceIdx > 0) {
+        thuCap1.value = topicText.substring(0, spaceIdx).trim();
+        thuCap2.value = topicText.substring(spaceIdx).trim();
+      } else {
+        thuCap1.value = topicText;
+        thuCap2.value = '';
+      }
+    }
+  }
+  if (thuSub && instText) {
+    thuSub.value = instText + ' · 카운트베이시실용음악학원';
+  }
+  // PNG 미리보기 새로고침
+  if (typeof previewThuTemplate === 'function') {
+    previewThuTemplate();
+  }
+
   // 시각 피드백
   el.style.borderColor = 'var(--accent3)';
   el.style.background = 'rgba(106,247,184,0.18)';
@@ -6488,7 +6604,28 @@ function copyPrompt(id, btn) {
     return;
   }
 
-  navigator.clipboard.writeText(text).then(() => {
+  // 순수 plain text로 복사 (RTF/HTML 형식 제거)
+  // ClipboardItem 사용해서 text/plain만 명시적으로 저장
+  const tryClipboardItem = async () => {
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        const blob = new Blob([text], { type: 'text/plain' });
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'text/plain': blob })
+        ]);
+        return true;
+      }
+    } catch (e) {
+      console.log('ClipboardItem 실패, fallback 사용:', e);
+    }
+    return false;
+  };
+
+  tryClipboardItem().then(success => {
+    if (!success) {
+      // fallback: 기존 writeText 방식
+      navigator.clipboard.writeText(text);
+    }
     btn.classList.add('copied');
     btn.textContent = '✅ 복사됨!';
     setTimeout(() => {
@@ -7013,8 +7150,8 @@ window.addEventListener('load', () => {
 });
 
 // ─── 월요일 릴스 템플릿 PNG 생성 (Canvas) ───
-function drawMonTemplate(canvas) {
-  const ctx = canvas.getContext('2d');
+function drawMonTemplate(canvas, transparent) {
+  const ctx = canvas.getContext('2d', { alpha: true });
   const W = 1080, H = 1920;
 
   // 입력값
@@ -7024,16 +7161,41 @@ function drawMonTemplate(canvas) {
   const sub    = document.getElementById('design-sub')?.value || '기타 · F코드';
   const hint   = (document.getElementById('design-hint')?.value || '').trim();
 
-  // 배경 #121212
-  ctx.fillStyle = '#121212';
-  ctx.fillRect(0, 0, W, H);
+  // 완전 초기화 (투명 유지)
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.restore();
 
-  // 시리즈 태그 (Y=220) — 주황 막대 + 텍스트
+  if (!transparent) {
+    // 미리보기 모드: 회색 영상 자리 표시
+    ctx.fillStyle = '#121212';
+    ctx.fillRect(0, 0, W, 768);  // 상단 텍스트 영역
+    ctx.fillStyle = '#1C1C1C';
+    ctx.fillRect(0, 770, W, 1150);  // 하단 영상 자리
+    ctx.fillStyle = '#3C3C3C';
+    ctx.font = '34px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('▶  영상 자리', W/2, 1345);
+  } else {
+    // 다운로드 모드: 상단 영역 진한 검정 페이드 (텍스트 가독성 강화)
+    const topGrad = ctx.createLinearGradient(0, 0, 0, 768);
+    topGrad.addColorStop(0, 'rgba(0,0,0,1.0)');     // 위는 완전 검정
+    topGrad.addColorStop(0.6, 'rgba(0,0,0,0.95)');  // 중간까지 거의 검정 유지
+    topGrad.addColorStop(0.85, 'rgba(0,0,0,0.7)');  // 약간 흐려짐
+    topGrad.addColorStop(1, 'rgba(0,0,0,0)');       // 끝은 투명 (자연스러운 페이드)
+    ctx.fillStyle = topGrad;
+    ctx.fillRect(0, 0, W, 768);
+  }
+
+  // 시리즈 태그 (Y=220) — 주황 막대 + 흰색 텍스트
   ctx.fillStyle = '#EF9F27';
   ctx.fillRect(60, 195, 10, 55);
   ctx.font = 'bold 42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#FFFFFF';
   ctx.fillText(series, 92, 222);
 
   // 메인 제목 1줄 (흰색, 92px) + 2줄 (80px 살짝 작게 위계)
@@ -7044,9 +7206,9 @@ function drawMonTemplate(canvas) {
   ctx.font = 'bold 80px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
   ctx.fillText(title2, 60, 360 + lineGap);
 
-  // 서브 (회색)
+  // 서브 (흰색)
   ctx.font = '42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillStyle = '#888888';
+  ctx.fillStyle = '#FFFFFF';
   const subY = 360 + lineGap + 90;
   ctx.fillText(sub, 60, subY);
 
@@ -7056,46 +7218,35 @@ function drawMonTemplate(canvas) {
     ctx.font = '32px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
     const textW = ctx.measureText(hintFullText).width;
     const hintY = subY + 65;
-    const padX = 30, padY = 18;
+    const padX = 30;
     const boxX1 = 60, boxY1 = hintY;
     const boxX2 = boxX1 + textW + padX * 2;
     const boxY2 = boxY1 + 64;
 
-    ctx.strokeStyle = '#2A2A2A';
+    ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 2;
     ctx.strokeRect(boxX1, boxY1, boxX2 - boxX1, boxY2 - boxY1);
 
-    ctx.fillStyle = '#888888';
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillText(hintFullText, boxX1 + padX, (boxY1 + boxY2) / 2);
   }
 
-  // 분리선
-  ctx.fillStyle = '#2A2A2A';
-  ctx.fillRect(0, 766, W, 4);
-
-  // 하단 영상 영역 (Y=770~1920) — 회색 톤
-  ctx.fillStyle = '#1C1C1C';
-  ctx.fillRect(0, 770, W, 1150);
-  ctx.font = '34px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillStyle = '#3C3C3C';
-  ctx.textAlign = 'center';
-  ctx.fillText('▶  영상 자리', W/2, 1345);
-
-  // 워터마크
+  // 워터마크 (흰색)
   ctx.font = '26px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillStyle = '#6E6E6E';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'center';
   ctx.fillText('카운트베이시실용음악학원', W/2, 1860);
 }
 
 function previewMonTemplate() {
   const c = document.getElementById('mon-canvas');
-  if (c) drawMonTemplate(c);
+  if (c) drawMonTemplate(c, false);  // 미리보기: 회색 배경
 }
 
 function downloadMonTemplate() {
   const c = document.getElementById('mon-canvas');
   if (!c) return;
-  drawMonTemplate(c);
+  drawMonTemplate(c, true);  // 다운로드: 투명 배경
 
   const t1 = document.getElementById('design-title1')?.value || 'title';
   const t2 = document.getElementById('design-title2')?.value || '';
@@ -7110,6 +7261,8 @@ function downloadMonTemplate() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    // 다운로드 후 미리보기 복원
+    drawMonTemplate(c, false);
   }, 'image/png');
 }
 
@@ -7117,7 +7270,7 @@ function downloadMonTemplate() {
 window.addEventListener('load', () => {
   setTimeout(() => {
     const c = document.getElementById('mon-canvas');
-    if (c) drawMonTemplate(c);
+    if (c) drawMonTemplate(c, false);
   }, 250);
 });
 
@@ -8079,64 +8232,64 @@ function renderInstaMonCalendar() {
 // ── 목요일 캐러셀 52주 주제 데이터 ─────────────────────────
 const instaThuTopics = [
   { q:1, label:"1분기 (1~13주)", weeks:[
-    {w:1,  inst:"🎸 기타", t:"이 리프 들어본 적 있죠? 한 달이면 칠 수 있어요"},
-    {w:2,  inst:"🥁 드럼", t:"이 비트 들어본 적 있죠? 한 달이면 칠 수 있어요"},
-    {w:3,  inst:"🎤 보컬", t:"이 멜로디 들어본 적 있죠? 한 달이면 부를 수 있어요"},
-    {w:4,  inst:"🎵 베이스", t:"이 베이스 라인 들어본 적 있죠? 한 달이면 쳐요"},
-    {w:5,  inst:"🎸 기타", t:"기타 배운 지 한 달, 이 곡 완성했어요"},
-    {w:6,  inst:"🥁 드럼", t:"드럼 배운 지 두 달, 이 곡 완성했어요"},
-    {w:7,  inst:"🎤 보컬", t:"보컬 레슨 두 달, 이 곡 완성했어요"},
-    {w:8,  inst:"🎵 베이스", t:"베이스 배운 지 두 달, 이 곡 완성했어요"},
-    {w:9,  inst:"🎸 기타", t:"이 코드 진행 알아요? 유명한 노래가 다 이걸로 만들어졌어요"},
-    {w:10, inst:"🥁 드럼", t:"이 리듬 패턴 하나로 수십 곡이 만들어졌어요"},
-    {w:11, inst:"🎤 보컬", t:"이 노래 부르고 싶었죠? 생각보다 금방 돼요"},
-    {w:12, inst:"🎵 베이스", t:"이 그루브 패턴 하나로 수십 곡이 만들어졌어요"},
-    {w:13, inst:"🎸 기타", t:"기타로 이 곡 치면 주변 사람들이 다 알아봐요"},
+    {w:1, inst:"🎸 기타", t:"한 번 들으면 마음에 남는 그 노래"},
+    {w:2, inst:"🥁 드럼", t:"들으면 자꾸 따라 두드리게 되는 노래"},
+    {w:3, inst:"🎤 보컬", t:"한 번쯤 불러보고 싶었던 그 노래"},
+    {w:4, inst:"🎵 베이스", t:"몸이 먼저 반응하는 그 노래"},
+    {w:5, inst:"🎸 기타", t:"처음 시작했을 때 도전했던 그 노래"},
+    {w:6, inst:"🥁 드럼", t:"처음 잡았을 때 두드렸던 그 노래"},
+    {w:7, inst:"🎤 보컬", t:"처음 노래 시작할 때 불렀던 그 곡"},
+    {w:8, inst:"🎵 베이스", t:"처음 잡았을 때 따라쳤던 그 노래"},
+    {w:9, inst:"🎸 기타", t:"카페에서 들으면 멈춰 서게 되는 노래"},
+    {w:10, inst:"🥁 드럼", t:"운전하면서 자꾸 흥얼거리게 되는 노래"},
+    {w:11, inst:"🎤 보컬", t:"혼자 운전하다 따라 부르게 되는 노래"},
+    {w:12, inst:"🎵 베이스", t:"듣다 보면 자꾸 발이 까딱거리는 노래"},
+    {w:13, inst:"🎸 기타", t:"학창시절이 떠오르는 그 노래"},
   ]},
   { q:2, label:"2분기 (14~26주)", weeks:[
-    {w:14, inst:"🥁 드럼", t:"이 필인 들으면 누구나 아는 그 곡"},
-    {w:15, inst:"🎤 보컬", t:"이 고음 부분 포기했던 그 곡, 이제 됩니다"},
-    {w:16, inst:"🎵 베이스", t:"이 슬랩 라인 들으면 누구나 아는 그 곡"},
-    {w:17, inst:"🎸 기타", t:"이 스트로크 패턴 하나로 수십 곡을 칠 수 있어요"},
-    {w:18, inst:"🥁 드럼", t:"우리 학원 수강생이 6주 만에 연주한 드럼 곡"},
-    {w:19, inst:"🎤 보컬", t:"우리 학원 수강생이 한 달 만에 부른 그 노래"},
-    {w:20, inst:"🎵 베이스", t:"우리 학원 수강생이 한 달 만에 완성한 베이스 라인"},
-    {w:21, inst:"🎸 기타", t:"우리 학원 수강생이 한 달 만에 연주한 곡"},
-    {w:22, inst:"🥁 드럼", t:"이 드럼 패턴 알면 웬만한 팝송 다 쳐요"},
-    {w:23, inst:"🎤 보컬", t:"보컬 왕초보가 처음으로 완창한 곡이에요"},
-    {w:24, inst:"🎵 베이스", t:"베이스 왕초보가 처음으로 완주한 곡이에요"},
-    {w:25, inst:"🎸 기타", t:"기타 왕초보가 처음으로 완주한 곡이에요"},
-    {w:26, inst:"🥁 드럼", t:"드럼 왕초보가 처음으로 완주한 곡이에요"},
+    {w:14, inst:"🥁 드럼", t:"청춘 시절이 떠오르는 그 노래"},
+    {w:15, inst:"🎤 보컬", t:"그 시절 라디오에서 자주 나오던 노래"},
+    {w:16, inst:"🎵 베이스", t:"그때 그 시절 자주 듣던 노래"},
+    {w:17, inst:"🎸 기타", t:"요즘 학원에서 자주 들리는 그 노래"},
+    {w:18, inst:"🥁 드럼", t:"요즘 학원에서 가장 많이 들리는 노래"},
+    {w:19, inst:"🎤 보컬", t:"요즘 학원에서 자주 부르는 노래"},
+    {w:20, inst:"🎵 베이스", t:"요즘 학원에서 자주 듣는 노래"},
+    {w:21, inst:"🎸 기타", t:"마음이 복잡할 때 듣고 싶은 노래"},
+    {w:22, inst:"🥁 드럼", t:"기분 좋은 날 들으면 더 좋은 노래"},
+    {w:23, inst:"🎤 보컬", t:"울고 싶은 날 위로가 되는 노래"},
+    {w:24, inst:"🎵 베이스", t:"하루의 끝에 듣고 싶은 노래"},
+    {w:25, inst:"🎸 기타", t:"친구가 부르는 걸 보고 반했던 노래"},
+    {w:26, inst:"🥁 드럼", t:"드라마에서 흘러나와 마음에 남은 노래"},
   ]},
   { q:3, label:"3분기 (27~39주)", weeks:[
-    {w:27, inst:"🎤 보컬", t:"이 노래 부르면 분위기 장악할 수 있어요"},
-    {w:28, inst:"🎵 베이스", t:"이 베이스 라인 알면 밴드에서 바로 써먹어요"},
-    {w:29, inst:"🎸 기타", t:"이 솔로 라인 들어보셨나요? 생각보다 쉬워요"},
-    {w:30, inst:"🥁 드럼", t:"이 드럼 인트로 들으면 누구나 아는 그 곡"},
-    {w:31, inst:"🎤 보컬", t:"이 브릿지 부분 때문에 포기했던 그 곡"},
-    {w:32, inst:"🎵 베이스", t:"이 코드 4개면 이 곡 베이스 라인 완성이에요"},
-    {w:33, inst:"🎸 기타", t:"이 코드 4개면 이 곡 연주할 수 있어요"},
-    {w:34, inst:"🥁 드럼", t:"이 패턴 배우면 장르 하나를 통째로 이해해요"},
-    {w:35, inst:"🎤 보컬", t:"이달의 추천 보컬 연습곡 — 이 곡 아세요?"},
-    {w:36, inst:"🎵 베이스", t:"이달의 추천 베이스 연습곡 — 이 곡 아세요?"},
-    {w:37, inst:"🎸 기타", t:"이달의 기타 연주곡 — 이 곡 아세요?"},
-    {w:38, inst:"🥁 드럼", t:"이달의 드럼 연주곡 — 이 곡 아세요?"},
-    {w:39, inst:"🎤 보컬", t:"기초만 알아도 이 곡 부를 수 있어요"},
+    {w:27, inst:"🎤 보컬", t:"영화 OST로 듣고 좋아진 그 노래"},
+    {w:28, inst:"🎵 베이스", t:"광고 음악으로 듣고 좋아진 그 노래"},
+    {w:29, inst:"🎸 기타", t:"봄날 산책할 때 어울리는 노래"},
+    {w:30, inst:"🥁 드럼", t:"여름밤 어울리는 그 노래"},
+    {w:31, inst:"🎤 보컬", t:"가을에 더 좋아지는 그 노래"},
+    {w:32, inst:"🎵 베이스", t:"겨울 카페에서 듣고 싶은 노래"},
+    {w:33, inst:"🎸 기타", t:"누구한테든 추천하고 싶은 곡"},
+    {w:34, inst:"🥁 드럼", t:"한 번쯤은 꼭 들어봐야 할 곡"},
+    {w:35, inst:"🎤 보컬", t:"이 노래 모르면 아쉬운 그 곡"},
+    {w:36, inst:"🎵 베이스", t:"한 번 들어보면 헤어나올 수 없는 노래"},
+    {w:37, inst:"🎸 기타", t:"언젠가 직접 연주해보고 싶은 그 곡"},
+    {w:38, inst:"🥁 드럼", t:"언젠가 직접 쳐보고 싶었던 그 곡"},
+    {w:39, inst:"🎤 보컬", t:"언젠가 한 번쯤 불러보고 싶은 노래"},
   ]},
   { q:4, label:"4분기 (40~52주)", weeks:[
-    {w:40, inst:"🎵 베이스", t:"기초만 알아도 이 베이스 라인 칠 수 있어요"},
-    {w:41, inst:"🎸 기타", t:"기타 중급자라면 꼭 한번 도전해야 할 이 곡"},
-    {w:42, inst:"🥁 드럼", t:"드럼 중급자라면 꼭 도전해야 할 이 패턴"},
-    {w:43, inst:"🎤 보컬", t:"중급자도 도전하고 싶은 이 노래"},
-    {w:44, inst:"🎵 베이스", t:"이 리프 듣는 순간 누구나 아는 그 곡"},
-    {w:45, inst:"🎸 기타", t:"이 리프 듣는 순간 누구나 아는 그 곡"},
-    {w:46, inst:"🥁 드럼", t:"연말 파티에서 치면 분위기 터지는 그 곡"},
-    {w:47, inst:"🎤 보컬", t:"연말 파티에서 부르면 분위기 장악하는 그 노래"},
-    {w:48, inst:"🎵 베이스", t:"한 해를 마무리하며 도전한 이 곡"},
-    {w:49, inst:"🎸 기타", t:"올해 가장 많이 연주한 기타 곡은 이거예요"},
-    {w:50, inst:"🥁 드럼", t:"올해 가장 많이 연주한 드럼 곡은 이거예요"},
-    {w:51, inst:"🎤 보컬", t:"올해 가장 많이 부른 노래는 이거예요"},
-    {w:52, inst:"🎵 베이스", t:"한 해가 지나면 이 곡을 칠 수 있게 됩니다"},
+    {w:40, inst:"🎵 베이스", t:"언젠가 따라 쳐보고 싶었던 그 노래"},
+    {w:41, inst:"🎸 기타", t:"들으면 자꾸 입꼬리가 올라가는 노래"},
+    {w:42, inst:"🥁 드럼", t:"들으면 자꾸 어깨가 들썩이는 노래"},
+    {w:43, inst:"🎤 보컬", t:"들으면 자꾸 흥얼거리게 되는 노래"},
+    {w:44, inst:"🎵 베이스", t:"들으면 자꾸 마음이 가는 노래"},
+    {w:45, inst:"🎸 기타", t:"연말이 다가오면 떠오르는 그 노래"},
+    {w:46, inst:"🥁 드럼", t:"한 해를 마무리할 때 어울리는 노래"},
+    {w:47, inst:"🎤 보컬", t:"연말 분위기에 잘 어울리는 그 노래"},
+    {w:48, inst:"🎵 베이스", t:"한 해의 끝에 듣고 싶은 노래"},
+    {w:49, inst:"🎸 기타", t:"올해 가장 마음에 남은 그 노래"},
+    {w:50, inst:"🥁 드럼", t:"올해 자주 들었던 그 노래"},
+    {w:51, inst:"🎤 보컬", t:"올해 가장 많이 부른 그 노래"},
+    {w:52, inst:"🎵 베이스", t:"올해 가장 좋아한 그 노래"},
   ]},
 ];
 
