@@ -2303,7 +2303,7 @@ canvas{display:block;border-radius:6px;}
             <div class="card-meta">
               <div class="card-label" style="color:var(--insta)">🎨 릴스 템플릿 PNG 생성기</div>
               <div class="card-title">시안 그대로 — 한글 깨짐 0% · 즉시 다운로드</div>
-              <div class="card-sub">상단 영상 자리 + 하단 정보 (시리즈 태그 · 노래 제목 · 코드 진행)</div>
+              <div class="card-sub">상단 영상 + 제목 + 🎼 악보 전용 빈 공간 (파이널컷에서 악보 크게 얹기)</div>
             </div>
             <div class="day-badge" style="background:rgba(127,119,221,0.18);color:#7F77DD">🎨 디자인용</div>
           </div>
@@ -2313,7 +2313,8 @@ canvas{display:block;border-radius:6px;}
             <ul>
               <li>모든 한글 텍스트가 깨짐 없이 정확히 표기됩니다 (브라우저 Canvas로 직접 그림)</li>
               <li>다운받은 PNG를 파이널컷에 임포트해서 사용</li>
-              <li>영상은 PNG 위쪽 1085px 회색 영역에 배치하세요</li>
+              <li>영상은 PNG 위쪽 <b>940px</b> 회색 영역에 배치하세요</li>
+              <li>🎼 <b>악보는 미리보기의 주황 점선 박스(화면 중하단) 안에 크게 얹으세요</b> — 약 620px 높이가 확보돼 있습니다</li>
             </ul>
           </div>
 
@@ -2331,7 +2332,7 @@ canvas{display:block;border-radius:6px;}
               <input type="text" id="wed-phrase2" value="블루스 릭" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
             <div>
-              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">코드 진행</label>
+              <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600">코드 진행 <span style="color:var(--text3);font-weight:400">(PNG엔 안 들어감 — 악보에 코드명이 있으니 캡션 작성 참고용)</span></label>
               <input type="text" id="wed-genre" value="E → C#m7 → G#m → A" style="width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(127,119,221,0.3);border-radius:8px;color:var(--text1);font-size:13px;font-family:inherit">
             </div>
 
@@ -7624,60 +7625,64 @@ function drawWedTemplate(canvas, transparent) {
   ctx.clearRect(0, 0, W, H);
   ctx.restore();
 
+  // ── 새 레이아웃 기준선 ──
+  const VIDEO_BOTTOM = 940;   // 영상 자리 하단 (기존 1085 → 49%로 축소)
+  // 악보 자리 참고: 제목 아래 약 1290~1850 (560px) 비어 있음 — 파이널컷에서 얹기
+
   if (!transparent) {
-    // 미리보기 모드: 배경 + 회색 영상 자리 표시
+    // 미리보기 모드: 배경 + 회색 영상 자리 + 악보 가이드 영역 표시
     ctx.fillStyle = '#121212';
     ctx.fillRect(0, 0, W, H);
+    // 영상 자리 (상단)
     ctx.fillStyle = '#1C1C1C';
-    ctx.fillRect(0, 0, W, 1085);
+    ctx.fillRect(0, 0, W, VIDEO_BOTTOM);
     ctx.fillStyle = '#3C3C3C';
     ctx.font = '32px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('▶  영상 자리', W/2, 540);
+    ctx.fillText('▶  영상 자리', W/2, VIDEO_BOTTOM/2);
     // 분리선
     ctx.fillStyle = '#2A2A2A';
-    ctx.fillRect(0, 1083, W, 4);
+    ctx.fillRect(0, VIDEO_BOTTOM - 2, W, 4);
+
+    // (악보 자리 가이드 없음 — 사용자가 파이널컷에서 직접 얹음)
   } else {
-    // 다운로드 모드: 하단 텍스트 영역만 검정 페이드 (영상 자리는 투명)
-    const botGrad = ctx.createLinearGradient(0, 1085, 0, H);
+    // 다운로드 모드: 하단 텍스트 영역만 검정 페이드 (영상 자리·악보 자리는 투명)
+    const botGrad = ctx.createLinearGradient(0, VIDEO_BOTTOM, 0, H);
     botGrad.addColorStop(0, 'rgba(0,0,0,0)');       // 영상 경계는 투명
     botGrad.addColorStop(0.08, 'rgba(0,0,0,0.7)');  // 살짝 아래부터 진해짐
     botGrad.addColorStop(0.18, 'rgba(0,0,0,1.0)');  // 텍스트 영역은 완전 검정
     botGrad.addColorStop(1, 'rgba(0,0,0,1.0)');     // 끝까지 검정
     ctx.fillStyle = botGrad;
-    ctx.fillRect(0, 1085, W, H - 1085);
+    ctx.fillRect(0, VIDEO_BOTTOM, W, H - VIDEO_BOTTOM);
   }
 
+  // ── 제목 블록 (영상 바로 아래로 바짝 올림) ──
   // 시리즈 태그 — 주황 막대
+  ctx.textBaseline = 'middle';
   ctx.fillStyle = '#EF9F27';
-  ctx.fillRect(60, 1135, 8, 50);
+  ctx.fillRect(60, 990, 8, 50);
   // 시리즈 태그 텍스트
   ctx.font = 'bold 38px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
   ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
   ctx.fillStyle = '#EF9F27';
-  ctx.fillText(series, 86, 1160);
+  ctx.fillText(series, 86, 1015);
 
   // 노래 제목 1줄 (85px) + 2줄 (72px 작게)
   ctx.fillStyle = '#EF9F27';
   ctx.font = 'bold 85px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillText(phrase1, 60, 1255);
+  ctx.fillText(phrase1, 60, 1105);
   const lineGap = Math.round(85 * 1.15);
   ctx.font = 'bold 72px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillText(phrase2, 60, 1255 + lineGap);
+  ctx.fillText(phrase2, 60, 1105 + lineGap);
 
-  // 코드 진행
-  ctx.font = '42px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
-  ctx.fillStyle = '#969696';
-  const genreY = 1255 + lineGap + 95;
-  ctx.fillText(genre, 60, genreY);
+  // (코드 진행 텍스트 줄 제거 — 악보 안에 코드명이 들어가므로 공간을 악보에 양보)
 
-  // 워터마크 (가운데 정렬)
+  // 워터마크 (가운데 정렬, 맨 아래)
   ctx.font = '26px "Nanum Gothic", "Apple SD Gothic Neo", sans-serif';
   ctx.fillStyle = '#6E6E6E';
   ctx.textAlign = 'center';
-  ctx.fillText('카운트베이시실용음악학원', W/2, 1820);
+  ctx.fillText('카운트베이시실용음악학원', W/2, 1888);
 }
 
 function previewWedTemplate() {
