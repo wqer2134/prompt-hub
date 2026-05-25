@@ -94,6 +94,7 @@
   .ch-tab.active-kakao { border-color: var(--kakao); background: rgba(247,210,106,0.12); color: var(--kakao); }
   .ch-tab.active-editor { border-color: var(--guitar); background: rgba(124,106,247,0.12); color: var(--guitar); }
   .ch-tab.active-logo { border-color: #EF9F27; background: rgba(239,159,39,0.12); color: #EF9F27; }
+  .ch-tab.active-ad { border-color: #EF9F27; background: rgba(239,159,39,0.12); color: #EF9F27; }
   /* 로고 시스템 패널 */
   .logo-intro { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin-bottom: 22px; }
   .logo-intro h3 { font-size: 18px; font-weight: 700; color: #EF9F27; margin-bottom: 10px; }
@@ -439,6 +440,7 @@ canvas{display:block;border-radius:6px;}
     <button class="ch-tab" onclick="switchChannel('kakao', this)">💬 카카오채널</button>
     <button class="ch-tab" onclick="switchChannel('editor', this)">🎸 리듬·코드 에디터</button>
     <button class="ch-tab" onclick="switchChannel('logo', this)">🎨 로고</button>
+    <button class="ch-tab" onclick="switchChannel('ad', this)">🖼️ 광고 이미지</button>
   </div>
 
   <!-- 블로그 패널 -->
@@ -6144,6 +6146,67 @@ Spell exactly "COUNT BASIE" and "MUSIC ACADEMY".</div>
     </div>
 
   </div><!-- /panel-logo -->
+
+  <!-- 광고 이미지 패널 -->
+  <div id="panel-ad" class="panel">
+
+    <div class="logo-intro">
+      <h3>🖼️ 광고 이미지 프롬프트</h3>
+      <p>카카오·플레이스·카페·홈페이지·당근·구글맵 <b style="color:#EF9F27">6개 채널 글 본문</b>에 함께 넣는 광고 배너예요. 아래 프롬프트를 GPT(이미지 생성)에 붙여넣으면 됩니다. <b style="color:#EF9F27">정사각(1:1)</b>이라 어느 채널에 넣어도 안 잘립니다.</p>
+      <div class="logo-swatches">
+        <div class="swatch"><span class="dot" style="background:#EF9F27"></span>앰버 오렌지 #EF9F27</div>
+        <div class="swatch"><span class="dot" style="background:#FFFFFF"></span>화이트 #FFFFFF</div>
+        <div class="swatch"><span class="dot" style="background:#121212"></span>딥 블랙 #121212</div>
+      </div>
+    </div>
+
+    <!-- 무료체험 배너 -->
+    <div class="logo-card">
+      <div class="logo-card-head">
+        <div class="logo-card-title">🎁 무료체험 배너 (미니멀 타이포 · 정사각)</div>
+        <button class="copy-btn" onclick="copyPrompt('ad-trial', this)">📋 복사하기</button>
+      </div>
+      <div class="logo-card-use">6개 채널 글 본문 삽입용 · 1080×1080 · 왼쪽 정렬 + 여백 (안 잘림)</div>
+      <div class="logo-prompt" id="ad-trial">A minimal editorial typography poster (1:1 square, 1080x1080) for a music
+academy. Dark theme, premium brand-poster aesthetic — NOT an advertisement,
+NOT a flyer. Think high-end minimal brand campaign.
+
+Background: solid deep black (#121212), completely clean. Lots of empty
+negative space — do NOT fill the canvas.
+
+Layout: LEFT-ALIGNED, asymmetric. NO boxes, NO rounded pill shapes, NO
+borders around text. Text simply sits on the black background.
+
+Text (spell Korean EXACTLY):
+- Small label, top-left, light gray, letter-spaced: "FREE TRIAL"
+  with a short amber-orange underline beneath it
+- Small line below the label, light gray: "등록 전에 미리 받아보세요"
+- Large bold hero text, left-aligned, stacked on 3 lines:
+  "무료" / "체험" / "레슨" — with "레슨" in amber-orange (#EF9F27),
+  "무료" and "체험" in white. Very large, confident, lots of space around it.
+- Small text lower-left, light gray: "기타 · 드럼 · 보컬 · 베이스"
+  and below it "032-463-3455" and "1:1 개인레슨"
+- Small logo "COUNT BASIE MUSIC ACADEMY" in the bottom-left corner
+  (COUNT in white, BASIE in amber-orange).
+
+Color: ONLY white, light gray, and amber-orange (#EF9F27) on black.
+Minimal, lots of breathing room, editorial, sophisticated, modern.
+Format: square, generous margins, keep the right side mostly empty (negative space).
+Spell Korean EXACTLY. NO clipart, NO instrument illustrations,
+NO decorative shapes, NO boxes.</div>
+    </div>
+
+
+    <div class="logo-tip">
+      💡 <b>사용 팁</b><br>
+      • <b>정사각(1:1)</b>이라 6개 채널 본문 어디 넣어도 안 잘려요.<br>
+      • <b>왼쪽 정렬 + 오른쪽 여백</b> 스타일이에요. 악기 그림 없이 큰 글자로 승부 → 촌스럽지 않고 브랜드 느낌. 요즘 광고가 다 이렇게 비워둬요.<br>
+      • 한글이 많아서 <b>글자가 깨질 수 있어요</b>. 5~6번 재생성하거나, 제일 깔끔한 걸 받아서 글자만 캔바로 다시 얹으면 확실합니다. (글자가 커서 잘 안 깨지는 편)<br>
+      • 너무 비어 보이면 "오른쪽에 작은 음표/얇은 선 하나 추가"로 살짝 채울 수 있어요. 안 넣어도 충분히 깔끔합니다.<br>
+      • 새 배너(할인·이벤트 등)도 이 <b>왼쪽 정렬 타이포</b> 스타일로 만들면 다 통일돼요. 필요하면 이 탭에 카드를 계속 추가하면 됩니다.
+    </div>
+
+  </div><!-- /panel-ad -->
 
 </div><!-- /wrapper -->
 
