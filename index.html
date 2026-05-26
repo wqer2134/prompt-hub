@@ -257,6 +257,16 @@
   .topic-item:hover { border-color: var(--accent); background: rgba(124,106,247,0.05); }
   .topic-week { font-size: 10px; color: var(--text3); min-width: 32px; padding-top: 2px; font-family: 'DM Mono', monospace; }
   .topic-text { font-size: 13px; color: var(--text2); line-height: 1.4; }
+  /* 진도 체크 시스템 */
+  .topic-item { position: relative; }
+  .prog-check { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--text3); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: transparent; z-index: 5; transition: all .15s; padding: 0; }
+  .prog-check:hover { border-color: #EF9F27; }
+  .prog-check.done { background: #EF9F27; border-color: #EF9F27; color: #fff; }
+  .topic-item.done-item { opacity: 0.45; }
+  .topic-item.done-item .topic-text { text-decoration: line-through; }
+  .next-banner { background: rgba(239,159,39,0.1); border: 1px solid rgba(239,159,39,0.35); border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-size: 13.5px; color: var(--text); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .next-banner b { color: #EF9F27; }
+  .next-banner .done-count { color: var(--text3); font-size: 12.5px; margin-left: auto; }
   .topic-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
   .ttag {
     font-size: 10px; padding: 1px 6px; border-radius: 6px;
@@ -4555,8 +4565,8 @@ init();
   🌐 https://www.count-music.com/index
 
 ② 네이버플레이스 ★메인 — 검색 신뢰 확보·전화/길찾기 유도
-- 제목: 30자 이내
-- 본문: 카카오 원본 재활용 / 해시태그 제거
+- 제목: 30자 이내 / "인천 구월동 기타학원" 같은 지역+키워드를 제목·본문 첫 문장에 자연스럽게 넣을 것 (검색 노출용)
+- 본문: 카카오 원본 재활용 / 해시태그 제거 / "구월동·남동구·인천 실용음악학원" 등 지역 키워드를 본문에 1~2회 자연스럽게 포함
 - 마무리 CTA: "📞 전화 한 통이면 바로 상담 가능! 길찾기로 편하게 찾아오세요." (전화·길찾기 강조)
 
 ③ 네이버카페 (보조) — 지역 커뮤니티 노출
@@ -4566,16 +4576,17 @@ init();
 - ※ 외부 지역카페는 상업글이 막힐 수 있으니, 등업·제휴 가능한 카페에만 게시
 
 ④ 구글맵 (보조, 영문 포함) — 운영 신뢰 보강
-- 본문: 카카오 원본 재활용
+- 본문: 카카오 원본을 3~4줄로 짧게 압축 (구글맵 소식은 길면 안 읽힘. 핵심만 간결하게)
 - 마무리 CTA(국문): "전화 주시면 친절히 안내해 드려요 ☎"
 - 맨 마지막 줄 영문 고정 문구:
   "Free trial lesson available. Kakao chat welcome. ☎ 032-463-3455"
 
 ⑤ 당근비즈니스 (보조) — 동네 주민 즉시 문의 유도
 - 제목: 25자 이내 (지역민 친근체)
-- 첫 줄: "구월동 분들~ 🎸" 로 시작 (첫 줄만 수정)
-- 나머지 본문: 카카오 원본 재활용
-- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊" (당근 채팅·전화 강조)
+- 첫 줄: "구월동 분들~ 🎸" 로 시작
+- 본문: 카카오 원본을 3~4줄로 짧게 (당근은 짧고 가벼운 글이 잘 읽힘. 긴 본문 금지)
+- 톤: 광고처럼 쓰지 말고, 동네 이웃이 편하게 알려주듯 친근하고 담백하게 (과한 홍보 문구·이모지 남발 금지 — 당근은 광고 티 나면 노출 제한)
+- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊"
 - ※ 당근은 "동네 비즈니스" 등록 후 게시, 반복 게시 제한 주의
 
 ⑥ 학원 홈페이지 ★메인 — 브랜드 신뢰·등록 전환 종착지
@@ -4678,176 +4689,6 @@ init();
           </div>
         </div>
 
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#f7923a">🎨 ChatGPT 이미지 프롬프트</div>
-              <div class="card-title">기타 레슨 홍보 이미지 (영문)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 기타 레슨실 사진 업로드 후 입력</div>
-            </div>
-            <div class="day-badge">🗓 화요일</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="kakao-img-tue">A realistic, high-resolution square promotional photo for a music academy.
-Size: 300×300px (square format, 1:1 aspect ratio)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal guitar lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: acoustic guitars, music stands, amplifier, tuner
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic iPhone camera shot style. Sharp, high-resolution.
-Clean and bright color tone — white and light grey palette.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From the middle of the image downward, gradually darken the photo to pure black (#000000) at the very bottom.
-- The gradient should feel like a natural vignette — transparent at the top, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"기타레슨" + "제대로 배워보세요" on the same line:
-  - "기타레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #E85A00→#F7C800 / 2주: #CC1A00→#E85A00 / 3주: #D4900A→#E85A00 / 4주: #FF4500→#FFB800
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "기타레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('kakao-img-tue',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('kakao-img-tue',this)">접기 ▲</button>
-          </div>
-        </div>
-
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#f7923a">🖼 구글 애즈 이미지 프롬프트 · 기타</div>
-              <div class="card-title">기타 구글 애즈 이미지 (1200×628)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 가로형 반응형 디스플레이</div>
-            </div>
-            <div class="day-badge">📐 1200×628</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="google-img-tue">A realistic, high-resolution horizontal banner image for Google Ads.
-Size: 1200×628px (landscape format)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal guitar lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: acoustic guitars, music stands, amplifier, tuner
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[구도 – 가로형 1200×628]
-- 배경이 화면 전체에 꽉 차게 이어지도록
-- 텍스트는 하단 바에만 들어가므로 화면 전체를 사진으로 채울 것
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic photo style, sharp, high-resolution, horizontal composition.
-Clean and bright color tone. Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From about 40% from the bottom, gradually darken the photo to pure black (#000000) at the very bottom edge.
-- The gradient should feel like a natural cinematic vignette — fully transparent at the top half, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"기타레슨" + "제대로 배워보세요" on the same line, center aligned:
-  - "기타레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #E85A00→#F7C800 / 2주: #CC1A00→#E85A00 / 3주: #D4900A→#E85A00 / 4주: #FF4500→#FFB800
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "기타레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular, center aligned
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬
-          </div></div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('google-img-tue',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('google-img-tue',this)">접기 ▲</button>
-          </div>
-        </div>
       </div>
 
       <div class="divider"></div>
@@ -4888,6 +4729,83 @@ Place the following texts directly over the dark gradient area:
         <div class="section-desc">클릭 → 복사</div>
       </div>
       <div class="calendar-wrap" id="kakao-cal-tue"></div>
+
+      <!-- 기타 광고 이미지 (카카오 정사각 + 구글 가로) -->
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="font-size:14px; font-weight:700; color:#EF9F27; margin-bottom:12px;">🎸 기타 광고 이미지</div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">📷 기타 레슨 (카카오 · 정사각)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-sq-guitar', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1080×1080 · 카카오 홈/프로필 배경용</div>
+          <div class="logo-prompt" id="k-sq-guitar">A realistic, high-resolution square promotional photo for a music academy.
+Size: 1080×1080px (square format, 1:1 aspect ratio)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal guitar lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: acoustic guitars, music stands, amplifier, tuner
+- 추가 요소 (랜덤): plants, table lamp, framed wall art, acoustic panels, shelves with books/sheets, small clock, fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+
+[톤] White walls + warm wood floor (always). Bright, clean, inviting, friendly. 매번 배경 디테일 다르게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미로 배우는 친근한 느낌, NOT 진지/프로페셔널).
+- 타입(랜덤): 한국인 중고등학생(교복) / 대학생(캐주얼·니트·후드) / 20대 직장인(셔츠·심플 캐주얼)
+- 자세(랜덤): 정면 미디엄샷 / 측면 45도 / 미소 지으며 연주 / 손·악기 클로즈업 / 로우앵글 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 이미지에 직접 포함]
+Apply a natural black gradient fade to the bottom (from middle downward, darken to pure black at bottom edge; natural vignette, NO separate bar/rectangle).
+Place texts over the dark area, BOTTOM-LEFT aligned:
+
+1행 "기타 레슨": "기타" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold, 65% size of 1행
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 문의 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색(blue/purple/red/neon) 절대 금지.</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">🌐 기타 레슨 (구글 애즈 · 가로)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-wide-guitar', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1200×628 · 구글 디스플레이 광고용</div>
+          <div class="logo-prompt" id="k-wide-guitar">A realistic, high-resolution horizontal banner for a music academy.
+Size: 1200×628px (landscape, for Google Display ads)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal guitar lesson room with white walls and warm wood floor tones.
+※ 소품 일부만 자연스럽게: acoustic guitars, music stands, amplifier, tuner
+- 추가 요소(랜덤): plants, table lamp, framed art, acoustic panels, shelves, window with blinds
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+[톤] White walls + warm wood floor. Bright, clean, friendly. 매번 배경 다르게.
+
+[구도] 인물/사진은 오른쪽에 배치, 왼쪽은 어둡게 (왼쪽에서 soft dark gradient) → 왼쪽 글자가 잘 읽히게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미·친근, NOT 진지).
+- 타입(랜덤): 중고등학생(교복) / 대학생(캐주얼) / 20대 직장인(심플 캐주얼)
+- 자세(랜덤): 미디엄샷 / 측면 45도 / 미소 연주 / 클로즈업 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 왼쪽, LEFT 정렬]
+1행 "기타 레슨": "기타" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색 절대 금지.</div>
+        </div>
+      </div>
     </div>
 
     <!-- 목요일 · 드럼 -->
@@ -4947,8 +4865,8 @@ Place the following texts directly over the dark gradient area:
   🌐 https://www.count-music.com/index
 
 ② 네이버플레이스 ★메인 — 검색 신뢰 확보·전화/길찾기 유도
-- 제목: 30자 이내
-- 본문: 카카오 원본 재활용 / 해시태그 제거
+- 제목: 30자 이내 / "인천 구월동 기타학원" 같은 지역+키워드를 제목·본문 첫 문장에 자연스럽게 넣을 것 (검색 노출용)
+- 본문: 카카오 원본 재활용 / 해시태그 제거 / "구월동·남동구·인천 실용음악학원" 등 지역 키워드를 본문에 1~2회 자연스럽게 포함
 - 마무리 CTA: "📞 전화 한 통이면 바로 상담 가능! 길찾기로 편하게 찾아오세요." (전화·길찾기 강조)
 
 ③ 네이버카페 (보조) — 지역 커뮤니티 노출
@@ -4958,16 +4876,17 @@ Place the following texts directly over the dark gradient area:
 - ※ 외부 지역카페는 상업글이 막힐 수 있으니, 등업·제휴 가능한 카페에만 게시
 
 ④ 구글맵 (보조, 영문 포함) — 운영 신뢰 보강
-- 본문: 카카오 원본 재활용
+- 본문: 카카오 원본을 3~4줄로 짧게 압축 (구글맵 소식은 길면 안 읽힘. 핵심만 간결하게)
 - 마무리 CTA(국문): "전화 주시면 친절히 안내해 드려요 ☎"
 - 맨 마지막 줄 영문 고정 문구:
   "Free trial lesson available. Kakao chat welcome. ☎ 032-463-3455"
 
 ⑤ 당근비즈니스 (보조) — 동네 주민 즉시 문의 유도
 - 제목: 25자 이내 (지역민 친근체)
-- 첫 줄: "구월동 분들~ 🥁" 로 시작 (첫 줄만 수정)
-- 나머지 본문: 카카오 원본 재활용
-- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊" (당근 채팅·전화 강조)
+- 첫 줄: "구월동 분들~ 🥁" 로 시작
+- 본문: 카카오 원본을 3~4줄로 짧게 (당근은 짧고 가벼운 글이 잘 읽힘. 긴 본문 금지)
+- 톤: 광고처럼 쓰지 말고, 동네 이웃이 편하게 알려주듯 친근하고 담백하게 (과한 홍보 문구·이모지 남발 금지 — 당근은 광고 티 나면 노출 제한)
+- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊"
 - ※ 당근은 "동네 비즈니스" 등록 후 게시, 반복 게시 제한 주의
 
 ⑥ 학원 홈페이지 ★메인 — 브랜드 신뢰·등록 전환 종착지
@@ -5070,178 +4989,6 @@ Place the following texts directly over the dark gradient area:
           </div>
         </div>
 
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#3a7ef7">🎨 ChatGPT 이미지 프롬프트</div>
-              <div class="card-title">드럼 레슨 홍보 이미지 (영문)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 드럼 레슨실 사진 업로드 후 입력</div>
-            </div>
-            <div class="day-badge">🗓 목요일</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="kakao-img-thu">A realistic, high-resolution square promotional photo for a music academy.
-Size: 300×300px (square format, 1:1 aspect ratio)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal drum lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: drum set, drum stands, cymbals, sticks, music stand
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic iPhone camera shot style. Sharp, high-resolution.
-Dark wood tone with warm spotlight lighting — moody and professional.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From the middle of the image downward, gradually darken the photo to pure black (#000000) at the very bottom.
-- The gradient should feel like a natural vignette — transparent at the top, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"드럼레슨" + "제대로 배워보세요" on the same line:
-  - "드럼레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #3A7EF7→#9B3AF7 / 2주: #1A3AF7→#3AB8F7 / 3주: #3A5EF7→#3AF7E0 / 4주: #3A7EF7→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "드럼레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬
-</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('kakao-img-thu',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('kakao-img-thu',this)">접기 ▲</button>
-          </div>
-        </div>
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#3a7ef7">🖼 구글 애즈 이미지 프롬프트 · 드럼</div>
-              <div class="card-title">드럼 구글 애즈 이미지 (1200×628)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 가로형 반응형 디스플레이</div>
-            </div>
-            <div class="day-badge">📐 1200×628</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="google-img-thu">A realistic, high-resolution horizontal banner image for Google Ads.
-Size: 1200×628px (landscape format)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal drum lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: drum set, drum stands, cymbals, sticks, music stand
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[구도 – 가로형 1200×628]
-- 배경이 화면 전체에 꽉 차게 이어지도록
-- 텍스트는 하단 바에만 들어가므로 화면 전체를 사진으로 채울 것
-- 좌측 공간을 비우지 말 것 — 배경이 전체를 채워야 함
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic photo style, sharp, high-resolution, horizontal composition.
-Clean and bright color tone. Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From about 40% from the bottom, gradually darken the photo to pure black (#000000) at the very bottom edge.
-- The gradient should feel like a natural cinematic vignette — fully transparent at the top half, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"드럼레슨" + "제대로 배워보세요" on the same line, center aligned:
-  - "드럼레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #3A7EF7→#9B3AF7 / 2주: #1A3AF7→#3AB8F7 / 3주: #3A5EF7→#3AF7E0 / 4주: #3A7EF7→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "드럼레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular, center aligned
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬
-</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('google-img-thu',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('google-img-thu',this)">접기 ▲</button>
-          </div>
-        </div>
       </div>
 
       <div class="divider"></div>
@@ -5282,6 +5029,83 @@ Place the following texts directly over the dark gradient area:
         <div class="section-desc">클릭 → 복사</div>
       </div>
       <div class="calendar-wrap" id="kakao-cal-thu"></div>
+
+      <!-- 드럼 광고 이미지 (카카오 정사각 + 구글 가로) -->
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="font-size:14px; font-weight:700; color:#EF9F27; margin-bottom:12px;">🥁 드럼 광고 이미지</div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">📷 드럼 레슨 (카카오 · 정사각)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-sq-drum', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1080×1080 · 카카오 홈/프로필 배경용</div>
+          <div class="logo-prompt" id="k-sq-drum">A realistic, high-resolution square promotional photo for a music academy.
+Size: 1080×1080px (square format, 1:1 aspect ratio)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal drum lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: a drum kit, cymbals, drumsticks, music stands
+- 추가 요소 (랜덤): plants, table lamp, framed wall art, acoustic panels, shelves with books/sheets, small clock, fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+
+[톤] White walls + warm wood floor (always). Bright, clean, inviting, friendly. 매번 배경 디테일 다르게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미로 배우는 친근한 느낌, NOT 진지/프로페셔널).
+- 타입(랜덤): 한국인 중고등학생(교복) / 대학생(캐주얼·니트·후드) / 20대 직장인(셔츠·심플 캐주얼)
+- 자세(랜덤): 정면 미디엄샷 / 측면 45도 / 미소 지으며 연주 / 손·악기 클로즈업 / 로우앵글 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 이미지에 직접 포함]
+Apply a natural black gradient fade to the bottom (from middle downward, darken to pure black at bottom edge; natural vignette, NO separate bar/rectangle).
+Place texts over the dark area, BOTTOM-LEFT aligned:
+
+1행 "드럼 레슨": "드럼" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold, 65% size of 1행
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 문의 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색(blue/purple/red/neon) 절대 금지.</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">🌐 드럼 레슨 (구글 애즈 · 가로)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-wide-drum', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1200×628 · 구글 디스플레이 광고용</div>
+          <div class="logo-prompt" id="k-wide-drum">A realistic, high-resolution horizontal banner for a music academy.
+Size: 1200×628px (landscape, for Google Display ads)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal drum lesson room with white walls and warm wood floor tones.
+※ 소품 일부만 자연스럽게: a drum kit, cymbals, drumsticks, music stands
+- 추가 요소(랜덤): plants, table lamp, framed art, acoustic panels, shelves, window with blinds
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+[톤] White walls + warm wood floor. Bright, clean, friendly. 매번 배경 다르게.
+
+[구도] 인물/사진은 오른쪽에 배치, 왼쪽은 어둡게 (왼쪽에서 soft dark gradient) → 왼쪽 글자가 잘 읽히게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미·친근, NOT 진지).
+- 타입(랜덤): 중고등학생(교복) / 대학생(캐주얼) / 20대 직장인(심플 캐주얼)
+- 자세(랜덤): 미디엄샷 / 측면 45도 / 미소 연주 / 클로즈업 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 왼쪽, LEFT 정렬]
+1행 "드럼 레슨": "드럼" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색 절대 금지.</div>
+        </div>
+      </div>
     </div>
 
     <!-- 금요일 · 보컬 -->
@@ -5341,8 +5165,8 @@ Place the following texts directly over the dark gradient area:
   🌐 https://www.count-music.com/index
 
 ② 네이버플레이스 ★메인 — 검색 신뢰 확보·전화/길찾기 유도
-- 제목: 30자 이내
-- 본문: 카카오 원본 재활용 / 해시태그 제거
+- 제목: 30자 이내 / "인천 구월동 기타학원" 같은 지역+키워드를 제목·본문 첫 문장에 자연스럽게 넣을 것 (검색 노출용)
+- 본문: 카카오 원본 재활용 / 해시태그 제거 / "구월동·남동구·인천 실용음악학원" 등 지역 키워드를 본문에 1~2회 자연스럽게 포함
 - 마무리 CTA: "📞 전화 한 통이면 바로 상담 가능! 길찾기로 편하게 찾아오세요." (전화·길찾기 강조)
 
 ③ 네이버카페 (보조) — 지역 커뮤니티 노출
@@ -5352,16 +5176,17 @@ Place the following texts directly over the dark gradient area:
 - ※ 외부 지역카페는 상업글이 막힐 수 있으니, 등업·제휴 가능한 카페에만 게시
 
 ④ 구글맵 (보조, 영문 포함) — 운영 신뢰 보강
-- 본문: 카카오 원본 재활용
+- 본문: 카카오 원본을 3~4줄로 짧게 압축 (구글맵 소식은 길면 안 읽힘. 핵심만 간결하게)
 - 마무리 CTA(국문): "전화 주시면 친절히 안내해 드려요 ☎"
 - 맨 마지막 줄 영문 고정 문구:
   "Free trial lesson available. Kakao chat welcome. ☎ 032-463-3455"
 
 ⑤ 당근비즈니스 (보조) — 동네 주민 즉시 문의 유도
 - 제목: 25자 이내 (지역민 친근체)
-- 첫 줄: "구월동 분들~ 🎤" 로 시작 (첫 줄만 수정)
-- 나머지 본문: 카카오 원본 재활용
-- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊" (당근 채팅·전화 강조)
+- 첫 줄: "구월동 분들~ 🎤" 로 시작
+- 본문: 카카오 원본을 3~4줄로 짧게 (당근은 짧고 가벼운 글이 잘 읽힘. 긴 본문 금지)
+- 톤: 광고처럼 쓰지 말고, 동네 이웃이 편하게 알려주듯 친근하고 담백하게 (과한 홍보 문구·이모지 남발 금지 — 당근은 광고 티 나면 노출 제한)
+- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊"
 - ※ 당근은 "동네 비즈니스" 등록 후 게시, 반복 게시 제한 주의
 
 ⑥ 학원 홈페이지 ★메인 — 브랜드 신뢰·등록 전환 종착지
@@ -5464,175 +5289,6 @@ Place the following texts directly over the dark gradient area:
           </div>
         </div>
 
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#c46af7">🎨 ChatGPT 이미지 프롬프트</div>
-              <div class="card-title">보컬 레슨 홍보 이미지 (영문)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 보컬 레슨실 사진 업로드 후 입력</div>
-            </div>
-            <div class="day-badge">🗓 금요일</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="kakao-img-fri">A realistic, high-resolution square promotional photo for a music academy.
-Size: 300×300px (square format, 1:1 aspect ratio)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal vocal lesson booth with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: microphone with stand, music stand, acoustic panels, monitor speaker
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic iPhone camera shot style. Sharp, high-resolution.
-Bright and warm color tone — white and beige palette.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From the middle of the image downward, gradually darken the photo to pure black (#000000) at the very bottom.
-- The gradient should feel like a natural vignette — transparent at the top, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"보컬레슨" + "제대로 배워보세요" on the same line:
-  - "보컬레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #F76AC4→#C46AF7 / 2주: #8A6AF7→#D4B8FF / 3주: #F76A8A→#F76AC4 / 4주: #F76AC4→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "보컬레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬
-</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('kakao-img-fri',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('kakao-img-fri',this)">접기 ▲</button>
-          </div>
-        </div>
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#c46af7">🖼 구글 애즈 이미지 프롬프트 · 보컬</div>
-              <div class="card-title">보컬 구글 애즈 이미지 (1200×628)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 가로형 반응형 디스플레이</div>
-            </div>
-            <div class="day-badge">📐 1200×628</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="google-img-fri">A realistic, high-resolution horizontal banner image for Google Ads.
-Size: 1200×628px (landscape format)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal vocal lesson booth with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: microphone with stand, music stand, acoustic panels, monitor speaker
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[구도 – 가로형 1200×628]
-- 배경이 화면 전체에 꽉 차게 이어지도록
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic photo style, sharp, high-resolution, horizontal composition.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From about 40% from the bottom, gradually darken the photo to pure black (#000000) at the very bottom edge.
-- The gradient should feel like a natural cinematic vignette — fully transparent at the top half, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"보컬레슨" + "제대로 배워보세요" on the same line, center aligned:
-  - "보컬레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #F76AC4→#C46AF7 / 2주: #8A6AF7→#D4B8FF / 3주: #F76A8A→#F76AC4 / 4주: #F76AC4→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "보컬레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular, center aligned
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('google-img-fri',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('google-img-fri',this)">접기 ▲</button>
-          </div>
-        </div>
       </div>
 
       <div class="divider"></div>
@@ -5673,6 +5329,83 @@ Place the following texts directly over the dark gradient area:
         <div class="section-desc">클릭 → 복사</div>
       </div>
       <div class="calendar-wrap" id="kakao-cal-fri"></div>
+
+      <!-- 보컬 광고 이미지 (카카오 정사각 + 구글 가로) -->
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="font-size:14px; font-weight:700; color:#EF9F27; margin-bottom:12px;">🎤 보컬 광고 이미지</div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">📷 보컬 레슨 (카카오 · 정사각)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-sq-vocal', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1080×1080 · 카카오 홈/프로필 배경용</div>
+          <div class="logo-prompt" id="k-sq-vocal">A realistic, high-resolution square promotional photo for a music academy.
+Size: 1080×1080px (square format, 1:1 aspect ratio)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal vocal lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: a microphone on a stand, music stands, a small mixer
+- 추가 요소 (랜덤): plants, table lamp, framed wall art, acoustic panels, shelves with books/sheets, small clock, fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+
+[톤] White walls + warm wood floor (always). Bright, clean, inviting, friendly. 매번 배경 디테일 다르게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미로 배우는 친근한 느낌, NOT 진지/프로페셔널).
+- 타입(랜덤): 한국인 중고등학생(교복) / 대학생(캐주얼·니트·후드) / 20대 직장인(셔츠·심플 캐주얼)
+- 자세(랜덤): 정면 미디엄샷 / 측면 45도 / 미소 지으며 연주 / 손·악기 클로즈업 / 로우앵글 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 이미지에 직접 포함]
+Apply a natural black gradient fade to the bottom (from middle downward, darken to pure black at bottom edge; natural vignette, NO separate bar/rectangle).
+Place texts over the dark area, BOTTOM-LEFT aligned:
+
+1행 "보컬 레슨": "보컬" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold, 65% size of 1행
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 문의 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색(blue/purple/red/neon) 절대 금지.</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">🌐 보컬 레슨 (구글 애즈 · 가로)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-wide-vocal', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1200×628 · 구글 디스플레이 광고용</div>
+          <div class="logo-prompt" id="k-wide-vocal">A realistic, high-resolution horizontal banner for a music academy.
+Size: 1200×628px (landscape, for Google Display ads)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal vocal lesson room with white walls and warm wood floor tones.
+※ 소품 일부만 자연스럽게: a microphone on a stand, music stands, a small mixer
+- 추가 요소(랜덤): plants, table lamp, framed art, acoustic panels, shelves, window with blinds
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+[톤] White walls + warm wood floor. Bright, clean, friendly. 매번 배경 다르게.
+
+[구도] 인물/사진은 오른쪽에 배치, 왼쪽은 어둡게 (왼쪽에서 soft dark gradient) → 왼쪽 글자가 잘 읽히게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미·친근, NOT 진지).
+- 타입(랜덤): 중고등학생(교복) / 대학생(캐주얼) / 20대 직장인(심플 캐주얼)
+- 자세(랜덤): 미디엄샷 / 측면 45도 / 미소 연주 / 클로즈업 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 왼쪽, LEFT 정렬]
+1행 "보컬 레슨": "보컬" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색 절대 금지.</div>
+        </div>
+      </div>
     </div>
 
     <!-- 토요일 · 베이스 -->
@@ -5732,8 +5465,8 @@ Place the following texts directly over the dark gradient area:
   🌐 https://www.count-music.com/index
 
 ② 네이버플레이스 ★메인 — 검색 신뢰 확보·전화/길찾기 유도
-- 제목: 30자 이내
-- 본문: 카카오 원본 앞 2~3문장만 사용 / 해시태그 제거
+- 제목: 30자 이내 / "인천 구월동 베이스학원" 같은 지역+키워드를 제목·본문 첫 문장에 자연스럽게 넣을 것 (검색 노출용)
+- 본문: 카카오 원본 재활용 / 해시태그 제거 / "구월동·남동구·인천 실용음악학원" 등 지역 키워드를 본문에 1~2회 자연스럽게 포함
 - 마무리 CTA: "📞 전화 한 통이면 바로 상담 가능! 길찾기로 편하게 찾아오세요." (전화·길찾기 강조)
 
 ③ 네이버카페 (보조) — 지역 커뮤니티 노출
@@ -5743,15 +5476,18 @@ Place the following texts directly over the dark gradient area:
 - ※ 외부 지역카페는 상업글이 막힐 수 있으니, 등업·제휴 가능한 카페에만 게시
 
 ④ 구글맵 (보조, 영문 포함) — 운영 신뢰 보강
-- 한글 첫 문장 + 마무리 CTA(국문): "전화 주시면 친절히 안내해 드려요 ☎"
-- 아래 영문 고정 문구 추가:
+- 본문: 카카오 원본을 3~4줄로 짧게 압축 (구글맵 소식은 길면 안 읽힘. 핵심만 간결하게)
+- 마무리 CTA(국문): "전화 주시면 친절히 안내해 드려요 ☎"
+- 맨 마지막 줄 영문 고정 문구:
   "Free trial lesson available. Kakao chat welcome. ☎ 032-463-3455"
 
 ⑤ 당근비즈니스 (보조) — 동네 주민 즉시 문의 유도
 - 제목: 25자 이내 (지역민 친근체)
 - 첫 줄: "구월동 분들~ 🎵" 로 시작
-- 200자 이내로 압축
-- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊" (당근 채팅·전화 강조)
+- 본문: 카카오 원본을 3~4줄로 짧게 (당근은 짧고 가벼운 글이 잘 읽힘. 긴 본문 금지)
+- 톤: 광고처럼 쓰지 말고, 동네 이웃이 편하게 알려주듯 친근하고 담백하게 (과한 홍보 문구·이모지 남발 금지 — 당근은 광고 티 나면 노출 제한)
+- 마무리 CTA: "채팅으로 편하게 물어보세요! 무료체험 예약 받아요 😊"
+- ※ 당근은 "동네 비즈니스" 등록 후 게시, 반복 게시 제한 주의
 
 ⑥ 학원 홈페이지 ★메인 — 브랜드 신뢰·등록 전환 종착지
 - 제목: 30자 이내 (공지·소식 톤)
@@ -5853,175 +5589,6 @@ Place the following texts directly over the dark gradient area:
           </div>
         </div>
 
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#3af7a0">🎨 ChatGPT 이미지 프롬프트</div>
-              <div class="card-title">베이스 레슨 홍보 이미지 (영문)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 기타·베이스 레슨실 사진 업로드 후 입력</div>
-            </div>
-            <div class="day-badge">🗓 토요일</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="kakao-img-sat">A realistic, high-resolution square promotional photo for a music academy.
-Size: 300×300px (square format, 1:1 aspect ratio)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal bass lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: bass guitar, amplifier, music stand, tuner
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic iPhone camera shot style. Sharp, high-resolution.
-Bright and clean color tone — white and modern palette.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From the middle of the image downward, gradually darken the photo to pure black (#000000) at the very bottom.
-- The gradient should feel like a natural vignette — transparent at the top, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"베이스레슨" + "제대로 배워보세요" on the same line:
-  - "베이스레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #3AF7A0→#3AF7E0 / 2주: #3AF7C8→#3AB8F7 / 3주: #3AF76A→#F7E23A / 4주: #1AF77A→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "베이스레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬
-</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('kakao-img-sat',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('kakao-img-sat',this)">접기 ▲</button>
-          </div>
-        </div>
-        <div class="prompt-card">
-          <div class="card-header">
-            <div class="card-meta">
-              <div class="card-label" style="color:#3af7a0">🖼 구글 애즈 이미지 프롬프트 · 베이스</div>
-              <div class="card-title">베이스 구글 애즈 이미지 (1200×628)</div>
-              <div class="card-sub">ChatGPT Imagen용 · 가로형 반응형 디스플레이</div>
-            </div>
-            <div class="day-badge">📐 1200×628</div>
-          </div>
-          <div class="card-body">
-            <div class="prompt-text" id="google-img-sat">A realistic, high-resolution horizontal banner image for Google Ads.
-Size: 1200×628px (landscape format)
-
-[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
-A clean, minimal bass lesson room with consistent white walls and warm wood floor tones.
-※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
-- 학원 소품: bass guitar, amplifier, music stand, tuner
-- 추가 요소 (랜덤 선택): plants, table lamp, framed wall art, acoustic panels, shelves with books/music sheets, small clock, soft fabric chair, window with blinds
-- 카메라 앵글에 따라 보이는 소품이 달라지도록
-
-[조명 — 4종 중 랜덤 선택]
-- Soft morning natural light through window (slightly cool)
-- Bright afternoon natural light (clear)
-- Warm late afternoon golden hour light
-- Cozy indoor warm lighting (lamps + soft ceiling light)
-
-[톤 유지]
-- White walls + warm wood floor (always)
-- Bright, clean, inviting atmosphere
-- Different background detail from previous weeks
-
-[구도 – 가로형 1200×628]
-- 배경이 화면 전체에 꽉 차게 이어지도록
-
-[인물 — 매번 다르게 선택]
-※ 아래 인물 중 하나를 랜덤하게 선택해서 그려줘. 매번 다른 인물·자세·앵글로.
-
-[인물 타입 — 3종 중 랜덤 선택]
-- 한국인 중고등학생 (남/여, 교복 차림)
-- 한국인 대학생 (남/여, 캐주얼 셔츠·니트·후드)
-- 한국인 20대 직장인 (남/여, 셔츠·블라우스·심플 캐주얼)
-
-[자세 — 6종 중 랜덤 선택]
-- 정면 미디엄샷 (집중한 표정)
-- 측면 45도 (악기에 시선)
-- 살짝 미소 지으며 연주
-- 손·악기 클로즈업 (얼굴 일부만)
-- 로우앵글 (살짝 아래에서 위로)
-- 와이드샷 (학원 공간 함께)
-
-[공통 표현]
-Clean, healthy skin — no acne, no blemishes.
-Detailed skin texture and natural facial expression.
-Completely natural, not AI-looking.
-Different person and pose from previous weeks.
-
-[스타일]
-Realistic photo style, sharp, high-resolution, horizontal composition.
-Completely natural, not AI-looking.
-
-[텍스트 오버레이 – 이미지에 직접 포함]
-Apply a natural black gradient fade to the bottom of the image:
-- From about 40% from the bottom, gradually darken the photo to pure black (#000000) at the very bottom edge.
-- The gradient should feel like a natural cinematic vignette — fully transparent at the top half, fully black at the bottom edge.
-- Do NOT draw any separate bar or rectangle. The photo itself fades into black.
-
-Place the following texts directly over the dark gradient area:
-
-[텍스트 1행 – 하단에서 위쪽 25% 위치, 중앙 정렬]
-"베이스레슨" + "제대로 배워보세요" on the same line, center aligned:
-  - "베이스레슨": ExtraBold, gradient color left-to-right
-    이번 주 색상: 1주: #3AF7A0→#3AF7E0 / 2주: #3AF7C8→#3AB8F7 / 3주: #3AF76A→#F7E23A / 4주: #1AF77A→#FFFFFF
-  - "제대로 배워보세요": white (#FFFFFF), Bold, 65% the size of "베이스레슨"
-
-[텍스트 2행 – 1행 바로 아래, 중앙 정렬]
-"전공 강사진 · 1:1 맞춤 레슨+실력,자신감 UP" — white, Regular, center aligned
-
-[텍스트 3행 – 맨 하단, 중앙 정렬]
-"카운트베이시실용음악학원 | 문의 032)463-3455" — white, Regular, 중앙 정렬</div>
-          </div>
-          <div class="card-footer">
-            <button class="copy-btn" onclick="copyPrompt('google-img-sat',this)">📋 복사하기</button>
-            <button class="toggle-btn" onclick="togglePrompt('google-img-sat',this)">접기 ▲</button>
-          </div>
-        </div>
       </div>
 
       <div class="divider"></div>
@@ -6062,6 +5629,83 @@ Place the following texts directly over the dark gradient area:
         <div class="section-desc">클릭 → 복사</div>
       </div>
       <div class="calendar-wrap" id="kakao-cal-sat"></div>
+
+      <!-- 베이스 광고 이미지 (카카오 정사각 + 구글 가로) -->
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="font-size:14px; font-weight:700; color:#EF9F27; margin-bottom:12px;">🎵 베이스 광고 이미지</div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">📷 베이스 레슨 (카카오 · 정사각)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-sq-bass', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1080×1080 · 카카오 홈/프로필 배경용</div>
+          <div class="logo-prompt" id="k-sq-bass">A realistic, high-resolution square promotional photo for a music academy.
+Size: 1080×1080px (square format, 1:1 aspect ratio)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal bass lesson room with consistent white walls and warm wood floor tones.
+※ 매번 아래 요소들 중 일부만 자연스럽게 보이게 (전부 다 넣지 말 것):
+- 학원 소품: bass guitars, an amplifier, music stands, tuner
+- 추가 요소 (랜덤): plants, table lamp, framed wall art, acoustic panels, shelves with books/sheets, small clock, fabric chair, window with blinds
+- 카메라 앵글에 따라 보이는 소품이 달라지도록
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+
+[톤] White walls + warm wood floor (always). Bright, clean, inviting, friendly. 매번 배경 디테일 다르게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미로 배우는 친근한 느낌, NOT 진지/프로페셔널).
+- 타입(랜덤): 한국인 중고등학생(교복) / 대학생(캐주얼·니트·후드) / 20대 직장인(셔츠·심플 캐주얼)
+- 자세(랜덤): 정면 미디엄샷 / 측면 45도 / 미소 지으며 연주 / 손·악기 클로즈업 / 로우앵글 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 이미지에 직접 포함]
+Apply a natural black gradient fade to the bottom (from middle downward, darken to pure black at bottom edge; natural vignette, NO separate bar/rectangle).
+Place texts over the dark area, BOTTOM-LEFT aligned:
+
+1행 "베이스 레슨": "베이스" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold, 65% size of 1행
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 문의 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색(blue/purple/red/neon) 절대 금지.</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-card-head">
+            <div class="logo-card-title">🌐 베이스 레슨 (구글 애즈 · 가로)</div>
+            <button class="copy-btn" onclick="copyPrompt('k-wide-bass', this)">📋 복사하기</button>
+          </div>
+          <div class="logo-card-use">밝은 연습실 실사 · 1200×628 · 구글 디스플레이 광고용</div>
+          <div class="logo-prompt" id="k-wide-bass">A realistic, high-resolution horizontal banner for a music academy.
+Size: 1200×628px (landscape, for Google Display ads)
+
+[배경 — 화이트/우드톤 유지하되 매번 디테일 다르게]
+A clean, minimal bass lesson room with white walls and warm wood floor tones.
+※ 소품 일부만 자연스럽게: bass guitars, an amplifier, music stands, tuner
+- 추가 요소(랜덤): plants, table lamp, framed art, acoustic panels, shelves, window with blinds
+
+[조명 — 랜덤] morning natural / bright afternoon / golden hour / cozy indoor warm
+[톤] White walls + warm wood floor. Bright, clean, friendly. 매번 배경 다르게.
+
+[구도] 인물/사진은 오른쪽에 배치, 왼쪽은 어둡게 (왼쪽에서 soft dark gradient) → 왼쪽 글자가 잘 읽히게.
+
+[인물 — 매번 다르게] 편안하게 미소 지으며 즐기는 모습 (취미·친근, NOT 진지).
+- 타입(랜덤): 중고등학생(교복) / 대학생(캐주얼) / 20대 직장인(심플 캐주얼)
+- 자세(랜덤): 미디엄샷 / 측면 45도 / 미소 연주 / 클로즈업 / 와이드샷
+
+[표현] 진짜 사람을 폰으로 자연스럽게 찍은 스냅사진처럼 (NOT 광고/스톡사진, NOT 모델). Candid, slightly imperfect, natural skin with real texture and pores (no over-smoothing, no plastic skin), natural relaxed expression, real everyday person. Authentic amateur smartphone photo feel, natural lighting, believable real-life scene. 절대 인위적이거나 AI 티 나지 않게 (NOT AI-looking, NOT over-retouched, NOT artificial).
+
+[텍스트 오버레이 – 왼쪽, LEFT 정렬]
+1행 "베이스 레슨": "베이스" = ExtraBold SOLID amber-orange (#EF9F27), "레슨" = ExtraBold white (#FFFFFF)
+2행 "취미로 즐겁게 시작하세요" — white, Bold
+3행 "1:1 맞춤 레슨 · 무료체험 운영" — light grey, Regular
+4행 "카운트베이시실용음악학원 · 032)463-3455" — light grey, Regular
+
+⚠️ 글자는 반드시 주황(#EF9F27)과 흰색/회색만. 그라데이션·형광색 절대 금지.</div>
+        </div>
+      </div>
     </div>
 
   </div><!-- /panel-kakao -->
@@ -6196,14 +5840,12 @@ Spell Korean EXACTLY. NO clipart, NO instrument illustrations,
 NO decorative shapes, NO boxes.</div>
     </div>
 
-
     <div class="logo-tip">
       💡 <b>사용 팁</b><br>
-      • <b>정사각(1:1)</b>이라 6개 채널 본문 어디 넣어도 안 잘려요.<br>
-      • <b>왼쪽 정렬 + 오른쪽 여백</b> 스타일이에요. 악기 그림 없이 큰 글자로 승부 → 촌스럽지 않고 브랜드 느낌. 요즘 광고가 다 이렇게 비워둬요.<br>
-      • 한글이 많아서 <b>글자가 깨질 수 있어요</b>. 5~6번 재생성하거나, 제일 깔끔한 걸 받아서 글자만 캔바로 다시 얹으면 확실합니다. (글자가 커서 잘 안 깨지는 편)<br>
-      • 너무 비어 보이면 "오른쪽에 작은 음표/얇은 선 하나 추가"로 살짝 채울 수 있어요. 안 넣어도 충분히 깔끔합니다.<br>
-      • 새 배너(할인·이벤트 등)도 이 <b>왼쪽 정렬 타이포</b> 스타일로 만들면 다 통일돼요. 필요하면 이 탭에 카드를 계속 추가하면 됩니다.
+      • <b>무료체험 배너</b>는 왼쪽 정렬 미니멀 타이포 스타일 — 6개 채널 글 본문에 두루 쓰는 정보성 배너예요.<br>
+      • 정사각(1:1)이라 어디 넣어도 안 잘려요. 한글 깨지면 재생성하세요.<br>
+      • <b>악기별 레슨 이미지(기타·드럼·보컬·베이스)</b>는 <b style="color:#EF9F27">💬 카카오채널 탭</b>으로 옮겼어요. 각 요일(악기)별 글 아래에 카카오 정사각 + 구글 가로 이미지가 같이 있어요.<br>
+      • 새 배너(할인·이벤트 등)가 필요하면 이 탭에 카드를 계속 추가하면 됩니다.
     </div>
 
   </div><!-- /panel-ad -->
@@ -9333,6 +8975,122 @@ const GOLD='#EF9F27', MINT='#5DCAA5', CORAL='#F0997B', GRAY='#555', WHITE='#fff'
 const DARK='#121212', NUT='#ffffff', FRET='#333333', MUTE_COLOR='#555555';
 const MUTE=MUTE_COLOR;
 
+
+// ══════════════════════════════════════════
+//  진도 체크 시스템 (52주 주제 완료 표시)
+// ══════════════════════════════════════════
+(function(){
+  const STORE_KEY = 'cb_progress_v1';
+
+  function loadProgress(){
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+    catch(e){ return {}; }
+  }
+  function saveProgress(p){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch(e){}
+  }
+
+  // 각 topic-item의 고유 키 = 캘린더컨테이너ID + "::" + 주차/번호 텍스트
+  function itemKey(item){
+    const cal = item.closest('.calendar-wrap');
+    const calId = cal ? cal.id : 'cal';
+    const wk = item.querySelector('.topic-week');
+    const wkText = wk ? wk.textContent.replace(/\s+/g,'') : '';
+    const tx = item.querySelector('.topic-text');
+    const txText = tx ? tx.textContent.slice(0,20) : '';
+    return calId + '::' + wkText + '::' + txText;
+  }
+
+  // 한 캘린더의 "다음 할 주제" 배너 갱신
+  function updateBanner(calWrap){
+    if(!calWrap) return;
+    const items = [...calWrap.querySelectorAll('.topic-item')];
+    if(!items.length) return;
+    const prog = loadProgress();
+    let banner = calWrap.querySelector('.next-banner');
+    if(!banner){
+      banner = document.createElement('div');
+      banner.className = 'next-banner';
+      calWrap.insertBefore(banner, calWrap.firstChild);
+    }
+    const doneCount = items.filter(it => prog[itemKey(it)]).length;
+    const next = items.find(it => !prog[itemKey(it)]);
+    if(next){
+      const wk = next.querySelector('.topic-week');
+      const tx = next.querySelector('.topic-text');
+      const wkText = wk ? wk.textContent.replace(/\n/g,' ').trim() : '';
+      const txText = tx ? tx.textContent.trim() : '';
+      const newHtml = `👉 다음 할 주제: <b>${wkText}</b> &nbsp;${txText}<span class="done-count">완료 ${doneCount} / ${items.length}</span>`;
+      if(banner.innerHTML !== newHtml) banner.innerHTML = newHtml;
+    } else {
+      const newHtml = `🎉 <b>모든 주제 완료!</b> 한 바퀴 다 도셨어요.<span class="done-count">완료 ${doneCount} / ${items.length}</span>`;
+      if(banner.innerHTML !== newHtml) banner.innerHTML = newHtml;
+    }
+  }
+
+  // topic-item에 체크박스 부착
+  function attachCheck(item){
+    if(item.querySelector('.prog-check')) return; // 이미 있음
+    const prog = loadProgress();
+    const key = itemKey(item);
+    const btn = document.createElement('button');
+    btn.className = 'prog-check' + (prog[key] ? ' done' : '');
+    btn.innerHTML = '✓';
+    btn.title = '완료 체크 (다시 누르면 해제)';
+    if(prog[key]) item.classList.add('done-item');
+    btn.addEventListener('click', function(e){
+      e.stopPropagation(); // 항목 클릭(프롬프트 채우기)과 분리
+      const p = loadProgress();
+      const k = itemKey(item);
+      if(p[k]){ delete p[k]; btn.classList.remove('done'); item.classList.remove('done-item'); }
+      else { p[k] = 1; btn.classList.add('done'); item.classList.add('done-item'); }
+      saveProgress(p);
+      updateBanner(item.closest('.calendar-wrap'));
+    });
+    item.appendChild(btn);
+  }
+
+  // 모든 캘린더 처리
+  let processing = false;
+  function processAll(){
+    if(processing) return;        // 재진입 방지
+    processing = true;
+    if(window._cbObserver) window._cbObserver.disconnect();  // 처리 중 관찰 중단
+    document.querySelectorAll('.calendar-wrap').forEach(cal => {
+      cal.querySelectorAll('.topic-item').forEach(attachCheck);
+      updateBanner(cal);
+    });
+    // 처리 끝난 뒤 다시 관찰 시작
+    if(window._cbObserver){
+      document.querySelectorAll('.calendar-wrap').forEach(cal => {
+        window._cbObserver.observe(cal, { childList: true, subtree: true });
+      });
+    }
+    processing = false;
+  }
+
+  // 캘린더가 동적으로 그려지므로 MutationObserver로 감지
+  let debounceTimer = null;
+  window._cbObserver = new MutationObserver(() => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(processAll, 100);  // 디바운스로 폭주 방지
+  });
+  function startObserving(){
+    document.querySelectorAll('.calendar-wrap').forEach(cal => {
+      window._cbObserver.observe(cal, { childList: true, subtree: true });
+    });
+    processAll();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', startObserving);
+  } else {
+    startObserving();
+  }
+  // 탭 전환 등으로 나중에 그려지는 것도 잡기 위해 약간의 지연 재시도
+  setTimeout(processAll, 500);
+  setTimeout(processAll, 1500);
+})();
 
 </script>
 </body>
