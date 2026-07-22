@@ -682,6 +682,25 @@
     <div class="card-sub">총수입 추이</div>
     <div id="monthlySummary" style="margin-top:12px;"></div>
   </div>
+
+  <div class="card" style="background:linear-gradient(160deg, rgba(122,156,181,0.06) 0%, var(--bg-card) 100%); border-color: rgba(122,156,181,0.15);">
+    <div class="card-title"><em>데이터</em> 관리</div>
+    <div class="card-sub">백업 · 복구 · 구글 시트용 내보내기</div>
+
+    <div style="margin-bottom:18px;">
+      <div class="rec-field-label" style="margin-bottom:8px;">① 이번 달 → 엑셀 (구글 시트용)</div>
+      <button class="btn full" id="exportMonthBtn" style="width:100%;padding:14px;">📊 이번 달 정리표 내보내기</button>
+      <div class="help" style="margin-top:8px;">수입·지출·자산·투자를 한 엑셀로. 구글 시트에 붙여서 월별로 쌓으세요.</div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <div class="rec-field-label" style="margin-bottom:8px;">② 전체 백업 (복구용)</div>
+      <button class="btn-cancel" id="backupBtn" style="width:100%;padding:14px;margin-bottom:8px;">💾 전체 데이터 백업 (파일로 저장)</button>
+      <input type="file" id="restoreFile" accept=".json" style="display:none;">
+      <button class="btn-cancel" id="restoreBtn" style="width:100%;padding:14px;">↩️ 백업 파일로 복구</button>
+      <div class="help" style="margin-top:8px;">폰을 바꾸거나 데이터가 지워져도, 백업 파일이 있으면 <strong>복구</strong>로 되살릴 수 있어요. 가끔 백업해서 구글 드라이브나 메일에 보관하세요.</div>
+    </div>
+  </div>
 </div>
 
 </div>
@@ -1791,6 +1810,142 @@ document.getElementById('funAdd').addEventListener('click', () => {
   document.getElementById('funInput').value = '';
   renderPersonal();
   showToast('오락비 추가됨');
+});
+
+// ===== 데이터 관리: 월별 엑셀 / 백업 / 복구 =====
+
+// ① 이번 달 정리표 → 엑셀 (구글 시트용)
+document.getElementById('exportMonthBtn').addEventListener('click', () => {
+  const r = getRecord();
+  const month = state.currentMonth;
+
+  // 수입
+  const acadRev = r.revenue_days.reduce((s,d) => s + d.amount, 0);
+  const scoreRev = r.score_days.reduce((s,d) => s + d.amount, 0);
+  const cmaTotal = [...r.revenue_days, ...r.score_days].reduce((s,d) => s + (d.cma||0), 0);
+
+  // 학원 지출
+  const acadFixed = getAcadFixedTotal(r);
+  const acadVar = (r.var_costs||[]).reduce((s,v) => s + v.amount, 0);
+
+  // 생활 지출
+  const lifeFixed = LIFE_BUDGET.reduce((s,b) => {
+    const a = r.life_actual[b.id];
+    return s + (a !== undefined ? a : b.amount);
+  }, 0);
+  const lifeVar = (r.personal_var||[]).reduce((s,p) => s + p.amount, 0);
+  const funTotal = r.fun_total || 0;
+
+  // 자산
+  const sumGroup = (g) => {
+    const base = ASSET_ACCOUNTS[g].reduce((s,a) => s + (state.assets[a.id]||0), 0);
+    const custom = (state.customAssets[g]||[]).reduce((s,a) => s + (state.assets[a.id]||0), 0);
+    return base + custom;
+  };
+  const cashT = sumGroup('cash'), pensionT = sumGroup('pension'), investT = sumGroup('invest'), debtT = sumGroup('debt');
+  const netAsset = cashT + pensionT + investT - debtT;
+
+  // 시트 1: 요약
+  const summary = [
+    ['카운트베이시 자산흐름표', month],
+    [],
+    ['[수입]', '금액'],
+    ['학원 매출', acadRev],
+    ['악보 수입', scoreRev],
+    ['수입 합계', acadRev + scoreRev],
+    ['CMA 적립 (30%)', cmaTotal],
+    [],
+    ['[학원 지출]', '금액'],
+    ['고정비', acadFixed],
+    ['변동비', acadVar],
+    ['학원 지출 합계', acadFixed + acadVar],
+    [],
+    ['[생활 지출]', '금액'],
+    ['고정비', lifeFixed],
+    ['변동비', lifeVar],
+    ['오락비', funTotal],
+    ['생활 지출 합계', lifeFixed + lifeVar + funTotal],
+    [],
+    ['[자산]', '금액'],
+    ['현금성', cashT],
+    ['절세계좌', pensionT],
+    ['투자', investT],
+    ['부채', debtT],
+    ['순자산', netAsset],
+  ];
+
+  // 시트 2: 수입 상세 (일별)
+  const revDetail = [['날짜', '구분', '금액', 'CMA']];
+  r.revenue_days.forEach(d => revDetail.push([d.date, '학원', d.amount, d.cma]));
+  r.score_days.forEach(d => revDetail.push([d.date, '악보', d.amount, d.cma]));
+
+  // 시트 3: 투자 기록
+  const invDetail = [['날짜', '매수/매도', '계좌', '종목', '금액', '수량']];
+  (state.diary||[]).forEach(d => {
+    invDetail.push([d.date, d.bs === 'buy' ? '매수' : '매도', d.account, d.ticker, d.amount, d.qty||'']);
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), '요약');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(revDetail), '수입상세');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(invDetail), '투자기록');
+  XLSX.writeFile(wb, `카운트베이시_${month}_정리표.xlsx`);
+  showToast(`${month} 정리표 내보냄`);
+});
+
+// ② 전체 백업 → JSON 파일
+document.getElementById('backupBtn').addEventListener('click', () => {
+  const dataStr = JSON.stringify(state, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = todayStr();
+  a.href = url;
+  a.download = `자산흐름_백업_${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('백업 파일 저장됨');
+});
+
+// ③ 백업 파일로 복구
+document.getElementById('restoreBtn').addEventListener('click', () => {
+  document.getElementById('restoreFile').click();
+});
+document.getElementById('restoreFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!confirm('백업 파일로 복구하면 현재 데이터가 백업 내용으로 교체됩니다.\n계속할까요?')) {
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const restored = JSON.parse(ev.target.result);
+      if (!restored.records || typeof restored !== 'object') {
+        showToast('올바른 백업 파일이 아니에요');
+        return;
+      }
+      state = restored;
+      // 누락 필드 보정 (localStorage 재로드 없이)
+      if (!state.yearly) state.yearly = {};
+      if (!state.customAssets) state.customAssets = { cash: [], pension: [], invest: [], debt: [] };
+      ['cash','pension','invest','debt'].forEach(g => { if (!state.customAssets[g]) state.customAssets[g] = []; });
+      if (!state.diary) state.diary = [];
+      if (!state.holdingEval) state.holdingEval = {};
+      saveState();
+      renderAll();
+      initQuickOverlay();
+      showToast('복구 완료!');
+    } catch (err) {
+      console.error(err);
+      showToast('복구 실패 — 파일 확인');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
 });
 
 loadState();
