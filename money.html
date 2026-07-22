@@ -35,6 +35,8 @@
   .brand { font-family: var(--serif); font-size: 32px; line-height: 1; letter-spacing: -0.02em; font-weight: 400; }
   .brand em { font-style: italic; color: var(--accent); font-weight: 400; }
   .brand-sub { font-size: 13px; color: var(--text-2); margin-top: 7px; letter-spacing: 0.04em; }
+  .open-quick-btn { margin-top: 12px; background: var(--accent); color: var(--bg); border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
+  .open-quick-btn:hover { background: var(--accent-2); }
   .month-nav { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 15px; color: var(--text); }
   .month-nav button { background: var(--bg-2); border: 1px solid var(--line); color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 18px; }
   .month-nav button:hover { background: var(--bg-3); color: var(--text); }
@@ -312,6 +314,7 @@
   <div>
     <div class="brand">Asset <em>Flow</em></div>
     <div class="brand-sub">자산 흐름 시스템 · 원 단위 입력</div>
+    <button id="openQuickBtn" class="open-quick-btn">✎ 오늘 입력</button>
   </div>
   <div class="month-nav">
     <button id="prevMonth">‹</button>
@@ -1767,6 +1770,12 @@ document.getElementById('quickSubmit').addEventListener('click', () => {
 
 document.getElementById('quickSkip').addEventListener('click', () => {
   document.getElementById('quickOverlay').classList.add('hidden');
+});
+
+// 오늘 입력 버튼 → 오버레이 다시 열기
+document.getElementById('openQuickBtn').addEventListener('click', () => {
+  updateQuickTodaySum();
+  document.getElementById('quickOverlay').classList.remove('hidden');
 });
 
 // 투자 기록 이벤트
