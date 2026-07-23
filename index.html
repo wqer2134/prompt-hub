@@ -132,6 +132,14 @@
   .foot{text-align:center;color:var(--muted);font-size:11px;margin-top:22px;font-family:var(--serif);letter-spacing:.05em}
   .saju-ref{display:flex;justify-content:center;gap:14px;margin-top:8px;color:var(--muted);font-size:12px;font-family:var(--serif)}
   .saju-ref b{color:var(--ink);font-weight:400}
+  /* fortune subtabs */
+  .subtabs{display:flex;gap:8px;margin:6px 0 14px}
+  .subtabs button{flex:1;border:1px solid var(--line);background:var(--panel);color:var(--muted);
+    font-family:var(--serif);font-size:14px;font-weight:700;letter-spacing:.06em;
+    padding:9px 0;border-radius:11px;cursor:pointer;transition:all .2s ease}
+  .subtabs button.active{background:var(--amber);color:#1a1815;border-color:var(--amber)}
+  .subpane{display:none;animation:fade .25s ease}
+  .subpane.active{display:block}
 
   /* ===== book (100권) styles ===== */
 
@@ -261,6 +269,7 @@
   #tab-kb .done-panel h2{font-size:24px; margin:0 0 8px;}
   #tab-kb .done-panel p{color:var(--gray); font-size:14px; margin-bottom:8px;}
   #tab-kb .done-panel .logged{color:var(--green); font-size:13px; margin-bottom:24px; font-weight:600;}
+
 </style>
 </head>
 <body>
@@ -395,6 +404,13 @@
     <div class="who">己土 일간 · 본인 사주 기준 풀이</div>
   </div>
 
+  <div class="subtabs">
+    <button id="subToday" class="active" onclick="switchSub('today')">오늘 운세</button>
+    <button id="subSaju" onclick="switchSub('saju')">내 사주</button>
+  </div>
+
+  <div id="sub-today" class="subpane active">
+
   <div class="datenav">
     <button onclick="shift(-1)">‹</button>
     <div class="date"><span id="dStr"></span><br><span class="wd" id="dWd"></span></div>
@@ -416,6 +432,52 @@
     <div class="weather" id="weather"></div>
     <div class="oneline" id="oneLine"></div>
   </div>
+
+  <div class="card" id="cardTodayDate">
+    <h2>🗓 오늘의 날짜 운세</h2>
+    <p id="todayDateLine" style="font-size:14.5px"></p>
+  </div>
+
+  <div class="card" id="cardLuck">
+    <h2>오늘의 흐름 <span class="ch" id="luckCh"></span></h2>
+    <div id="luckTags"></div>
+    <div id="luckBody"></div>
+  </div>
+
+  <div class="card">
+    <h2>📊 오늘의 기운 <span class="ch">기세 · 특별한 날</span></h2>
+    <p id="unseongLine"></p>
+    <div id="sinsalTags" style="margin-top:8px"></div>
+    <div id="sinsalNotes" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card good-card">
+    <h2>🍀 오늘의 좋은 신호</h2>
+    <ul id="goodList"></ul>
+  </div>
+
+  <div class="card warn-card">
+    <h2>⚠ 조심할 것</h2>
+    <ul id="cautionList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>🎯 오늘의 실전 행동 <span class="ch">개운법</span></h2>
+    <div class="act-h act-do">✅ 할 것</div>
+    <ul class="act-list" id="doList"></ul>
+    <div class="act-h act-dont">❌ 미룰 것</div>
+    <ul class="act-list" id="dontList"></ul>
+  </div>
+
+  <div class="card daewoon">
+    <h2>🧭 대운에 맞춘 목표 · 나아갈 길</h2>
+    <div class="dw-now" id="dwNow"></div>
+    <div id="dwBody"></div>
+  </div>
+
+  </div>
+
+  <div id="sub-saju" class="subpane">
 
   <div class="card">
     <h2>☯ 나의 기운 그래프 <span class="ch">음양오행</span></h2>
@@ -461,52 +523,12 @@
     </div>
   </div>
 
-  <div class="card" id="cardTodayDate">
-    <h2>🗓 오늘의 날짜 운세</h2>
-    <p id="todayDateLine" style="font-size:14.5px"></p>
-  </div>
-
-  <div class="card" id="cardLuck">
-    <h2>오늘의 흐름 <span class="ch" id="luckCh"></span></h2>
-    <div id="luckTags"></div>
-    <div id="luckBody"></div>
-  </div>
-
-  <div class="card">
-    <h2>📊 오늘의 기운 <span class="ch">기세 · 특별한 날</span></h2>
-    <p id="unseongLine"></p>
-    <div id="sinsalTags" style="margin-top:8px"></div>
-    <div id="sinsalNotes" style="margin-top:6px"></div>
-  </div>
-
-  <div class="card good-card">
-    <h2>🍀 오늘의 좋은 신호</h2>
-    <ul id="goodList"></ul>
-  </div>
-
-  <div class="card warn-card">
-    <h2>⚠ 조심할 것</h2>
-    <ul id="cautionList"></ul>
-  </div>
-
-  <div class="card">
-    <h2>🎯 오늘의 실전 행동 <span class="ch">개운법</span></h2>
-    <div class="act-h act-do">✅ 할 것</div>
-    <ul class="act-list" id="doList"></ul>
-    <div class="act-h act-dont">❌ 미룰 것</div>
-    <ul class="act-list" id="dontList"></ul>
-  </div>
-
-  <div class="card daewoon">
-    <h2>🧭 대운에 맞춘 목표 · 나아갈 길</h2>
-    <div class="dw-now" id="dwNow"></div>
-    <div id="dwBody"></div>
-  </div>
-
   <div class="saju-ref">
     <span>년 <b>己未</b></span><span>월 <b>庚午</b></span><span>일 <b>己酉</b></span><span>시 <b>壬申</b></span>
   </div>
   <div class="foot">己土 · 火土旺 · 金식상强 · 用神 水(財)·木(官)<br>참고용 풀이입니다</div>
+
+  </div>
 
   </div>
 
@@ -531,6 +553,7 @@
 <div id="listRoot"></div>
 <button class="reset-btn" id="bookResetBtn">전체 기록 초기화</button>
   </div>
+
 
 <script>
 /* tab switching */
@@ -594,6 +617,16 @@ const CHUNG={子:'午',午:'子',丑:'未',未:'丑',寅:'申',申:'寅',卯:'�
 const HAE={子:'未',未:'子',丑:'午',午:'丑',寅:'巳',巳:'寅',卯:'辰',辰:'卯',申:'亥',亥:'申',酉:'戌',戌:'酉'};
 const HAP={子:'丑',丑:'子',寅:'亥',亥:'寅',卯:'戌',戌:'卯',辰:'酉',酉:'辰',巳:'申',申:'巳',午:'未',未:'午'};
 const MINE=[{b:'未',ju:'년',area:'집안에서 물려받은 여건'},{b:'午',ju:'월',area:'직업·사회활동'},{b:'酉',ju:'일',area:'내 기분·컨디션'},{b:'申',ju:'시',area:'노후·말년에 놓일 여건'}];
+/* 기둥(년/월/일/시) × 관계 종류별 실생활 예시 한 줄 */
+const HIT_EX={
+ 년:{충:'오늘 집안·가족 관련 할 일이 있다면 — 갑자기 틀어지거나 오래된 자산·서류 문제가 크게 걸릴 수 있어요.',해:'오늘 집안·가족 관련 연락이나 일이 있다면 — 어긋나거나 사소한 일정이 삐끗하기 쉬워요.',형:'오늘 부모님·본가 관련 일이 있다면 — 대화가 겉돌거나 진전이 없어 답답할 수 있어요.',파:'오늘 집안 관련 일정이 있다면 — 갑자기 바뀌는 등 자잘하게 틀어질 수 있어요.',원진:'오늘 가족·본가와 부딪힐 일이 있다면 — 괜히 서운하고 마음 상하기 쉬워요.',복:'오늘 집안 관련 챙길 일이 여럿이라면 — 한꺼번에 몰릴 수 있으니 급한 것부터.'},
+ 월:{충:'오늘 일·학원 관련 중요한 건이 있다면 — 갑자기 큰 변수가 생길 수 있으니 계약·결정은 미루세요.',해:'오늘 업무를 보다 보면 — 레슨 스케줄이 꼬이거나 작은 실수가 반복되기 쉬워요.',형:'오늘 일하다 보면 — 답답하게 막히고 사람 상대하다 유독 진 빠지기 쉬워요.',파:'오늘 업무 일정이 — 자잘하게 삐걱대거나 작은 착오가 겹칠 수 있어요.',원진:'오늘 동료·수강생을 상대하다 보면 — 괜히 껄끄럽고 마음 상하기 쉬워요.',복:'오늘 일·연락이 — 한꺼번에 몰릴 수 있으니 급한 것부터 하나씩.'},
+ 일:{충:'오늘 하루 — 몸 컨디션이 확 무너지거나 감정 기복이 커질 수 있으니 무리한 일정은 금물.',해:'오늘 하루 — 잠을 설치거나 집중이 자꾸 끊기는 등 컨디션이 자잘하게 흔들려요.',형:'오늘 하루 — 몸이나 마음이 답답하게 눌려 무기력하거나 어깨·목 뭉침이 심해질 수 있어요.',파:'오늘 하루 — 컨디션이 오락가락하고 작은 두통·피로가 왔다 갔다 할 수 있어요.',원진:'오늘 하루 — 이유 없이 예민하고 짜증이 올라오기 쉬워요.',복:'오늘 하루 — 몸으로 처리할 일이 몰리니 쉬엄쉬엄, 물 자주 마시며.'},
+ 시:{충:'오늘 노후·장기 계획(투자·연금 등)을 들여다본다면 — 큰 변수가 생길 수 있으니 큰 결정은 미루세요.',해:'오늘 장기 계획을 손본다면 — 자잘한 차질이 생기거나 서류가 어긋나기 쉬워요.',형:'오늘 노후·투자 계획을 세운다면 — 진전이 없어 답답할 수 있어요.',파:'오늘 세워둔 장기 계획에 — 작은 변수가 끼어들 수 있어요.',원진:'오늘 미래를 생각하다 보면 — 걱정이 괜히 커지고 마음이 무거워질 수 있어요.',복:'오늘 장기 관련 챙길 거리가 여럿이라면 — 급한 것만 오늘, 나머지는 나중에.'}
+};
+function exOf(h){ return (HIT_EX[h.ju]&&HIT_EX[h.ju][h.t])?' <span style="color:var(--muted)">— '+HIT_EX[h.ju][h.t]+'</span>':''; }
+/* 짧은 기둥 이름: 천간 관계면 X간, 지지 관계면 X지 */
+function labOf(h){ var isStem=(h.t==='천간충'||h.t==='천간합'||h.t==='천간복음'); return h.ju+(isStem?'간':'지'); }
 const MINE_STEM=[{s:'己',ju:'년',area:'조상·집안의 사회적 이름값'},{s:'庚',ju:'월',area:'부모형제의 사회적 활동·평판'},{s:'己',ju:'일',area:'나 자신'},{s:'壬',ju:'시',area:'노후의 방향성'}];
 /* 천간합(오행 변화는 생략, 유무만 판정) · 천간충(戊·己는 충 없음) */
 const STEM_HAP={甲:'己',己:'甲',乙:'庚',庚:'乙',丙:'辛',辛:'丙',丁:'壬',壬:'丁',戊:'癸',癸:'戊'};
@@ -650,17 +683,18 @@ function stemHits(st){
   return hits;
 }
 function describeHit(h,scope){
+  var lab=labOf(h);
   const map={
-    충:'「'+h.area+'」 쪽이 크게 흔들리는 '+scope+'예요. 이 영역 큰 결정은 신중하게.',
-    해:'「'+h.area+'」 쪽에 자잘한 마찰이 끼는 '+scope+'예요.',
-    합:'「'+h.area+'」 쪽에 협력·인연 운이 좋은 '+scope+'예요.',
-    복:'「'+h.area+'」 쪽에 일이 몰리는 '+scope+'예요.',
-    형:'「'+h.area+'」 쪽에 답답하고 억눌리는 압박이 끼는 '+scope+'예요. 무리하게 밀어붙이면 탈나기 쉬워요.',
-    파:'「'+h.area+'」 쪽이 조금씩 삐걱대는 '+scope+'예요. 큰 사고는 아니어도 자잘하게 깨지는 게 생길 수 있어요.',
-    원진:'「'+h.area+'」 쪽에 괜히 서운하고 꺼려지는 감정이 끼는 '+scope+'예요. 별일 아닌데 마음이 상할 수 있어요.',
-    천간충:'「'+h.area+'」 쪽과 의견이 부딪히기 쉬운 '+scope+'예요.',
-    천간합:'「'+h.area+'」 쪽과 뜻이 잘 맞는 '+scope+'예요.',
-    천간복음:'「'+h.area+'」 쪽 생각·의지가 강해지는 '+scope+'예요.'
+    충:'「'+lab+'」 쪽이 크게 흔들리는 '+scope+'예요. 이 영역 큰 결정은 신중하게.',
+    해:'「'+lab+'」 쪽에 자잘한 마찰이 끼는 '+scope+'예요.',
+    합:'「'+lab+'」 쪽에 협력·인연 운이 좋은 '+scope+'예요.',
+    복:'「'+lab+'」 쪽에 일이 몰리는 '+scope+'예요.',
+    형:'「'+lab+'」 쪽에 답답하고 억눌리는 압박이 끼는 '+scope+'예요. 무리하게 밀어붙이면 탈나기 쉬워요.',
+    파:'「'+lab+'」 쪽이 조금씩 삐걱대는 '+scope+'예요. 큰 사고는 아니어도 자잘하게 깨지는 게 생길 수 있어요.',
+    원진:'「'+lab+'」 쪽에 괜히 서운하고 꺼려지는 감정이 끼는 '+scope+'예요. 별일 아닌데 마음이 상할 수 있어요.',
+    천간충:'「'+lab+'」 쪽과 의견이 부딪히기 쉬운 '+scope+'예요.',
+    천간합:'「'+lab+'」 쪽과 뜻이 잘 맞는 '+scope+'예요.',
+    천간복음:'「'+lab+'」 쪽 생각·의지가 강해지는 '+scope+'예요.'
   };
   return map[h.t];
 }
@@ -845,16 +879,16 @@ function interpret(dt){
   /* 조심할 것 (마찰류) / 좋은 신호 (협력·쏠림류) 분리 */
   let goodSignals=[];
   hits.forEach(h=>{
-    if(h.t==='충')cautions.push('<b>「'+h.area+'」 쪽이 크게 흔들리는 날.</b> 갑자기 일이 틀어지거나, 다투거나, 뭔가 고장 날 수 있어요. 이 분야에서 <b>큰 결정(계약·구매·중요한 약속)은 오늘 잡지 말고</b> 다음으로 미루세요.');
-    if(h.t==='해')cautions.push('<b>「'+h.area+'」 쪽에 자잘하게 거슬리는 일이 끼는 날.</b> 말이 어긋나거나, 작은 게 고장 나거나, 괜히 짜증 날 수 있어요. "오늘은 원래 그런 날" 하고 넘기면 돼요.');
-    if(h.t==='합')goodSignals.push('<b>「'+h.area+'」 쪽에 사람 운·협력 운이 좋은 날.</b> 연락하거나 만나서 일 풀기, 도움 청하기 좋아요.');
-    if(h.t==='복')cautions.push('<b>「'+h.area+'」 쪽에 할 일이 한꺼번에 몰리는 날.</b> 다 하려 말고 급한 것부터 하나씩 추려서.');
-    if(h.t==='천간충')cautions.push('<b>「'+h.area+'」 쪽과 생각이 정면으로 부딪히는 날(천간충).</b> 의견 차이로 마찰이 생기기 쉬워요. 고집부리지 말고 한 발 물러서서 듣는 쪽으로.');
-    if(h.t==='천간합')goodSignals.push('<b>「'+h.area+'」 쪽과 뜻이 잘 맞는 날(천간합).</b> 대화·협의·부탁이 잘 통하는 날이에요.');
-    if(h.t==='천간복음')goodSignals.push('<b>「'+h.area+'」 쪽으로 생각·의지가 쏠리는 날(천간복음).</b> 그 영역에 자연스럽게 마음이 가는 날이라, 오히려 그 방향으로 계획을 정리해보기 좋아요.');
-    if(h.t==='형')cautions.push('<b>「'+h.area+'」 쪽에 답답하고 억눌리는 기운이 끼는 날(형).</b> 무리하게 밀어붙이면 탈나기 쉬우니 페이스 조절하세요.');
-    if(h.t==='파')cautions.push('<b>「'+h.area+'」 쪽이 조금씩 삐걱대는 날(파).</b> 큰 사고는 아니어도 자잘하게 어긋나는 게 생길 수 있어요.');
-    if(h.t==='원진')cautions.push('<b>「'+h.area+'」 쪽에 괜히 서운하고 꺼려지는 감정이 끼는 날(원진).</b> 별일 아닌 걸로 마음 상하기 쉬우니 넘기는 연습.');
+    if(h.t==='충')cautions.push('<b>「'+labOf(h)+'」 쪽이 크게 흔들리는 날.</b> 갑자기 일이 틀어지거나, 다투거나, 뭔가 고장 날 수 있어요. 이 분야에서 <b>큰 결정(계약·구매·중요한 약속)은 오늘 잡지 말고</b> 다음으로 미루세요.'+exOf(h));
+    if(h.t==='해')cautions.push('<b>「'+labOf(h)+'」 쪽에 자잘하게 거슬리는 일이 끼는 날.</b> 말이 어긋나거나, 작은 게 고장 나거나, 괜히 짜증 날 수 있어요. "오늘은 원래 그런 날" 하고 넘기면 돼요.'+exOf(h));
+    if(h.t==='합')goodSignals.push('<b>「'+labOf(h)+'」 쪽에 사람 운·협력 운이 좋은 날.</b> 연락하거나 만나서 일 풀기, 도움 청하기 좋아요.'+exOf(h));
+    if(h.t==='복')cautions.push('<b>「'+labOf(h)+'」 쪽에 할 일이 한꺼번에 몰리는 날.</b> 다 하려 말고 급한 것부터 하나씩 추려서.'+exOf(h));
+    if(h.t==='천간충')cautions.push('<b>「'+labOf(h)+'」 쪽과 생각이 정면으로 부딪히는 날(천간충).</b> 의견 차이로 마찰이 생기기 쉬워요. 고집부리지 말고 한 발 물러서서 듣는 쪽으로.');
+    if(h.t==='천간합')goodSignals.push('<b>「'+labOf(h)+'」 쪽과 뜻이 잘 맞는 날(천간합).</b> 대화·협의·부탁이 잘 통하는 날이에요.');
+    if(h.t==='천간복음')goodSignals.push('<b>「'+labOf(h)+'」 쪽으로 생각·의지가 쏠리는 날(천간복음).</b> 그 영역에 자연스럽게 마음이 가는 날이라, 오히려 그 방향으로 계획을 정리해보기 좋아요.');
+    if(h.t==='형')cautions.push('<b>「'+labOf(h)+'」 쪽에 답답하고 억눌리는 기운이 끼는 날(형).</b> 무리하게 밀어붙이면 탈나기 쉬우니 페이스 조절하세요.'+exOf(h));
+    if(h.t==='파')cautions.push('<b>「'+labOf(h)+'」 쪽이 조금씩 삐걱대는 날(파).</b> 큰 사고는 아니어도 자잘하게 어긋나는 게 생길 수 있어요.'+exOf(h));
+    if(h.t==='원진')cautions.push('<b>「'+labOf(h)+'」 쪽에 괜히 서운하고 꺼려지는 감정이 끼는 날(원진).</b> 별일 아닌 걸로 마음 상하기 쉬우니 넘기는 연습.'+exOf(h));
   });
   if((dEl==='金'||bEl==='金')&&fireSeason)
     cautions.push('<b>기계·물건이 잘 고장 나는 날이에요.</b> 노트북·카메라·악기 줄·케이블 같은 게 끊어지거나 멈추기 쉬워요. 오늘은 새로 세팅하거나 고치려 들지 말고 — ① 중요한 파일은 미리 백업, ② 다루는 장비는 평소보다 살살 천천히, ③ <b>음료는 책상에서 멀리.</b>');
@@ -888,11 +922,15 @@ function interpret(dt){
     dontList.push('장비 새로 세팅, 수리 시도, 새 기기·케이블 연결 — 부서지기 쉬워요. 음료는 책상에서 멀리.');
     doList.push('작업 파일은 시작 전에 백업부터. 오늘은 익숙한 쉬운 일 위주로.');
   }
+  const DONT_CTX={년:'오늘 집안·가족 관련 일이 있다면',월:'오늘 일하다 보면',일:'오늘 하루',시:'오늘 노후·장기 계획을 들여다본다면'};
   hits.forEach(h=>{
-    if(h.t==='충')dontList.push('「'+h.area+'」 쪽 큰 결정이나 무리한 추진은 미루기.');
-    if(h.t==='해')dontList.push('「'+h.area+'」 쪽 예민한 대화·문자·서류는 급하게 말고 한 박자 늦게.');
+    var ctx=DONT_CTX[h.ju]||'';
+    if(h.t==='충')dontList.push(ctx+' — 큰 결정이나 무리한 추진은 미루기.');
+    if(h.t==='해')dontList.push(ctx+' — 예민한 대화·문자·서류는 급하게 말고 한 박자 늦게.');
+    if(h.t==='형')dontList.push(ctx+' — 답답해도 억지로 밀어붙이지 말고 페이스 조절.');
+    if(h.t==='파')dontList.push(ctx+' — 중요한 일정·결정은 오늘 말고 다음으로 미루기.');
+    if(h.t==='원진')dontList.push(ctx+' — 사람과 예민한 얘기·감정 상할 대화는 오늘 피하기.');
   });
-  doList.push('물 자주 마시고 틈틈이 어깨·목 풀기. 종일 말하고 손 쓰니까 누적되면 탈나요.');
 
   if(doList.length===0)doList.push('평소 페이스대로 진행해도 좋은 날.');
   if(dontList.length===0)dontList.push('특별히 피할 것 없음 — 과욕·과로만 조심.');
@@ -1035,6 +1073,14 @@ function render(){
 }
 function shift(n){cur.setDate(cur.getDate()+n);render();}
 function goToday(){cur=new Date();render();}
+function switchSub(which){
+  var isToday=which==='today';
+  document.getElementById('sub-today').classList.toggle('active',isToday);
+  document.getElementById('sub-saju').classList.toggle('active',!isToday);
+  document.getElementById('subToday').classList.toggle('active',isToday);
+  document.getElementById('subSaju').classList.toggle('active',!isToday);
+  window.scrollTo(0,0);
+}
 render();
 
 </script>
@@ -1837,5 +1883,6 @@ document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==
 renderExList();
 
 </script>
+
 </body>
 </html>
