@@ -607,8 +607,8 @@ const STEM_THEME={
 const EL_FAV={
  水:{rate:'good',txt:'오늘은 "물" 기운이 들어오는 날이에요. 너한테 부족한 돈 기운을 채워주고, 평소 급한 마음도 차분하게 가라앉혀줘요. 그래서 돈 정리·계획 세우기·집중해서 한 가지 마무리하기에 가장 잘 맞는 날이에요.'},
  木:{rate:'mid',txt:'오늘은 "새로 시작하는" 기운이 도는 날이에요. 새 계획을 짜거나 틀을 잡기엔 좋아요. 다만 계약·규칙 같은 건 너한테 신경 쓰이는 부분이라, 그런 일은 서두르지 말고 차근히.'},
- 金:{rate:'mid',txt:'오늘은 너의 강점인 "만드는 손재주" 기운이 더 세지는 날이에요. 영상·악보·콘텐츠 작업이 잘 풀려요. 대신 말실수나 손에 든 물건 고장은 조심.'},
- 火:{rate:'warn',txt:'오늘은 마음이 더 뜨겁고 급해지는 날이에요. 너는 원래도 뭐든 빨리 해치우고 싶은 편인데 오늘은 더해서, 서두르다 실수하거나 기계·물건이 고장 나기 쉬워요. 한 박자 천천히.'},
+ 金:{rate:'mid',txt:'오늘은 너의 강점인 "만드는 손재주" 기운이 더 세지는 날이에요. 영상·악보·콘텐츠 작업이 잘 풀려요. 대신 일을 너무 벌여서 과부하 되거나, 말이 앞서지 않게만 신경 쓰세요.'},
+ 火:{rate:'warn',txt:'오늘은 마음이 더 뜨겁고 급해지는 날이에요. 너는 원래도 뭐든 빨리 해치우고 싶은 편인데 오늘은 더해서, 서두르다 실수하기 쉬워요. 한 박자 천천히.'},
  土:{rate:'mid',txt:'오늘은 "버티는 힘·고집"이 세지는 날이에요. 묵묵히 정리하고 다지기엔 좋지만, 돈이 새거나(지출) 사람과 부딪히기 쉬우니 그 부분만 조심.'}
 };
 
@@ -717,7 +717,7 @@ const EL_KR={木:'나무',火:'불',土:'흙',金:'쇠',水:'물'};
 const EL_VERDICT={
  水:{cls:'good',tag:'채워주는 기운',msg:'부족한 재물·여유를 채워줘서 수월해요.'},
  木:{cls:'good',tag:'채워주는 기운',msg:'부족한 도전·의욕을 더해줘서 좋아요.'},
- 火:{cls:'warn',tag:'조심할 기운',msg:'안 그래도 뜨거운데 더 뜨거워져요. 급해지고 물건 고장 조심.'},
+ 火:{cls:'warn',tag:'조심할 기운',msg:'안 그래도 뜨거운데 더 뜨거워져요. 조급해지지 않게 속도 조절.'},
  土:{cls:'mid',tag:'넘치는 기운',msg:'끈기는 세지지만 고집·답답함으로 흐르기 쉬워요.'},
  金:{cls:'mid',tag:'넘치는 기운',msg:'재능은 빛나지만 일 벌이다 과부하·말실수 주의.'}
 };
@@ -874,7 +874,7 @@ function interpret(dt){
   const dp=dayPillar(dt), yp=yearPillar(dt), mp=monthPillar(dt,yp);
   const dStem=dp.s,dBr=dp.b,dEl=STEM_EL[dStem],bEl=BR_EL[dBr];
   const sipStem=SIPSIN_STEM[dStem],sipBr=SIPSIN_BR[dBr];
-  const fireSeason=['巳','午','未'].includes(mp.b)||['巳','午','未'].includes(yp.b);
+  const fireSeason=['巳','午','未'].includes(mp.b);
   const seLine='올해는 '+SIP_PERIOD[cat(SIPSIN_STEM[yp.s])]+' 해예요. '+EL_SHORT[STEM_EL[yp.s]];
   const wolLine='이번 달은 '+SIP_PERIOD[cat(SIPSIN_STEM[mp.s])]+' 달이에요. '+EL_SHORT[STEM_EL[mp.s]];
 
@@ -911,8 +911,8 @@ function interpret(dt){
   /* 조심할 것 (마찰류) / 좋은 신호 (협력·쏠림류) 분리 */
   let goodSignals=[];
   hits.forEach(h=>{
-    if(h.t==='충')cautions.push('<b>「'+labOf(h)+'」 쪽이 크게 흔들리는 날.</b> 갑자기 일이 틀어지거나, 다투거나, 뭔가 고장 날 수 있어요. 이 분야에서 <b>큰 결정(계약·구매·중요한 약속)은 오늘 잡지 말고</b> 다음으로 미루세요.'+exOf(h));
-    if(h.t==='해')cautions.push('<b>「'+labOf(h)+'」 쪽에 자잘하게 거슬리는 일이 끼는 날.</b> 말이 어긋나거나, 작은 게 고장 나거나, 괜히 짜증 날 수 있어요. "오늘은 원래 그런 날" 하고 넘기면 돼요.'+exOf(h));
+    if(h.t==='충')cautions.push('<b>「'+labOf(h)+'」 쪽이 크게 흔들리는 날.</b> 갑자기 일이 틀어지거나, 예상 못한 변수가 생길 수 있어요. 이 분야에서 <b>큰 결정(계약·구매·중요한 약속)은 오늘 잡지 말고</b> 다음으로 미루세요.'+exOf(h));
+    if(h.t==='해')cautions.push('<b>「'+labOf(h)+'」 쪽에 자잘하게 거슬리는 일이 끼는 날.</b> 말이 어긋나거나, 사소한 일이 꼬이거나, 괜히 짜증 날 수 있어요. "오늘은 원래 그런 날" 하고 넘기면 돼요.'+exOf(h));
     if(h.t==='합')goodSignals.push('<b>「'+labOf(h)+'」 쪽에 사람 운·협력 운이 좋은 날.</b> 연락하거나 만나서 일 풀기, 도움 청하기 좋아요.'+exOf(h));
     if(h.t==='복')cautions.push('<b>「'+labOf(h)+'」 쪽에 할 일이 한꺼번에 몰리는 날.</b> 다 하려 말고 급한 것부터 하나씩 추려서.'+exOf(h));
     if(h.t==='천간충')cautions.push('<b>「'+labOf(h)+'」 쪽과 생각이 정면으로 부딪히는 날(천간충).</b> 의견 차이로 마찰이 생기기 쉬워요. 고집부리지 말고 한 발 물러서서 듣는 쪽으로.'+stemExOf(h));
@@ -933,7 +933,7 @@ function interpret(dt){
 
   /* 실전 행동: 할 것 / 미룰 것 */
   let doList=[], dontList=[];
-  const fireRisk=(dEl==='火'||((dEl==='金'||bEl==='金')&&fireSeason));
+  const fireRisk=fireSeason&&(dEl==='火'||dEl==='金'||bEl==='金');
 
   if(un.lv==='high'||un.lv==='good')doList.push('기운이 좋은 날이에요. 미뤄둔 중요한 일 하나를 오늘 끝내버리기 좋아요. 큰일 시작·결정도 OK.');
   if(un.lv==='low'){doList.push('힘이 좀 처지는 날이에요. 새 일 벌이지 말고, 밀린 거 정리하거나 일찍 쉬는 쪽으로.');dontList.push('큰일 새로 시작하기, 일정 무리하게 욱여넣기.');}
@@ -979,6 +979,29 @@ function interpret(dt){
   else tail='특별히 걸리는 것 없이 무난하게 흘러가요.';
   const oneLine='오늘은 '+lead+' 날이에요. '+tail;
 
+  /* 오늘의 날짜 운세 — 한 줄 요약을 조건형으로 자세히 풀어쓰기 */
+  const SIP_WHEN={
+   비견:['혼자 처리할 일이 있다면','내 페이스대로 밀고 나가면 잘 풀려요'],
+   겁재:['돈 쓸 일이 있다면','예정에 없던 지출이 늘기 쉬우니 한 번 멈춰서 보세요'],
+   식신:['만드는 작업(영상·악보·글)을 한다면','손이 부드럽게 풀려서 결과가 잘 나와요'],
+   상관:['아이디어를 내거나 표현할 일이 있다면','재능이 잘 터지는 대신 말이 앞서기 쉬워요'],
+   정재:['돈 계산할 일이 있다면','정산·장부처럼 꼼꼼한 일에 머리가 맑아요'],
+   편재:['새 기회나 제안이 들어온다면','솔깃해 보여도 오늘 결정은 미루는 게 나아요'],
+   정관:['서류·계약을 다룬다면','검토까지만 하고 확정은 다음으로 미루세요'],
+   편관:['갑작스런 일이나 책임이 들어온다면','다 떠안지 말고 덜어내세요'],
+   정인:['배우거나 정리할 게 있다면','공부·자료 정리·충전에 딱 좋은 날이에요'],
+   편인:['생각이 복잡해진다면','직관은 예리하지만 결정은 잘 안 나는 날이에요']
+  };
+  const LV_TXT={high:'오늘은 기운이 아주 좋아서, 미뤄둔 큰일 하나 붙잡기에 충분한 날이에요.',good:'오늘은 기운이 올라오는 중이라, 새로 시작하거나 밀어붙이기 괜찮아요.',mid:'오늘은 기운이 평범해요. 무리하지 말고 평소 하던 만큼만 가세요.',low:'오늘은 기운이 처져 있어요. 새로 벌이기보다 정리·마무리 쪽으로 가세요.'};
+  let todayDetail=[];
+  const ws=SIP_WHEN[sipStem], wb=SIP_WHEN[sipBr];
+  if(ws)todayDetail.push('<b style="color:var(--amber)">겉으로 드러나는 기운(천간 '+sipStem+')</b> — 오늘 '+ws[0]+' — '+ws[1]+'.');
+  if(wb)todayDetail.push('<b style="color:var(--amber)">실제로 겪는 기운(지지 '+sipBr+')</b> — 오늘 '+wb[0]+' — '+wb[1]+'.');
+  todayDetail.push('<b style="color:var(--amber)">오늘의 기운 세기</b> — '+(LV_TXT[un.lv]||''));
+  if(fireRisk)todayDetail.push('<b style="color:var(--amber)">한 가지 더</b> — 지금은 여름철이라 쇠·불 기운이 겹쳐요. 오늘 장비를 다룬다면 평소보다 살살, 중요한 파일은 미리 백업해두세요.');
+  else if(hasChung)todayDetail.push('<b style="color:var(--amber)">한 가지 더</b> — 오늘 큰 결정을 앞두고 있다면, 하루만 묵혔다 다시 보세요.');
+
+
   /* 대운 목표 */
   const age=(dt.getFullYear()-1979)+1;
   let dwNow,dwBody=[];
@@ -1004,7 +1027,7 @@ function interpret(dt){
   dwBody.unshift('<span style="color:var(--muted);font-size:13px">현재 만 '+age+'세 무렵</span>');
 
   const npToday=napyinOf(dp.s,dp.b);
-  return{dp,yp,mp,dEl,bEl,sipStem,sipBr,seLine,wolLine,yearDetail,monthDetail,npToday,oneLine,luck,cautions,goodSignals,unName,un,sinsal,doList,dontList,wx,wxColor,dwNow,dwBody};
+  return{dp,yp,mp,dEl,bEl,sipStem,sipBr,seLine,wolLine,yearDetail,monthDetail,npToday,oneLine,todayDetail,luck,cautions,goodSignals,unName,un,sinsal,doList,dontList,wx,wxColor,dwNow,dwBody};
 }
 
 /* ===== 오각형 레이더 ===== */
@@ -1075,8 +1098,8 @@ function render(){
 
   document.getElementById('todayDateLine').innerHTML=
     '<b style="color:var(--amber)">'+(cur.getFullYear())+'. '+mo+'. '+da+' ('+WD[cur.getDay()]+')</b><br>'+
-    '<span style="font-size:15px">'+r.oneLine+'</span><br>'+
-    '<span style="font-size:12px;color:var(--muted)">'+r.dp.s+r.dp.b+'日 · 천간 '+r.sipStem+'('+EL_KR[r.dEl]+') + 지지 '+r.sipBr+'('+EL_KR[r.bEl]+')</span>';
+    '<span style="font-size:12px;color:var(--muted)">'+r.dp.s+r.dp.b+'日 · 천간 '+r.sipStem+'('+EL_KR[r.dEl]+') + 지지 '+r.sipBr+'('+EL_KR[r.bEl]+')</span>'+
+    '<span style="display:block;margin-top:10px;font-size:14px;line-height:1.75">'+r.todayDetail.map(t=>'<span style="display:block;margin-bottom:8px">'+t+'</span>').join('')+'</span>';
 
   document.getElementById('luckCh').textContent=r.sipStem;
   document.getElementById('luckTags').innerHTML='<span class="tag">'+r.sipStem+'</span><span class="tag">'+r.dEl+'기운</span><span class="tag">지지 '+r.sipBr+'</span>';
