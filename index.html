@@ -271,43 +271,49 @@
   #tab-kb .done-panel .logged{color:var(--green); font-size:13px; margin-bottom:24px; font-weight:600;}
 
   /* ===== record (기록) styles ===== */
-  #tab-record{font-family:'Pretendard',-apple-system,sans-serif;}
-  #tab-record .rec-today{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
-  #tab-record .rec-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
+  /* shared styles: 기록 + 식단 tabs */
+  #tab-record, #tab-diet{font-family:'Pretendard',-apple-system,sans-serif;}
+  .rec-today{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .rec-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
     border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s ease;-webkit-tap-highlight-color:transparent;}
-  #tab-record .rec-item.on{background:linear-gradient(160deg,var(--panel2),var(--panel));border-color:var(--amber-dim);}
-  #tab-record .rec-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;
+  .rec-item.on{background:linear-gradient(160deg,var(--panel2),var(--panel));border-color:var(--amber-dim);}
+  .rec-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;
     display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:transparent;transition:all .15s ease;}
-  #tab-record .rec-item.on .rec-check{background:var(--amber);border-color:var(--amber);color:#1a1815;}
-  #tab-record .rec-label{flex:1;min-width:0;}
-  #tab-record .rec-name{font-size:15px;font-weight:700;}
-  #tab-record .rec-note{font-size:11.5px;color:var(--muted);margin-top:2px;}
-  #tab-record .rec-auto-badge{font-size:10px;color:var(--amber);border:1px solid var(--amber-dim);
+  .rec-item.on .rec-check{background:var(--amber);border-color:var(--amber);color:#1a1815;}
+  .rec-label{flex:1;min-width:0;}
+  .rec-name{font-size:15px;font-weight:700;}
+  .rec-note{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .rec-auto-badge{font-size:10px;color:var(--amber);border:1px solid var(--amber-dim);
     border-radius:20px;padding:3px 9px;flex-shrink:0;white-space:nowrap;}
-  #tab-record .rec-section{margin-bottom:24px;}
-  #tab-record .rec-section-title{font-size:13px;color:var(--amber);font-weight:700;margin-bottom:10px;letter-spacing:.03em;}
-  #tab-record .rec-month-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-  #tab-record .rec-mstat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 2px;text-align:center;}
-  #tab-record .rec-mstat .n{font-size:17px;font-weight:800;color:var(--amber);}
-  #tab-record .rec-mstat .l{font-size:9.5px;color:var(--muted);margin-top:2px;}
-  #tab-record .rec-total-stats{display:flex;gap:8px;}
-  #tab-record .rec-tstat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 6px;text-align:center;}
-  #tab-record .rec-tstat .n{font-size:19px;font-weight:800;color:var(--ink);}
-  #tab-record .rec-tstat .l{font-size:9.5px;color:var(--muted);margin-top:3px;}
-  #tab-record .rec-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-  #tab-record .rec-weekday-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
-  #tab-record .rec-weekday-row div{text-align:center;font-size:10px;color:var(--muted);font-weight:600;}
-  #tab-record .rec-day{aspect-ratio:1;border-radius:8px;background:var(--panel2);border:1px solid var(--line);
+  .rec-section{margin-bottom:24px;}
+  .rec-section-title{font-size:13px;color:var(--amber);font-weight:700;margin-bottom:10px;letter-spacing:.03em;}
+  .rec-month-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;}
+  .rec-mstat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 2px;text-align:center;}
+  .rec-mstat .n{font-size:17px;font-weight:800;color:var(--amber);}
+  .rec-mstat .l{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .rec-total-stats{display:flex;gap:8px;}
+  .rec-tstat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 6px;text-align:center;}
+  .rec-tstat .n{font-size:19px;font-weight:800;color:var(--ink);}
+  .rec-tstat .l{font-size:9.5px;color:var(--muted);margin-top:3px;}
+  .rec-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .rec-weekday-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+  .rec-weekday-row div{text-align:center;font-size:10px;color:var(--muted);font-weight:600;}
+  .rec-day{aspect-ratio:1;border-radius:8px;background:var(--panel2);border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:var(--muted);position:relative;}
-  #tab-record .rec-day.empty{background:none;border:none;}
-  #tab-record .rec-day.today{border-color:var(--green);}
-  #tab-record .rec-day.d1{background:#2a2116;color:var(--muted);}
-  #tab-record .rec-day.d2{background:#3a2c17;color:var(--ink);}
-  #tab-record .rec-day.d3{background:#5c4319;color:var(--ink);}
-  #tab-record .rec-day.d4{background:#8a6a2a;color:var(--ink);}
-  #tab-record .rec-day.d5{background:var(--amber);color:#1a1815;}
-  #tab-record .rec-cal-legend{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px;font-size:10px;color:var(--muted);}
-  #tab-record .rec-cal-legend .sq{width:11px;height:11px;border-radius:3px;}
+  .rec-day.empty{background:none;border:none;}
+  .rec-day.today{border-color:var(--green);}
+  .rec-day.d1{background:#2a2116;color:var(--muted);}
+  .rec-day.d2{background:#3a2c17;color:var(--ink);}
+  .rec-day.d3{background:#5c4319;color:var(--ink);}
+  .rec-day.d4{background:#8a6a2a;color:var(--ink);}
+  .rec-day.d5{background:var(--amber);color:#1a1815;}
+  .rec-cal-legend{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px;font-size:10px;color:var(--muted);}
+  .rec-cal-legend .sq{width:11px;height:11px;border-radius:3px;}
+  /* diet-tab specific: food tag chips */
+  .diet-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+  .diet-tag{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 16px;
+    font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease;-webkit-tap-highlight-color:transparent;}
+  .diet-tag.on{background:var(--amber);border-color:var(--amber);color:#1a1815;}
 </style>
 </head>
 <body>
@@ -317,6 +323,7 @@
     <button data-tab="kb" data-sub="calendar">캘린더</button>
     <button data-tab="fortune">운세</button>
     <button data-tab="book">100권</button>
+    <button data-tab="diet">식단</button>
     <button data-tab="record">기록</button>
   </div>
 
@@ -593,6 +600,42 @@
 <button class="reset-btn" id="bookResetBtn">전체 기록 초기화</button>
   </div>
 
+  <div id="tab-diet" class="tabpane">
+<header>
+  <div class="eyebrow">Count Basie · Diet</div>
+  <h1>오늘의 식단</h1>
+  <div class="sub" id="dietDateLabel"></div>
+</header>
+
+<div class="rec-today">
+  <div class="rec-item" id="dietTodayToggle">
+    <div class="rec-check" id="dietTodayCheck"></div>
+    <div class="rec-label">
+      <div class="rec-name">단백질 위주로 챙겼어요</div>
+      <div class="rec-note">두유·소고기·돼지고기·고등어·김치·바나나 기준</div>
+    </div>
+  </div>
+</div>
+
+<div class="rec-section">
+  <div class="rec-section-title">오늘 먹은 것 (선택)</div>
+  <div class="diet-tags" id="dietTags"></div>
+</div>
+
+<div class="rec-section">
+  <div class="rec-section-title">이번 달</div>
+  <div class="rec-total-stats" id="dietMonthStats"></div>
+</div>
+
+<div class="rec-section">
+  <div class="rec-section-title" id="dietCalTitle">이번 달 한눈에</div>
+  <div class="rec-weekday-row"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
+  <div class="rec-cal-grid" id="dietCalGrid"></div>
+</div>
+
+<button class="reset-btn" id="dietResetBtn">식단 기록 초기화</button>
+  </div>
+
   <div id="tab-record" class="tabpane">
 <header>
   <div class="eyebrow">Count Basie · Record</div>
@@ -645,6 +688,7 @@
       if(el)el.classList.add('active');
       if(b.dataset.sub && typeof window.switchTab==='function'){ window.switchTab(b.dataset.sub); }
       if(b.dataset.tab==='record' && typeof window.renderRecord==='function'){ window.renderRecord(); }
+      if(b.dataset.tab==='diet' && typeof window.renderDiet==='function'){ window.renderDiet(); }
       window.scrollTo(0,0);
     });
   });
@@ -2018,10 +2062,12 @@ renderExList();
   const REC_KEY='daily_record_v1';
   const KB_KEY='kb_simple_v1';
   const BOOK_KEY='investment-100-books-checked';
+  const DIET_KEY='diet_log_v1';
   const START_DATE='2026-08-01';
 
   const ITEMS=[
     {id:'exercise', name:'운동', short:'운동', note:'켓틀벨 탭에서 자동 반영돼요', auto:true},
+    {id:'diet',     name:'식단', short:'식단', note:'식단 탭에서 자동 반영돼요', auto:true},
     {id:'reading',  name:'독서', short:'독서', note:'팩 하면서 30분'},
     {id:'guitar',   name:'기타 즉흥연주', short:'기타', note:'퇴근 전 30분'},
     {id:'invest',   name:'투자 공부 · 가계부', short:'투자', note:'기상 직후 폰 볼 때'},
@@ -2038,15 +2084,21 @@ renderExList();
   function saveRec(obj){ localStorage.setItem(REC_KEY, JSON.stringify(obj)); }
   function loadKB(){ try{ return JSON.parse(localStorage.getItem(KB_KEY)||'{}'); }catch(e){ return {}; } }
   function loadBook(){ try{ return JSON.parse(localStorage.getItem(BOOK_KEY)||'{}'); }catch(e){ return {}; } }
+  function loadDiet(){ try{ return JSON.parse(localStorage.getItem(DIET_KEY)||'{}'); }catch(e){ return {}; } }
   function exerciseDoneOn(key, kbData){ const days=(kbData&&kbData.days)||{}; return !!(days[key] && days[key].length>0); }
+  function dietDoneOn(key, dietData){ const d=(dietData||{})[key]; return !!(d && d.ok); }
 
-  function renderToday(t, rec, kb){
+  function renderToday(t, rec, kb, diet){
     const wrap=document.getElementById('recToday'); if(!wrap) return;
     wrap.innerHTML='';
     const today=rec[t.key]||{};
     const exDone=exerciseDoneOn(t.key, kb);
+    const dietDone=dietDoneOn(t.key, diet);
     ITEMS.forEach(item=>{
-      const on = item.auto ? exDone : !!today[item.id];
+      let on;
+      if(item.id==='exercise') on=exDone;
+      else if(item.id==='diet') on=dietDone;
+      else on=!!today[item.id];
       const div=document.createElement('div');
       div.className='rec-item'+(on?' on':'');
       div.innerHTML=
@@ -2076,16 +2128,17 @@ renderExList();
     return {y:t.y, m:t.m};
   }
 
-  function renderMonthStats(t, rec, kb){
+  function renderMonthStats(t, rec, kb, diet){
     const box=document.getElementById('recMonthStats'); if(!box) return;
     box.innerHTML='';
     const dm=displayMonth(t);
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    const counts={exercise:0, reading:0, guitar:0, invest:0, business:0};
+    const counts={exercise:0, diet:0, reading:0, guitar:0, invest:0, business:0};
     for(let d=1; d<=daysInMonth; d++){
       const k=dkey(dm.y, dm.m, d);
       if(k<START_DATE) continue;
       if(exerciseDoneOn(k, kb)) counts.exercise++;
+      if(dietDoneOn(k, diet)) counts.diet++;
       const day=rec[k]||{};
       if(day.reading) counts.reading++;
       if(day.guitar) counts.guitar++;
@@ -2099,17 +2152,19 @@ renderExList();
     });
   }
 
-  function renderTotalStats(rec, kb, book){
+  function renderTotalStats(rec, kb, book, diet){
     const box=document.getElementById('recTotalStats'); if(!box) return;
     box.innerHTML='';
     const kbDays=Object.keys((kb&&kb.days)||{}).filter(k=>k>=START_DATE);
+    const dietDays=Object.keys(diet||{}).filter(k=>k>=START_DATE);
     const recDays=Object.keys(rec).filter(k=>k>=START_DATE);
-    const allDates=new Set(kbDays.concat(recDays));
+    const allDates=new Set(kbDays.concat(dietDays).concat(recDays));
     let totalActiveDays=0;
     allDates.forEach(k=>{
       const day=rec[k]||{};
       const ex=exerciseDoneOn(k, kb);
-      if(ex||day.reading||day.guitar||day.invest||day.business) totalActiveDays++;
+      const dt=dietDoneOn(k, diet);
+      if(ex||dt||day.reading||day.guitar||day.invest||day.business) totalActiveDays++;
     });
     const sp=START_DATE.split('-').map(Number);
     const start=new Date(sp[0], sp[1]-1, sp[2]);
@@ -2137,7 +2192,7 @@ renderExList();
     });
   }
 
-  function renderCalendar(t, rec, kb){
+  function renderCalendar(t, rec, kb, diet){
     const dm=displayMonth(t);
     const title=document.getElementById('recCalTitle');
     if(title) title.textContent=dm.y+'년 '+dm.m+'월 한눈에'+(dm.m!==t.m||dm.y!==t.y?' (8/1부터 시작)':'');
@@ -2159,11 +2214,14 @@ renderExList();
         const day=rec[k]||{};
         let cnt=0;
         if(exerciseDoneOn(k, kb)) cnt++;
+        if(dietDoneOn(k, diet)) cnt++;
         if(day.reading) cnt++;
         if(day.guitar) cnt++;
         if(day.invest) cnt++;
         if(day.business) cnt++;
-        el.className='rec-day'+(cnt>0?(' d'+cnt):'')+(k===t.key?' today':'');
+        // scale 0-6 counts onto the existing 5-step color ramp
+        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/6));
+        el.className='rec-day'+(step>0?(' d'+step):'')+(k===t.key?' today':'');
       }
       grid.appendChild(el);
     }
@@ -2173,17 +2231,17 @@ renderExList();
     const t=todayD();
     const label=document.getElementById('recordDateLabel');
     if(label) label.textContent=t.y+'.'+pad2(t.m)+'.'+pad2(t.d);
-    const rec=loadRec(), kb=loadKB(), book=loadBook();
-    renderToday(t, rec, kb);
-    renderMonthStats(t, rec, kb);
-    renderTotalStats(rec, kb, book);
-    renderCalendar(t, rec, kb);
+    const rec=loadRec(), kb=loadKB(), book=loadBook(), diet=loadDiet();
+    renderToday(t, rec, kb, diet);
+    renderMonthStats(t, rec, kb, diet);
+    renderTotalStats(rec, kb, book, diet);
+    renderCalendar(t, rec, kb, diet);
   }
 
   const resetBtn=document.getElementById('recResetBtn');
   if(resetBtn){
     resetBtn.addEventListener('click', function(){
-      if(confirm('기록을 초기화할까요? (운동/100권 기록은 그대로 유지됩니다)')){
+      if(confirm('기록을 초기화할까요? (운동/식단/100권 기록은 그대로 유지됩니다)')){
         localStorage.removeItem(REC_KEY);
         renderRecord();
       }
@@ -2192,6 +2250,147 @@ renderExList();
 
   window.renderRecord=renderRecord;
   renderRecord();
+})();
+</script>
+
+<script>
+/* ===== diet (식단) engine ===== */
+(function(){
+  const DIET_KEY='diet_log_v1';
+  const START_DATE='2026-08-01';
+  const FOOD_TAGS=['두유','소고기','돼지고기','고등어','김치','바나나'];
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function dkey(y,m,d){ return y+'-'+pad2(m)+'-'+pad2(d); }
+  function todayD(){
+    const d=new Date();
+    return {y:d.getFullYear(), m:d.getMonth()+1, d:d.getDate(), key:dkey(d.getFullYear(), d.getMonth()+1, d.getDate())};
+  }
+  function loadDiet(){ try{ return JSON.parse(localStorage.getItem(DIET_KEY)||'{}'); }catch(e){ return {}; } }
+  function saveDiet(obj){ localStorage.setItem(DIET_KEY, JSON.stringify(obj)); }
+  function displayMonth(t){
+    if(t.key < START_DATE){
+      const sp=START_DATE.split('-').map(Number);
+      return {y:sp[0], m:sp[1]};
+    }
+    return {y:t.y, m:t.m};
+  }
+
+  function renderToday(t, diet){
+    const today=diet[t.key]||{ok:false, tags:[]};
+    const item=document.getElementById('dietTodayToggle');
+    const check=document.getElementById('dietTodayCheck');
+    if(item){
+      item.classList.toggle('on', !!today.ok);
+      if(check) check.textContent=today.ok?'✓':'';
+    }
+    const tagsBox=document.getElementById('dietTags'); if(!tagsBox) return;
+    tagsBox.innerHTML='';
+    FOOD_TAGS.forEach(tag=>{
+      const on=(today.tags||[]).indexOf(tag)>=0;
+      const el=document.createElement('div');
+      el.className='diet-tag'+(on?' on':'');
+      el.textContent=tag;
+      el.addEventListener('click', function(){
+        const d=loadDiet();
+        if(!d[t.key]) d[t.key]={ok:false, tags:[]};
+        const tags=d[t.key].tags||[];
+        const idx=tags.indexOf(tag);
+        if(idx>=0) tags.splice(idx,1); else tags.push(tag);
+        d[t.key].tags=tags;
+        saveDiet(d);
+        renderDiet();
+      });
+      tagsBox.appendChild(el);
+    });
+  }
+
+  function renderMonthStats(t, diet){
+    const box=document.getElementById('dietMonthStats'); if(!box) return;
+    box.innerHTML='';
+    const dm=displayMonth(t);
+    const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
+    let count=0;
+    for(let d=1; d<=daysInMonth; d++){
+      const k=dkey(dm.y, dm.m, d);
+      if(k<START_DATE) continue;
+      if(diet[k] && diet[k].ok) count++;
+    }
+    let totalCount=0;
+    Object.keys(diet).forEach(k=>{ if(k>=START_DATE && diet[k] && diet[k].ok) totalCount++; });
+    const items=[
+      {n:count, l:'이번 달 실천일'},
+      {n:totalCount, l:'전체 누적일'}
+    ];
+    items.forEach(it=>{
+      const el=document.createElement('div'); el.className='rec-tstat';
+      el.innerHTML='<div class="n">'+it.n+'</div><div class="l">'+it.l+'</div>';
+      box.appendChild(el);
+    });
+  }
+
+  function renderCalendar(t, diet){
+    const dm=displayMonth(t);
+    const title=document.getElementById('dietCalTitle');
+    if(title) title.textContent=dm.y+'년 '+dm.m+'월 한눈에'+(dm.m!==t.m||dm.y!==t.y?' (8/1부터 시작)':'');
+    const grid=document.getElementById('dietCalGrid'); if(!grid) return;
+    grid.innerHTML='';
+    const firstDow=new Date(dm.y, dm.m-1, 1).getDay();
+    const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
+    for(let i=0; i<firstDow; i++){
+      const e=document.createElement('div'); e.className='rec-day empty'; grid.appendChild(e);
+    }
+    for(let d=1; d<=daysInMonth; d++){
+      const k=dkey(dm.y, dm.m, d);
+      const el=document.createElement('div');
+      el.textContent=d;
+      if(k<START_DATE){
+        el.className='rec-day';
+        el.style.opacity='0.35';
+      } else {
+        const on=!!(diet[k] && diet[k].ok);
+        el.className='rec-day'+(on?' d5':'')+(k===t.key?' today':'');
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  function renderDiet(){
+    const t=todayD();
+    const label=document.getElementById('dietDateLabel');
+    if(label) label.textContent=t.y+'.'+pad2(t.m)+'.'+pad2(t.d);
+    const diet=loadDiet();
+    renderToday(t, diet);
+    renderMonthStats(t, diet);
+    renderCalendar(t, diet);
+  }
+
+  const toggle=document.getElementById('dietTodayToggle');
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      const t=todayD();
+      const d=loadDiet();
+      if(!d[t.key]) d[t.key]={ok:false, tags:[]};
+      d[t.key].ok=!d[t.key].ok;
+      saveDiet(d);
+      renderDiet();
+      if(typeof window.renderRecord==='function') window.renderRecord();
+    });
+  }
+
+  const resetBtn=document.getElementById('dietResetBtn');
+  if(resetBtn){
+    resetBtn.addEventListener('click', function(){
+      if(confirm('식단 기록을 초기화할까요?')){
+        localStorage.removeItem(DIET_KEY);
+        renderDiet();
+        if(typeof window.renderRecord==='function') window.renderRecord();
+      }
+    });
+  }
+
+  window.renderDiet=renderDiet;
+  renderDiet();
 })();
 </script>
 
