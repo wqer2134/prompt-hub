@@ -38,7 +38,7 @@
   .hero h1{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:800;font-size:clamp(34px,7vw,54px);line-height:1.14;margin:8px 0 2px;letter-spacing:-.02em}
   .hero .artist{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:500;font-size:22px;color:var(--muted);margin:0}
   .capo{display:inline-block;margin-top:10px;font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:13px;color:var(--amber-deep);
-    background:rgba(239,159,39,.12);border:1px solid var(--amber);border-radius:999px;padding:5px 13px}
+    background:var(--amber-bg);border:1px solid var(--amber);border-radius:999px;padding:5px 13px}
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
   .chip{display:inline-flex;flex-direction:column;gap:2px;background:#FFFFFF;border:1px solid var(--line);border-radius:12px;padding:9px 15px}
   .chip .lb{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:11px;letter-spacing:.1em;color:var(--amber-deep);font-weight:600;text-transform:uppercase}
@@ -47,7 +47,7 @@
   .btn{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:15px;padding:12px 22px;border-radius:11px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:#FFFFFF;color:var(--ink)}
   .btn:hover{border-color:var(--ink)}
   .btn.yt{background:#FFFFFF;border-color:#e0503a;color:#c0341f}
-  .btn.buy{border:none;color:#fff;background:var(--amber);box-shadow:0 6px 14px rgba(239,159,39,.3)}
+  .btn.buy{border:none;color:#fff;background:var(--amber);box-shadow:0 6px 14px var(--amber-sh)}
   .btn[disabled]{opacity:.5;cursor:not-allowed}
 
   /* Chords */
@@ -78,19 +78,20 @@
   .rhead .meter{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:12px;color:var(--amber-deep);border:1px solid var(--amber-deep);border-radius:7px;padding:3px 9px}
   .rhead .mtag{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:12px;color:#fff;background:#7a736a;border-radius:7px;padding:3px 9px}
   .rctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-  .rplay{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:15px;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;color:#fff;background:var(--amber);box-shadow:0 6px 14px rgba(239,159,39,.3)}
+  .rplay{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:15px;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;color:#fff;background:var(--amber);box-shadow:0 6px 14px var(--amber-sh)}
   .rplay.stop{background:#3a3229}
   .rtempo{display:flex;align-items:center;gap:9px}
   .rstep{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:18px;font-weight:600;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;line-height:1}
   .rstep:hover{border-color:var(--amber-deep);color:var(--amber-deep)}
   .rbpm{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:13px;color:var(--muted);min-width:68px}
   .rbpm b{font-family:"Oswald",sans-serif;font-size:21px;color:var(--ink);margin-right:3px}
-  .rslider{flex:1;min-width:120px;accent-color:var(--amber-deep)}
+  .rslider{flex:1;min-width:110px;accent-color:var(--amber-deep)}
+  .rspeed{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:12px;color:var(--muted);white-space:nowrap}
   .rtoggle{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);cursor:pointer;user-select:none}
   .rtoggle input{width:16px;height:16px;accent-color:var(--amber-deep)}
   .strum{display:grid;gap:5px}
   .beatcell{text-align:center;padding:7px 1px;border-radius:9px;transition:transform .06s,background .06s}
-  .beatcell.on{transform:translateY(-4px);background:rgba(239,159,39,.16)}
+  .beatcell.on{transform:translateY(-4px);background:var(--amber-bg)}
   .beatcell .cnt{font-family:"Oswald",sans-serif;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
   .beatcell.on .cnt{color:var(--amber-deep)}
   .arrow{font-family:"Oswald",sans-serif;font-weight:700;font-size:22px;line-height:1}
@@ -102,7 +103,7 @@
   /* Chart */
   .sheet2{padding:22px}
   .sheet-ctl{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-  .splay{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:15px;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;color:#fff;background:var(--amber);box-shadow:0 6px 14px rgba(239,159,39,.3)}
+  .splay{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;font-size:15px;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;color:#fff;background:var(--amber);box-shadow:0 6px 14px var(--amber-sh)}
   .splay.stop{background:#3a3229}
   .snext{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:12.5px;color:var(--muted);margin-left:auto}
   .snext b{font-family:"Oswald",sans-serif;font-size:19px;color:var(--amber-deep);margin-left:5px}
@@ -111,7 +112,7 @@
   .tok{display:inline-flex;flex-direction:column;padding:3px 5px 5px;border-radius:8px;transition:background .1s,transform .08s}
   .tok .tk-c{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:700;font-size:16px;color:var(--amber-deep);line-height:1.1;min-height:20px}
   .tok .tk-l{font-size:17px;color:var(--ink);line-height:1.3;white-space:pre}
-  .tok.on{background:rgba(239,159,39,.22);transform:translateY(-2px)}
+  .tok.on{background:var(--amber-bg);transform:translateY(-2px)}
   .tok.on .tk-l{font-weight:600}.tok.done .tk-c{opacity:.45}
   .repeat{text-align:center;color:var(--muted);font-family:"Oswald","Noto Sans KR",sans-serif;font-size:12.5px;margin-top:16px}
 
@@ -171,6 +172,7 @@ const SONG = {
   tempo:   100,                     // ♩ = BPM (PDF: 100)
   meter:   "4/4",
   strumName: "팜뮤트 + 16비트 스트로크",   // 주법 요약
+  accent:  "green",                 // 썸네일과 같은 색: green/blue/purple/amber/red/pink
 
   /* ── ② 배울 코드 & 운지 (확인 필요: 7th 코드) ─────────
      shape = 6번줄→1번줄 순서, f: 프렛(0=개방,-1=뮤트), fin: 손가락(1검지~4새끼)
@@ -178,7 +180,7 @@ const SONG = {
   chords: {   /* ✅ PDF 다이어그램에서 직접 확인 (6번줄→1번줄) */
     "DM7":  [{f:-1},{f:-1},{f:0},{f:2,fin:1},{f:2,fin:2},{f:2,fin:3}],       // × × 0 2 2 2
     "G":    [{f:3,fin:2},{f:2,fin:1},{f:0},{f:0},{f:0},{f:3,fin:3}],         // 3 2 0 0 0 3
-    "Gm6":  [{f:3,fin:2},{f:-1},{f:-1},{f:2,fin:1},{f:3,fin:3},{f:3,fin:4}], // 3 × × 2 3 3
+    "Gm6":  [{f:3,fin:2},{f:-1},{f:2,fin:1},{f:3,fin:3},{f:3,fin:4},{f:-1}], // 3 × 2 3 3 × (6=3f, 4=2f, 3=3f, 2=3f)
     "F#m7": [{f:2,fin:2},{f:-1},{f:2,fin:1},{f:2,fin:1},{f:2,fin:1},{f:-1}], // 2 × 2 2 2 × (index barre)
     "FM7":  [{f:-1},{f:-1},{f:3,fin:3},{f:2,fin:2},{f:1,fin:1},{f:0}],       // × × 3 2 1 0
     "A":    [{f:-1},{f:0},{f:2,fin:1},{f:2,fin:2},{f:2,fin:3},{f:0}],        // × 0 2 2 2 0
@@ -219,19 +221,13 @@ const SONG = {
 /* ============================================================= */
 </script>
 
-<!-- HERO -->
+<!-- HERO — 아임웹 상품 상단에 제목·아티스트·대표이미지가 이미 있어 중복 제거.
+     곡명/아티스트/커버 박스는 넣지 않고, 카포·정보 칩·버튼만. -->
 <header class="wrap hero">
   <p class="eyebrow"><span class="dot"></span><span id="hEyebrow"></span></p>
-  <div class="hero-grid" style="margin-top:14px">
-    <div class="cover"><span id="coverTxt"></span></div>
-    <div>
-      <h1 id="hTitle"></h1>
-      <p class="artist" id="hArtist"></p>
-      <div id="hCapo"></div>
-      <div class="chips" id="hChips"></div>
-      <div class="hero-cta" id="hCta"></div>
-    </div>
-  </div>
+  <div id="hCapo" style="margin-top:14px"></div>
+  <div class="chips" id="hChips"></div>
+  <div class="hero-cta" id="hCta"></div>
 </header>
 
 <div class="wrap"><div class="rule"></div></div>
@@ -264,9 +260,9 @@ const SONG = {
   <div class="panel sheet2">
     <div class="sheet-ctl">
       <button class="splay" id="splay">▶ 따라치기 재생</button>
-      <div class="rtempo">
-        <button class="rstep" id="sminus">−</button><span class="rbpm"><b id="sbpmv">80</b>BPM</span><button class="rstep" id="splus">+</button>
-      </div>
+      <span class="rspeed">느리게</span>
+      <input type="range" id="sslider" class="rslider" min="50" max="140" value="80" style="max-width:160px">
+      <span class="rspeed">빠르게</span>
       <span class="snext">다음 코드<b id="snext">—</b></span>
     </div>
     <div class="slines" id="slines"></div>
@@ -281,8 +277,8 @@ const SONG = {
   <p class="eyebrow"><span class="dot"></span>STEP 4 · 오늘의 10분 루틴</p>
   <h2 class="sec">10분 연습 루틴</h2>
   <div class="panel" style="padding:20px 24px">
-    <div class="routine" id="routine"></div>
-    <div class="goal-bar"><span>목표 템포</span><span><b id="goalText"></b></span></div>
+    <div class="routine" id="routineList"></div>
+    <div class="goal-bar"><span>연습 목표</span><span><b id="goalText"></b></span></div>
   </div>
 </div></section>
 
@@ -309,9 +305,9 @@ const SONG = {
       <p>오선보 · 타브(TAB) · 코드 다이어그램 · 전체 가사 포함. 인쇄해서 보면대에 올려두세요.</p>
       <div class="price-line"><span class="amt" id="priceAmt"></span><span class="old" id="priceOld"></span></div>
       <ul class="incl">
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6851A" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>전곡 코드 + 스트로크 표기</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6851A" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>오선보 &amp; 타브 악보</li>
-        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D6851A" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>인쇄용 고해상도 PDF</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-deep)" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>전곡 코드 + 스트로크 표기</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-deep)" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>오선보 &amp; 타브 악보</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-deep)" stroke-width="2.4"><path d="M5 12l4 4L19 6"/></svg>인쇄용 고해상도 PDF</li>
       </ul>
       <a id="buyLink" href="#"><button class="btn buy" style="width:100%;justify-content:center">악보 구매하기</button></a>
       <p style="font-size:12px;margin-top:12px;text-align:center"><b>구독 회원은 악보 무료</b> · 비구독자만 낱개 구매</p>
@@ -342,6 +338,17 @@ const OPEN=[40,45,50,55,59,64];               // 개방현 MIDI (6→1번줄)
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 const setTxt=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
 
+/* ---- 강조색: 썸네일과 통일 (레벨별 색) ---- */
+const ACCENTS={green:['#17A98A','#0E8D71'],blue:['#3E7BEA','#2C5FC4'],purple:['#8A5CD6','#6E42BC'],amber:['#EF9F27','#D6851A'],red:['#E4572E','#C23E1B'],pink:['#D6409F','#B32E82']};
+const _ac=ACCENTS[SONG.accent]||ACCENTS.amber;
+document.documentElement.style.setProperty('--amber',_ac[0]);
+document.documentElement.style.setProperty('--amber-deep',_ac[1]);
+const ACC=_ac[0], ACCD=_ac[1];
+(function(){var h=ACC.replace('#',''),r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16),st=document.documentElement.style;
+  st.setProperty('--amber-sh','rgba('+r+','+g+','+b+',.3)');   // 버튼 그림자
+  st.setProperty('--amber-bg','rgba('+r+','+g+','+b+',.16)');  // 배지·하이라이트 배경
+})();
+
 /* ---- 헤더 채우기 ---- */
 setTxt('coverTxt', SONG.cover);
 setTxt('hTitle', SONG.title);
@@ -350,10 +357,8 @@ document.title = SONG.title+" · 통기타 레슨 — 카운트베이시";
 if(SONG.capo>0){ document.getElementById('hCapo').innerHTML='<span class="capo">🎸 카포 '+SONG.capo+'프렛</span>'; }
 setTxt('hEyebrow', '통기타 레슨 · '+SONG.level);
 document.getElementById('hChips').innerHTML =
-  chip('레벨', SONG.level) +
   chip('배울 코드', SONG.chordOrder.join(' · ')) +
-  chip('주법', SONG.strumName) +
-  chip('템포', '♩ = '+SONG.tempo);
+  chip('주법', SONG.strumName);
 function chip(l,v){return '<div class="chip"><span class="lb">'+l+'</span><span class="vl">'+v+'</span></div>';}
 (function(){
   let h='';
@@ -369,7 +374,7 @@ setTxt('footText','Count Basie Music · '+SONG.title+' — '+SONG.artist);
 
 /* ---- STEP1: 코드 다이어그램 (6→1 순서 애니메이션) ---- */
 function chordSVG(shape){
-  const W=118,H=150,L=18,R=18,T=30,cols=5,rows=4;
+  const W=140,H=150,L=20,R=20,T=30,cols=6,rows=4;   // 기타 6줄
   const bw=W-L-R, sp=bw/(cols-1), fh=(H-T-18)/rows;
   const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});
   const order=shape.map((d,i)=>i).filter(i=>shape[i].f>0);   // 누르는 줄 6→1
@@ -385,7 +390,7 @@ function chordSVG(shape){
     }else if(d.f===0){svg.appendChild(el('circle',{cx:x,cy:T-11,r:5,fill:'none',stroke:'#6E6E6E','stroke-width':2}));}
     else{const y=T+(d.f-0.5)*fh, pos=order.indexOf(s)+1;
       const g=el('g',{class:'cdot'});
-      g.appendChild(el('circle',{cx:x,cy:y,r:10,fill:'#EF9F27',stroke:'#D6851A','stroke-width':1.6}));
+      g.appendChild(el('circle',{cx:x,cy:y,r:9,fill:ACC,stroke:ACCD,'stroke-width':1.6}));
       const t=el('text',{x:x,y:y+4,'text-anchor':'middle','font-size':12,'font-family':'Oswald, sans-serif','font-weight':700,fill:'#2a1e08'});
       t.textContent=d.fin||''; g.appendChild(t); svg.appendChild(g);
       if(pos)gmap[pos]=g;
@@ -457,8 +462,9 @@ function makeRhythm(cfg){
     <div class="rhead"><h3>${cfg.name}</h3><span class="meter">${cfg.meter||'4/4'}</span>${cfg.mute?'<span class="mtag">팜뮤트</span>':''}</div>
     <div class="rctl">
       <button class="rplay">▶ 재생</button>
-      <div class="rtempo"><button class="rstep minus">−</button><span class="rbpm"><b class="bpmv">${cfg.startBpm||80}</b>BPM</span><button class="rstep plus">+</button></div>
+      <span class="rspeed">느리게</span>
       <input type="range" class="rslider" min="50" max="140" value="${cfg.startBpm||80}">
+      <span class="rspeed">빠르게</span>
       <label class="rtoggle"><input type="checkbox" class="clk"> 메트로놈 클릭</label>
     </div>
     <div class="strum" style="grid-template-columns:repeat(${cfg.div},1fr)"></div>
@@ -471,7 +477,7 @@ function makeRhythm(cfg){
     strip.appendChild(cell);
   });
   const cells=[...strip.children];
-  const playBtn=wrap.querySelector('.rplay'), bpmv=wrap.querySelector('.bpmv'),
+  const playBtn=wrap.querySelector('.rplay'),
         slider=wrap.querySelector('.rslider'), clk=wrap.querySelector('.clk');
   let playing=false,bpm=cfg.startBpm||80,timer=null,nextT=0,step=0,q=[];
   const AHEAD=.12,LOOK=25;
@@ -489,10 +495,7 @@ function makeRhythm(cfg){
   function start(){GAudio.ensure();playing=true;step=0;q=[];nextT=GAudio.now()+.08;schedule();requestAnimationFrame(draw);playBtn.textContent='■ 정지';playBtn.classList.add('stop');}
   function stop(){playing=false;clearTimeout(timer);q=[];cells.forEach(c=>c.classList.remove('on'));playBtn.textContent='▶ 재생';playBtn.classList.remove('stop');}
   playBtn.onclick=()=>playing?stop():start();
-  function setB(v){bpm=Math.max(50,Math.min(140,v));bpmv.textContent=bpm;slider.value=bpm;}
-  slider.oninput=e=>setB(+e.target.value);
-  wrap.querySelector('.minus').onclick=()=>setB(bpm-5);
-  wrap.querySelector('.plus').onclick=()=>setB(bpm+5);
+  slider.oninput=e=>{bpm=Math.max(50,Math.min(140,+e.target.value));};
   return wrap;
 }
 const rWrap=document.getElementById('rhythms');
@@ -511,10 +514,12 @@ SONG.rhythms.forEach(r=>rWrap.appendChild(makeRhythm(r)));
     wrapEl.appendChild(ln);
   });
   // 재생 마디 = 코드가 있는 토큰만 (코드 바뀔 때마다 한 마디)
+  // ✅ 코드 악보 리듬 = STEP2 "코러스" 리듬과 동일 패턴 사용 (따로 안 만듦)
+  const _cr=SONG.rhythms.find(r=>/코러스/.test(r.name))||SONG.rhythms.find(r=>!r.mute)||SONG.rhythms[0]||{div:8,pattern:['d','u','d','u','d','u','d','u']};
   let playing=false,bpm=80,timer=null,nextT=0,step=0,tok=0,q=[];
-  const AHEAD=.12,LOOK=25, DIV=8;
-  const pat=['d','u','d','u','d','u','d','u'];
-  const playBtn=document.getElementById('splay'),bpmv=document.getElementById('sbpmv'),nextEl=document.getElementById('snext');
+  const AHEAD=.12,LOOK=25, DIV=_cr.div;
+  const pat=_cr.pattern;
+  const playBtn=document.getElementById('splay'),nextEl=document.getElementById('snext'),sslider=document.getElementById('sslider');
   function curChord(i){ for(let j=i;j>=0;j--){ if(toks[j].chord) return toks[j].chord; } return null; }
   function hi(i){toks.forEach((t,j)=>{t.el.classList.toggle('on',j===i);t.el.classList.toggle('done',j<i);});
     let nx=null; for(let j=i+1;j<toks.length;j++){if(toks[j].chord){nx=toks[j].chord;break;}}
@@ -533,9 +538,7 @@ SONG.rhythms.forEach(r=>rWrap.appendChild(makeRhythm(r)));
   function start(){GAudio.ensure();playing=true;step=0;tok=0;q=[];nextT=GAudio.now()+.08;schedule();requestAnimationFrame(draw);playBtn.textContent='■ 정지';playBtn.classList.add('stop');}
   function stop(){playing=false;clearTimeout(timer);q=[];toks.forEach(t=>t.el.classList.remove('on','done'));nextEl.textContent='—';playBtn.textContent='▶ 따라치기 재생';playBtn.classList.remove('stop');}
   playBtn.onclick=()=>playing?stop():start();
-  function setB(v){bpm=Math.max(50,Math.min(140,v));bpmv.textContent=bpm;}
-  document.getElementById('sminus').onclick=()=>setB(bpm-5);
-  document.getElementById('splus').onclick=()=>setB(bpm+5);
+  sslider.oninput=e=>{bpm=Math.max(50,Math.min(140,+e.target.value));};
 })();
 
 /* ---- STEP4: 루틴 + 미션 ---- */
@@ -543,15 +546,15 @@ SONG.rhythms.forEach(r=>rWrap.appendChild(makeRhythm(r)));
   const prog=SONG.flowText.split('(')[0].trim();
   const steps=[
     ['1~2분','첫 두 코드를 천천히 잡으며 깨끗한 소리 만들기'],
-    ['3~5분','메트로놈 '+SONG.routineStart+'BPM에 맞춰 리듬(스트로크) 반복하기'],
+    ['3~5분','리듬(스트로크)을 천천히 편한 속도로 반복하기'],
     ['6~8분', prog+' 코드 전환을 끊기지 않게 연습하기'],
     ['9~10분','원곡 흐름에 맞춰 코러스 구간 이어서 연주해 보기'],
   ];
-  document.getElementById('routine').innerHTML = steps.map((s,i)=>
+  document.getElementById('routineList').innerHTML = steps.map((s,i)=>
     `<div class="rstep2"><div class="ic">${i+1}</div><div><div class="tm">${s[0]}</div><div class="tx">${s[1]}</div></div></div>`).join('');
-  setTxt('goalText', SONG.routineStart+'BPM → '+SONG.routineGoal+'BPM');
+  setTxt('goalText', '천천히 시작 → 원곡 속도로');
   document.getElementById('missionText').innerHTML =
-    '<b>'+SONG.routineStart+'BPM</b>에서 <b>'+prog+'</b> 진행을 스트로크로 <b>5번 끊기지 않고</b> 연주해 보세요.';
+    '<b>'+prog+'</b> 진행을 스트로크로 <b>5번 끊기지 않고</b> 연주해 보세요.';
 })();
 
 /* ---- STEP5: 링크/가격 ---- */
