@@ -557,13 +557,21 @@ SONG.rhythms.forEach(r=>rWrap.appendChild(makeRhythm(r)));
     '<b>'+prog+'</b> 진행을 스트로크로 <b>5번 끊기지 않고</b> 연주해 보세요.';
 })();
 
-/* ---- STEP5: 링크/가격 ---- */
+/* ---- STEP5: 링크/가격 + 유튜브 embed(바로 재생) ---- */
 (function(){
   setTxt('priceAmt', SONG.price+'원');
   if(SONG.oldPrice) setTxt('priceOld', SONG.oldPrice+'원');
   const yl=document.getElementById('ytLink'), bl=document.getElementById('buyLink');
-  if(SONG.youtube){ yl.href=SONG.youtube; yl.target='_blank'; document.getElementById('ytCap').textContent='▶ '+SONG.title+' · 강사 시범'; }
   if(SONG.buyUrl){ bl.href=SONG.buyUrl; }
+  if(SONG.youtube){
+    yl.href=SONG.youtube; yl.target='_blank';
+    const m=SONG.youtube.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
+    const box=document.getElementById('ytBox');
+    if(m && box){
+      box.innerHTML='<iframe src="https://www.youtube.com/embed/'+m[1]+'" title="'+SONG.title+'" style="position:absolute;inset:0;width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+      box.style.cursor='default';
+    }
+  }
 })();
 </script>
 </body>
