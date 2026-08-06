@@ -193,6 +193,11 @@
   #tab-kb .ex-btn .nm{font-size:16px; font-weight:700;}
   #tab-kb .ex-btn .ds{font-size:12px; color:var(--gray); margin-top:2px;}
   #tab-kb .ex-btn .df{font-size:12px; color:var(--amber); font-weight:600; text-align:right; line-height:1.4;}
+  #tab-kb .ex-alt-wrap{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);}
+  #tab-kb .ex-alt-label{font-size:11px; color:var(--gray); margin-bottom:8px; letter-spacing:.03em;}
+  #tab-kb .ex-btn.alt.on{border-color:var(--amber); background:linear-gradient(160deg,rgba(239,159,39,.12),var(--bg-card));}
+  #tab-kb .ex-btn.alt.on .play{background:var(--amber); color:#1a1815;}
+  #tab-kb .ex-alt-note{font-size:12px; color:var(--gray); margin-top:10px; text-align:center; line-height:1.5;}
   #tab-kb .cal-summary{display:flex; gap:8px; margin-bottom:18px;}
   #tab-kb .cal-stat{flex:1; background:var(--bg-card); border:1px solid var(--line); border-radius:10px; padding:12px; text-align:center;}
   #tab-kb .cal-stat .n{font-size:22px; font-weight:800; color:var(--amber);}
@@ -346,6 +351,11 @@
 <main>
   <div class="tab-page active" id="workoutPage">
     <div class="ex-list" id="exList"></div>
+    <div class="ex-alt-wrap">
+      <div class="ex-alt-label">케틀벨 안 하는 날에는</div>
+      <button class="start-btn" onclick="startCycleSession()">🚴 실내자전거 + 아령 이어서 시작 (30분)</button>
+      <div class="ex-alt-note" id="exAlt"></div>
+    </div>
   </div>
   <div class="tab-page" id="calendarPage">
     <div class="cal-summary">
@@ -447,6 +457,39 @@
     <p id="doneSummary"></p>
     <div class="logged" id="doneLogged"></div>
     <button class="start-btn" onclick="closeOverlay()">확인</button>
+  </div>
+</div>
+
+<div class="overlay" id="cycleOverlay">
+  <div class="ov-header">
+    <button class="ov-back" onclick="abortCycleSession()">← 종료</button>
+    <div class="ov-title">실내자전거 + 아령</div>
+    <div style="width:50px"></div>
+  </div>
+  <div class="run-panel active" style="justify-content:center;">
+    <div class="set-label" id="cycleSegLabel">1 / 5 구간</div>
+    <div class="big-num" id="cycleTimer" style="margin-top:14px; font-size:44px;">30:00</div>
+    <div class="figure-wrap" style="margin:6px auto 0; max-width:200px;">
+      <svg id="cycleFigure" viewBox="0 0 100 78" xmlns="http://www.w3.org/2000/svg">
+        <line class="fig-bone" id="cyShoulderLine"/>
+        <line class="fig-bone" id="cyNeck"/>
+        <line class="fig-bone" id="cySpine"/>
+        <line class="fig-bone" id="cyUarm"/>
+        <line class="fig-bone" id="cyFarm"/>
+        <line class="fig-bone" id="cyUarm2"/>
+        <line class="fig-bone" id="cyFarm2"/>
+        <circle class="fig-head" id="cyHead" r="7.5"/>
+        <circle class="fig-kb" id="cyKbL" r="5.5"/>
+        <circle class="fig-kb" id="cyKbR" r="5.5"/>
+      </svg>
+    </div>
+    <div class="ex-label" id="cycleExName" style="margin-top:6px;">🚴 워밍업 (페달만)</div>
+    <div class="set-dots" id="cycleDots" style="margin-top:18px;"></div>
+    <div class="controls" style="margin-top:28px;">
+      <button class="ctrl-btn" id="cyclePauseBtn" onclick="toggleCyclePause()">일시정지</button>
+      <button class="ctrl-btn" onclick="skipCycleSegment()">다음 구간</button>
+      <button class="ctrl-btn" onclick="finishCycleSession()">완료</button>
+    </div>
   </div>
 </div>
   </div>
@@ -1530,7 +1573,11 @@ const EXERCISES = [
   {name:"고블릿 스쿼트", desc:"케틀벨 가슴 앞에 안고 앉기", kg:"8kg", reps:12, sets:3, tempo:1, meta:"하체 · 8kg", pose:"squat"},
   {name:"원암 로우", desc:"등 당기기 (양쪽)", kg:"8kg", reps:10, sets:3, tempo:1, meta:"등 · 8kg (양쪽)", pose:"row", both:true},
   {name:"오버헤드 프레스", desc:"머리 위로 밀기 (양쪽)", kg:"3kg", reps:8, sets:3, tempo:1, meta:"어깨 · 3kg (양쪽)", pose:"press", both:true},
-  {name:"터키시 겟업", desc:"6단계로 일어서기 (양쪽)", kg:"3kg", reps:2, sets:2, tempo:0, meta:"전신 · 3kg (양쪽)", pose:"getup"}
+  {name:"터키시 겟업", desc:"6단계로 일어서기 (양쪽)", kg:"3kg", reps:2, sets:2, tempo:0, meta:"전신 · 3kg (양쪽)", pose:"getup"},
+  {name:"바이셉 컬", desc:"팔꿈치 고정하고 아령 접었다 펴기", kg:"아령", reps:14, sets:3, tempo:1, meta:"팔 앞쪽 · 자전거 타며", pose:"bicepcurl"},
+  {name:"레터럴 레이즈", desc:"양팔을 옆으로 어깨높이까지 들기", kg:"아령", reps:14, sets:2, tempo:1, meta:"어깨 라인 · 자전거 타며", pose:"lateralraise"},
+  {name:"프론트 레이즈", desc:"양팔을 앞으로 어깨높이까지 들기", kg:"아령", reps:11, sets:2, tempo:1, meta:"어깨 앞쪽 · 자전거 타며", pose:"frontraise"},
+  {name:"트라이셉 익스텐션", desc:"머리 뒤에서 팔 곧게 펴기", kg:"아령", reps:14, sets:2, tempo:1, meta:"팔 뒤쪽 · 자전거 타며", pose:"tricepext"}
 ];
 
 /* 막대인간 포즈 (측면뷰, viewBox 0 0 100 125). a=시작, b=끝. 한 rep = a→b→a 왕복 */
@@ -1574,6 +1621,26 @@ const POSES = {
     front:true,
     a:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowR:[58,48], handR:[54,62], elbowL:[42,48], handL:[46,62], kb:[50,68] },
     b:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowR:[68,36], handR:[56,44], elbowL:[32,36], handL:[44,44], kb:[50,38] }
+  },
+  bicepcurl: {
+    front:true,
+    a:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[34,54], handL:[32,70], elbowR:[66,54], handR:[68,70], kb:[50,70] },
+    b:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[34,54], handL:[40,36], elbowR:[66,54], handR:[60,36], kb:[50,36] }
+  },
+  lateralraise: {
+    front:true,
+    a:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[36,54], handL:[34,70], elbowR:[64,54], handR:[66,70], kb:[50,70] },
+    b:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[20,32], handL:[6,32], elbowR:[80,32], handR:[94,32], kb:[50,32] }
+  },
+  frontraise: {
+    front:true,
+    a:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[36,54], handL:[34,70], elbowR:[64,54], handR:[66,70], kb:[50,70] },
+    b:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[42,38], handL:[46,22], elbowR:[58,38], handR:[54,22], kb:[50,22] }
+  },
+  tricepext: {
+    front:true,
+    a:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[40,20], handL:[46,34], elbowR:[60,20], handR:[54,34], kb:[50,34] },
+    b:{ head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66], kneeL:[42,88], ankleL:[42,110], kneeR:[58,88], ankleR:[58,110], elbowL:[40,20], handL:[42,4], elbowR:[60,20], handR:[58,4], kb:[50,4] }
   }
 };
 const TEMPOS = [
@@ -1619,6 +1686,7 @@ function switchTab(tab){
 function renderExList(){
   const c=document.getElementById('exList'); c.innerHTML='';
   EXERCISES.forEach((e,i)=>{
+    if(CYCLE_EX_NAMES.indexOf(e.name)!==-1) return;
     const b=document.createElement('button');
     b.className='ex-btn';
     b.onclick=()=>openCounter(i);
@@ -1631,6 +1699,155 @@ function renderExList(){
       <span class="df">${e.kg}<br>${e.sets}×${e.reps}</span>`;
     c.appendChild(b);
   });
+}
+
+const CYCLE_LABEL='실내자전거 30분';
+const CYCLE_EX_NAMES=['바이셉 컬','레터럴 레이즈','프론트 레이즈','트라이셉 익스텐션'];
+const CYCLE_SEGMENTS=[
+  {label:'워밍업 (페달만)', exName:null, sec:120},
+  {label:'바이셉 컬', exName:'바이셉 컬', sec:420},
+  {label:'레터럴 레이즈', exName:'레터럴 레이즈', sec:420},
+  {label:'프론트 레이즈', exName:'프론트 레이즈', sec:420},
+  {label:'트라이셉 익스텐션', exName:'트라이셉 익스텐션', sec:420}
+];
+const CYCLE_TOTAL_SEC=CYCLE_SEGMENTS.reduce((s,seg)=>s+seg.sec,0);
+
+function isCycleDoneToday(){
+  const k=todayKey();
+  return !!(state.days[k] && state.days[k].includes(CYCLE_LABEL));
+}
+function renderExAlt(){
+  const el=document.getElementById('exAlt'); if(!el) return;
+  const done=isCycleDoneToday();
+  el.textContent = done
+    ? '오늘 이미 완료했어요 ✓ (다시 하면 기록은 그대로예요)'
+    : '바이셉 컬·레터럴 레이즈·프론트 레이즈·오버헤드 프레스·트라이셉 익스텐션 각 6분, 총 30분';
+}
+
+const CYCLE_POSE_MAP={'바이셉 컬':'bicepcurl','레터럴 레이즈':'lateralraise','프론트 레이즈':'frontraise','트라이셉 익스텐션':'tricepext'};
+function drawUpperFront(j){
+  setBone('cyShoulderLine', j.shoulderL, j.shoulderR);
+  setBone('cyNeck', j.head, j.neck);
+  setBone('cySpine', j.neck, j.hip);
+  setBone('cyUarm', j.shoulderL, j.elbowL);
+  setBone('cyFarm', j.elbowL, j.handL);
+  setBone('cyUarm2', j.shoulderR, j.elbowR);
+  setBone('cyFarm2', j.elbowR, j.handR);
+  const h=document.getElementById('cyHead'); if(h){ h.setAttribute('cx',j.head[0]); h.setAttribute('cy',j.head[1]); }
+  const kbL=document.getElementById('cyKbL'); if(kbL){ kbL.setAttribute('cx',j.handL[0]); kbL.setAttribute('cy',j.handL[1]); }
+  const kbR=document.getElementById('cyKbR'); if(kbR){ kbR.setAttribute('cx',j.handR[0]); kbR.setAttribute('cy',j.handR[1]); }
+}
+let cycleFigRaf=null, cycleFigStart=0, cycleFigExName=undefined;
+function startCycleFigure(exName){
+  if(exName===cycleFigExName && cycleFigRaf) return; // 이미 같은 동작 재생 중이면 유지
+  cycleFigExName=exName;
+  if(cycleFigRaf) cancelAnimationFrame(cycleFigRaf);
+  const poseKey = exName ? CYCLE_POSE_MAP[exName] : null;
+  const pose = poseKey ? POSES[poseKey] : null;
+  cycleFigStart=performance.now();
+  const period=1800, idlePeriod=2400;
+  const loop=(ts)=>{
+    if(pose){
+      const t=((ts-cycleFigStart)%period)/period;
+      const k=(1-Math.cos(t*2*Math.PI))/2;
+      drawUpperFront(poseAt(pose,k));
+    } else {
+      const t=((ts-cycleFigStart)%idlePeriod)/idlePeriod;
+      const sway=Math.sin(t*2*Math.PI)*2;
+      drawUpperFront({
+        head:[50,14], neck:[50,30], shoulderL:[38,32], shoulderR:[62,32], hip:[50,66],
+        elbowL:[34+sway,50], handL:[36+sway,58], elbowR:[66+sway,50], handR:[64+sway,58],
+        kb:[50,58]
+      });
+    }
+    cycleFigRaf=requestAnimationFrame(loop);
+  };
+  cycleFigRaf=requestAnimationFrame(loop);
+}
+function stopCycleFigure(){
+  if(cycleFigRaf){ cancelAnimationFrame(cycleFigRaf); cycleFigRaf=null; }
+  cycleFigExName=undefined;
+}
+
+let cycleElapsed=0, cyclePaused=false, cycleTimerId=null;
+function cycleSegAt(elapsed){
+  let acc=0;
+  for(let i=0;i<CYCLE_SEGMENTS.length;i++){ acc+=CYCLE_SEGMENTS[i].sec; if(elapsed<acc) return i; }
+  return CYCLE_SEGMENTS.length-1;
+}
+function startCycleSession(){
+  cycleElapsed=0; cyclePaused=false;
+  document.getElementById('cycleOverlay').classList.add('active');
+  document.getElementById('cyclePauseBtn').textContent='일시정지';
+  updateCycleUI();
+  startCycleFigure(CYCLE_SEGMENTS[0].exName);
+  if(cycleTimerId) clearInterval(cycleTimerId);
+  cycleTimerId=setInterval(()=>{
+    if(cyclePaused) return;
+    cycleElapsed++;
+    if(cycleElapsed>=CYCLE_TOTAL_SEC){ finishCycleSession(); return; }
+    updateCycleUI();
+  }, 1000);
+  requestWake();
+}
+function updateCycleUI(){
+  const remain=CYCLE_TOTAL_SEC-cycleElapsed;
+  const mm=String(Math.floor(remain/60)).padStart(2,'0');
+  const ss=String(remain%60).padStart(2,'0');
+  const timerEl=document.getElementById('cycleTimer'); if(timerEl) timerEl.textContent=mm+':'+ss;
+  const idx=cycleSegAt(cycleElapsed);
+  const seg=CYCLE_SEGMENTS[idx];
+  const segLabelEl=document.getElementById('cycleSegLabel'); if(segLabelEl) segLabelEl.textContent=(idx+1)+' / '+CYCLE_SEGMENTS.length+' 구간';
+  const nameEl=document.getElementById('cycleExName'); if(nameEl) nameEl.textContent = seg.exName ? ('🏋️ '+seg.exName) : '🚴 워밍업 (페달만)';
+  startCycleFigure(seg.exName);
+  renderCycleDots(idx);
+}
+function renderCycleDots(curIdx){
+  const c=document.getElementById('cycleDots'); if(!c) return;
+  c.innerHTML='';
+  CYCLE_SEGMENTS.forEach((s,i)=>{
+    const d=document.createElement('div'); d.className='set-dot';
+    if(i<curIdx) d.classList.add('done');
+    if(i===curIdx) d.classList.add('current');
+    c.appendChild(d);
+  });
+}
+function toggleCyclePause(){
+  cyclePaused=!cyclePaused;
+  document.getElementById('cyclePauseBtn').textContent = cyclePaused ? '재개' : '일시정지';
+}
+function skipCycleSegment(){
+  let acc=0, moved=false;
+  for(let i=0;i<CYCLE_SEGMENTS.length;i++){
+    acc+=CYCLE_SEGMENTS[i].sec;
+    if(cycleElapsed<acc){ cycleElapsed=acc; moved=true; break; }
+  }
+  if(!moved || cycleElapsed>=CYCLE_TOTAL_SEC){ finishCycleSession(); return; }
+  updateCycleUI();
+}
+function abortCycleSession(){
+  if(cycleElapsed>10 && !confirm('종료할까요? 지금까지는 기록되지 않아요.')) return;
+  if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
+  stopCycleFigure();
+  document.getElementById('cycleOverlay').classList.remove('active');
+}
+function finishCycleSession(){
+  if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
+  stopCycleFigure();
+  document.getElementById('cycleOverlay').classList.remove('active');
+  const k=todayKey();
+  if(!state.days[k]) state.days[k]=[];
+  [CYCLE_LABEL, ...CYCLE_EX_NAMES].forEach(nm=>{ if(!state.days[k].includes(nm)) state.days[k].push(nm); });
+  save();
+  if(typeof renderCalendar==='function') renderCalendar();
+  renderExAlt();
+  document.getElementById('cfgPanel').style.display='none';
+  document.getElementById('runPanel').classList.remove('active');
+  document.getElementById('donePanel').classList.add('active');
+  document.getElementById('ovTitle').textContent='완료';
+  document.getElementById('doneSummary').textContent='실내자전거 30분 + 아령 4종 완료!';
+  document.getElementById('doneLogged').textContent='오늘('+k+') 캘린더에 기록됐어요 ✓';
+  document.getElementById('overlay').classList.add('active');
 }
 
 const CAL_MONTHS = [
@@ -2080,6 +2297,7 @@ let wakeLock=null;
 async function requestWake(){ try{ if('wakeLock'in navigator){ wakeLock=await navigator.wakeLock.request('screen'); } }catch(e){} }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible')requestWake(); });
 renderExList();
+renderExAlt();
 
 </script>
 
