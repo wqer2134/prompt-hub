@@ -292,7 +292,7 @@
     border-radius:20px;padding:3px 9px;flex-shrink:0;white-space:nowrap;}
   .rec-section{margin-bottom:24px;}
   .rec-section-title{font-size:13px;color:var(--amber);font-weight:700;margin-bottom:10px;letter-spacing:.03em;}
-  .rec-month-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;}
+  .rec-month-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
   .rec-mstat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 2px;text-align:center;}
   .rec-mstat .n{font-size:17px;font-weight:800;color:var(--amber);}
   .rec-mstat .l{font-size:9.5px;color:var(--muted);margin-top:2px;}
@@ -2315,7 +2315,8 @@ renderExAlt();
     {id:'diet',     name:'식단', short:'식단', note:'식단 탭에서 자동 반영돼요', auto:true},
     {id:'reading',  name:'독서', short:'독서', note:'팩 하면서 30분'},
     {id:'guitar',   name:'기타 즉흥연주', short:'기타', note:'퇴근 전 30분'},
-    {id:'invest',   name:'투자 공부 · 가계부', short:'투자', note:'기상 직후 폰 볼 때'},
+    {id:'ledger',   name:'가계부 쓰기', short:'가계부', note:'기상 직후 폰 볼 때'},
+    {id:'invest',   name:'투자 공부', short:'투자', note:'홍보 이미지 생성 기다리는 시간'},
     {id:'business', name:'사업 (홍보 · 콘텐츠)', short:'사업', note:'이미지 생성 기다리는 시간'}
   ];
 
@@ -2409,7 +2410,7 @@ renderExAlt();
     box.innerHTML='';
     const dm=displayMonth(t);
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    const counts={exercise:0, diet:0, reading:0, guitar:0, invest:0, business:0};
+    const counts={exercise:0, diet:0, reading:0, guitar:0, ledger:0, invest:0, business:0};
     for(let d=1; d<=daysInMonth; d++){
       const k=dkey(dm.y, dm.m, d);
       if(k<START_DATE) continue;
@@ -2418,6 +2419,7 @@ renderExAlt();
       const day=rec[k]||{};
       if(day.reading) counts.reading++;
       if(day.guitar) counts.guitar++;
+      if(day.ledger) counts.ledger++;
       if(day.invest) counts.invest++;
       if(day.business) counts.business++;
     }
@@ -2440,7 +2442,7 @@ renderExAlt();
       const day=rec[k]||{};
       const ex=exerciseDoneOn(k, kb);
       const dt=dietDoneOn(k, diet);
-      if(ex||dt||day.reading||day.guitar||day.invest||day.business) totalActiveDays++;
+      if(ex||dt||day.reading||day.guitar||day.ledger||day.invest||day.business) totalActiveDays++;
     });
     const sp=START_DATE.split('-').map(Number);
     const start=new Date(sp[0], sp[1]-1, sp[2]);
@@ -2493,10 +2495,11 @@ renderExAlt();
         if(dietDoneOn(k, diet)) cnt++;
         if(day.reading) cnt++;
         if(day.guitar) cnt++;
+        if(day.ledger) cnt++;
         if(day.invest) cnt++;
         if(day.business) cnt++;
-        // scale 0-6 counts onto the existing 5-step color ramp
-        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/6));
+        // scale 0-7 counts onto the existing 5-step color ramp
+        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/7));
         el.className='rec-day'+(step>0?(' d'+step):'')+(k===t.key?' today':'')+(k===recSelKey?' today':'');
         el.style.cursor='pointer';
         el.addEventListener('click', function(){
