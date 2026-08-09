@@ -217,8 +217,25 @@
 
   .section-divider { font-family: var(--serif); font-size: 20px; color: var(--accent); margin: 28px 4px 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-style: italic; }
 
+  .unc-item { padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
+  .unc-item:last-child { border-bottom: none; }
+  .unc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .unc-name { font-size: 14px; color: var(--text); font-weight: 500; }
+  .unc-date { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-left: 8px; }
+  .unc-amt { font-family: var(--mono); font-size: 15px; color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .unc-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .unc-btn { padding: 7px 11px; background: var(--bg-2); border: 1px solid var(--line); color: var(--text-2); font-size: 12px; border-radius: 16px; cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
+  .unc-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .unc-btn.skip:hover { background: var(--text-3); border-color: var(--text-3); }
+
   /* 투자 기록 장부 */
   .rec-write { background: linear-gradient(160deg, rgba(212,165,116,0.06) 0%, var(--bg-card) 100%); border: 1px solid rgba(212,165,116,0.15); }
+  .jrnl-entry { background: var(--bg-card); border: 1px solid var(--line-soft); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
+  .jrnl-entry-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .jrnl-entry-date { font-family: var(--mono); font-size: 13px; color: var(--sage); font-weight: 600; }
+  .jrnl-entry-del { color: var(--text-3); background: transparent; border: none; cursor: pointer; font-size: 16px; padding: 2px 8px; }
+  .jrnl-entry-del:hover { color: var(--rose); }
+  .jrnl-entry-body { font-size: 14px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
   .rec-form { display: grid; gap: 10px; }
   .rec-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .rec-field-label { font-size: 12px; color: var(--text-2); margin-bottom: 5px; font-weight: 500; }
@@ -382,6 +399,26 @@
     </div>
   </div>
 
+  <div class="card" style="background:linear-gradient(160deg, rgba(122,156,181,0.06) 0%, var(--bg-card) 100%); border-color: rgba(122,156,181,0.15);">
+    <div class="card-title"><em>여러 건</em> 붙여넣기</div>
+    <div class="card-sub">토스증권 스크린샷을 클로드에게 → 정리된 텍스트 붙여넣기</div>
+
+    <div class="rec-field-label" style="margin-bottom:5px;">계좌 선택</div>
+    <select class="rec-select" id="pasteAccount" style="margin-bottom:10px;">
+      <option value="일반증권">일반증권</option>
+      <option value="ISA">ISA</option>
+      <option value="연금저축펀드">연금저축펀드</option>
+      <option value="IRP">IRP</option>
+      <option value="기타">기타</option>
+    </select>
+
+    <textarea id="recPaste" placeholder="예:
+8.11 KODEX 200액티브 매수 28355 1
+8.10 KODEX 200액티브 매수 29010 1" style="width:100%;min-height:100px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--mono);font-size:13px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.5;"></textarea>
+    <button class="btn full" id="recPasteBtn" style="width:100%;padding:15px;">📥 여러 건 넣기</button>
+    <div class="help">형식: <strong>날짜 종목 매수/매도 금액 수량</strong> (한 줄에 한 건). 위에서 선택한 계좌로 들어가요. 클로드가 정리해준 텍스트를 그대로 붙여넣으면 돼요.</div>
+  </div>
+
   <div class="card">
     <div class="card-title"><em>보유</em> 종목</div>
     <div class="card-sub">종목별 투자원금 · 평가액 입력 시 손익 자동</div>
@@ -409,6 +446,26 @@
     <div id="recList" style="margin-top:8px;">
       <div class="empty">아직 기록이 없어요</div>
     </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(160deg, rgba(143,169,135,0.06) 0%, var(--bg-card) 100%); border-color: rgba(143,169,135,0.15);">
+    <div class="card-title"><em>투자</em> 일기</div>
+    <div class="card-sub">뭐 했나 · 무슨 생각인지 편하게</div>
+
+    <div class="rec-row2" style="margin-bottom:10px;">
+      <div>
+        <div class="rec-field-label">날짜</div>
+        <input type="date" class="rec-input" id="jrnlDate">
+      </div>
+      <div></div>
+    </div>
+    <textarea id="jrnlNote" placeholder="예:
+- 자동매수 중: 코덱스액티브(일반), ISA ETF
+- 오늘 연금저축펀드 새로 개설
+- 제주반도체 수익나서 익절 고민" style="width:100%;min-height:100px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--sans);font-size:14px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.6;"></textarea>
+    <button class="btn full" id="jrnlSave" style="width:100%;padding:14px;">일기 저장</button>
+
+    <div id="jrnlList" style="margin-top:16px;"></div>
   </div>
 
 </div>
@@ -486,12 +543,17 @@
 <div class="section" id="section-expense">
 
   <div class="card" style="background:linear-gradient(160deg, rgba(122,156,181,0.06) 0%, var(--bg-card) 100%); border-color: rgba(122,156,181,0.15);">
-    <div class="card-title"><em>엑셀</em>로 한번에</div>
-    <div class="card-sub">엑셀 하나로 학원·생활 고정비·변동비·오락비 전부 자동 입력</div>
-    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" style="display:none;">
-    <button class="btn full" id="excelBtn" style="width:100%;padding:15px;margin-bottom:10px;">📄 엑셀 파일 올리기</button>
-    <button class="btn-cancel" id="excelTemplate" style="width:100%;padding:12px;">양식 파일 다운로드</button>
-    <div class="help">양식: <strong>날짜 / 항목 / 금액 / 주체(학원·개인) / 분류(고정·변동·오락)</strong>. 업로드하면 이번 달 지출이 학원·생활로 나뉘어 아래에 전부 반영돼요.</div>
+    <div class="card-title"><em>거래내역</em> 붙여넣기</div>
+    <div class="card-sub">국민은행 앱 → 출금 복사 → 여기 붙여넣기 → 자동 분류</div>
+    <textarea id="kbPaste" placeholder="국민은행 앱에서 거래내역을 복사해서 여기 붙여넣으세요" style="width:100%;min-height:120px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--mono);font-size:13px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.5;"></textarea>
+    <button class="btn full" id="kbParseBtn" style="width:100%;padding:15px;">📥 분석해서 넣기</button>
+    <div class="help">메모에 <strong>(학원 고정) (학원 변동) (생활 고정) (생활 변동) (용돈)</strong>을 넣으면 자동 분류돼요. 입금·CMA는 자동 제외. 메모 없는 카드결제는 <strong>미분류</strong>로 모여서 아래에서 버튼으로 분류할 수 있어요.</div>
+  </div>
+
+  <div class="card" id="unclassifiedCard" style="display:none; background:linear-gradient(160deg, rgba(217,141,128,0.06) 0%, var(--bg-card) 100%); border-color: rgba(217,141,128,0.2);">
+    <div class="card-title"><em>미분류</em> 지출</div>
+    <div class="card-sub">메모 없는 항목 · 버튼으로 분류하세요</div>
+    <div id="unclassifiedList" style="margin-top:8px;"></div>
   </div>
 
   <div class="section-divider">학원 지출</div>
@@ -598,6 +660,19 @@
     <div class="hero-sub">
       자산 <span class="pos" id="totalGross">0</span> − 부채 <span class="neg" id="totalDebt">0</span>
     </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(160deg, rgba(122,156,181,0.06) 0%, var(--bg-card) 100%); border-color: rgba(122,156,181,0.15);">
+    <div class="card-title"><em>자산</em> 붙여넣기</div>
+    <div class="card-sub">월말에 스크린샷 → 클로드 정리 → 붙여넣기 → 전체 갱신</div>
+    <textarea id="assetPaste" placeholder="예:
+현금성 KB종합통장 11623748
+투자 KB적금 38141209
+투자 일반증권 47428271
+절세 연금보험 4975000
+부채 자동차할부 8500000" style="width:100%;min-height:110px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--mono);font-size:13px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.5;"></textarea>
+    <button class="btn full" id="assetPasteBtn" style="width:100%;padding:15px;">📥 자산 전체 갱신</button>
+    <div class="help">형식: <strong>그룹 항목명 금액</strong> (한 줄에 하나). 그룹은 <strong>현금성·투자·절세·부채</strong>. 붙여넣으면 기존 자산을 <strong>이 내용으로 교체</strong >해요 (매달 전체 현황 기준). 저장 후 "이번 달 저장"으로 추이에 기록하세요.</div>
   </div>
 
   <div class="asset-group">
@@ -800,6 +875,7 @@ function loadState() {
   });
   if (!state.diary) state.diary = [];
   if (!state.holdingEval) state.holdingEval = {};
+  if (!state.journal) state.journal = [];
 }
 
 function saveState() {
@@ -1395,6 +1471,32 @@ window.deleteDiary = function(idx) {
   renderDiary();
 };
 
+// 투자 일기
+function renderJournal() {
+  const list = document.getElementById('jrnlList');
+  if (!list) return;
+  if (!state.journal || state.journal.length === 0) {
+    list.innerHTML = '<div class="empty">아직 일기가 없어요</div>';
+    return;
+  }
+  list.innerHTML = state.journal.map((j, idx) => `
+    <div class="jrnl-entry">
+      <div class="jrnl-entry-head">
+        <span class="jrnl-entry-date">${j.date}</span>
+        <button class="jrnl-entry-del" onclick="deleteJournal(${idx})">×</button>
+      </div>
+      <div class="jrnl-entry-body">${escapeHtml(j.note)}</div>
+    </div>
+  `).join('');
+}
+
+window.deleteJournal = function(idx) {
+  if (!confirm('이 일기를 삭제할까요?')) return;
+  state.journal.splice(idx, 1);
+  saveState();
+  renderJournal();
+};
+
 function renderPersonal() {
   const r = getRecord();
 
@@ -1443,6 +1545,7 @@ function renderAll() {
   renderTrend();
   renderDiary();
   renderPersonal();
+  renderJournal();
 }
 
 // 이벤트
@@ -1466,131 +1569,141 @@ document.querySelectorAll('.source-tab').forEach(tab => {
 });
 
 
-// ===== 엑셀 고정비/변동비 업로드 =====
-document.getElementById('excelBtn').addEventListener('click', () => {
-  document.getElementById('excelFile').click();
-});
+// ===== 국민은행 거래내역 붙여넣기 파서 =====
+function parseKBPaste(text) {
+  const lines = text.split('\n').map(l => l.trim());
+  const results = [];
+  let i = 0;
+  const dateRe = /^\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2}$/;
+  const amtRe = /^[+-][\d,]+$/;
+  while (i < lines.length) {
+    if (!dateRe.test(lines[i])) { i++; continue; }
+    const date = lines[i]; i++;
+    const jeog = lines[i] || ''; i++;
+    const bonaen = lines[i] || ''; i++;
+    let memo = '';
+    while (i < lines.length && lines[i] === '') i++;
+    if (lines[i] === '메모') { i++; memo = lines[i] || ''; i++; }
+    while (i < lines.length && !amtRe.test(lines[i])) i++;
+    if (i >= lines.length) break;
+    const amount = parseInt(lines[i].replace(/[+,]/g, '')); i++;
+    if (lines[i] === '원') i++;
+    results.push({ date, jeog, bonaen, memo, amount });
+  }
+  return results;
+}
 
-document.getElementById('excelFile').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const data = new Uint8Array(ev.target.result);
-      const wb = XLSX.read(data, { type: 'array' });
-      const sheet = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+function cleanName(memo) { return memo.replace(/\(.*?\)/g, '').trim(); }
 
-      const r = getRecord();
-      // 이번 달 지출 데이터 초기화 (엑셀이 이번 달 전체를 담고 있으므로)
-      r.var_costs = [];
-      r.personal_fixed = [];
-      r.personal_var = [];
-      r.fun_total = 0;
-      // 학원 고정비는 엑셀 값으로 덮어쓰기 위해 acad_actual 초기화(강사료 자동계산 항목 제외 위해 별도 처리)
-      const newAcadActual = {};
-      const newLifeActual = {};
+function classifyTx(tx) {
+  if (tx.amount > 0) return { cat: 'skip' };
+  const memo = (tx.memo || '').toLowerCase();
+  const bonaen = (tx.bonaen || '').toLowerCase();
+  if (memo.includes('cma') || bonaen === 'cma') return { cat: 'skip' };
+  const m = tx.memo || '';
+  const amount = Math.abs(tx.amount);
+  if (m.includes('학원') && m.includes('고정')) return { cat: 'acad_fixed', amount, name: cleanName(m) || tx.bonaen };
+  if (m.includes('학원') && m.includes('변동')) return { cat: 'acad_var', amount, name: cleanName(m) || tx.bonaen };
+  if (m.includes('생활') && m.includes('고정')) return { cat: 'life_fixed', amount, name: cleanName(m) || tx.bonaen };
+  if (m.includes('생활') && m.includes('변동')) return { cat: 'life_var', amount, name: cleanName(m) || tx.bonaen };
+  if (m.includes('용돈') || m.includes('오락')) return { cat: 'fun', amount };
+  return { cat: 'unclassified', amount, name: tx.bonaen || tx.jeog, date: tx.date };
+}
 
-      let cntAcadFixed = 0, cntAcadVar = 0, cntPfixed = 0, cntPvar = 0, cntFun = 0;
+let pendingUnclassified = [];
 
-      // 열 순서: 날짜(0) 항목(1) 금액(2) 주체(3) 분류(4)
-      rows.forEach((row) => {
-        if (!row || row.length < 4) return;
-        const name = String(row[1] || '').trim();
-        const amount = Math.round(parseFloat(String(row[2]).replace(/[,\s원]/g, '')) || 0);
-        const subject = String(row[3] || '').trim();  // 학원/개인
-        const category = String(row[4] || '').trim(); // 고정/변동/오락
+document.getElementById('kbParseBtn').addEventListener('click', () => {
+  const text = document.getElementById('kbPaste').value;
+  if (!text.trim()) { showToast('거래내역을 붙여넣으세요'); return; }
+  const txs = parseKBPaste(text);
+  if (txs.length === 0) { showToast('인식된 거래가 없어요'); return; }
 
-        if (!name || isNaN(amount) || amount <= 0) return;
-        if (name === '항목' || name === '항목명' || subject === '주체') return; // 헤더 스킵
+  const r = getRecord();
+  // 초기화
+  r.var_costs = [];
+  r.personal_var = [];
+  r.fun_total = 0;
+  const newAcadActual = {};
+  const newLifeActual = {};
+  pendingUnclassified = [];
 
-        const isAcad = subject.includes('학원') || subject.includes('사업');
-        const isFun = category.includes('오락');
-        const isVar = category.includes('변동');
+  let cAcadF=0, cAcadV=0, cLifeF=0, cLifeV=0, cFun=0, cSkip=0, cUnc=0;
 
-        if (isAcad) {
-          if (isVar) {
-            r.var_costs.push({ name, amount });
-            cntAcadVar++;
-          } else {
-            // 학원 고정비: 기존 항목명 매칭
-            const matched = ACAD_BUDGET.find(b => b.name === name);
-            if (matched) {
-              newAcadActual[matched.id] = amount;
-            } else {
-              r.var_costs.push({ name, amount });
-              cntAcadVar++;
-              return;
-            }
-            cntAcadFixed++;
-          }
-        } else {
-          // 개인/생활
-          if (isFun) {
-            r.fun_total += amount;
-            cntFun++;
-          } else if (isVar) {
-            r.personal_var.push({ name, amount });
-            cntPvar++;
-          } else {
-            // 생활 고정비: 기존 항목명 매칭되면 그 값으로, 없으면 변동비로
-            const matched = LIFE_BUDGET.find(b => b.name === name);
-            if (matched) {
-              newLifeActual[matched.id] = amount;
-            } else {
-              r.personal_var.push({ name, amount });
-              cntPvar++;
-              return;
-            }
-            cntPfixed++;
-          }
-        }
-      });
-
-      // 학원 고정비 반영
-      Object.keys(newAcadActual).forEach(id => {
-        r.acad_actual[id] = newAcadActual[id];
-      });
-      // 생활 고정비 반영
-      Object.keys(newLifeActual).forEach(id => {
-        r.life_actual[id] = newLifeActual[id];
-      });
-
-      saveState();
-      renderBudgetList('academy');
-      renderBudgetList('life');
-      renderVarCosts();
-      renderPersonal();
-      showToast(`학원 고정 ${cntAcadFixed} · 변동 ${cntAcadVar} / 생활 고정 ${cntPfixed} · 변동 ${cntPvar} · 오락 ${cntFun}건`);
-    } catch (err) {
-      console.error(err);
-      showToast('엑셀 읽기 실패 — 형식 확인');
+  txs.forEach(tx => {
+    const c = classifyTx(tx);
+    if (c.cat === 'skip') { cSkip++; return; }
+    if (c.cat === 'acad_fixed') {
+      const matched = ACAD_BUDGET.find(b => b.name === c.name);
+      if (matched) newAcadActual[matched.id] = (newAcadActual[matched.id]||0) + c.amount;
+      else r.var_costs.push({ name: c.name, amount: c.amount });
+      cAcadF++;
+    } else if (c.cat === 'acad_var') {
+      r.var_costs.push({ name: c.name, amount: c.amount }); cAcadV++;
+    } else if (c.cat === 'life_fixed') {
+      const matched = LIFE_BUDGET.find(b => b.name === c.name);
+      if (matched) newLifeActual[matched.id] = (newLifeActual[matched.id]||0) + c.amount;
+      else r.personal_var.push({ name: c.name, amount: c.amount });
+      cLifeF++;
+    } else if (c.cat === 'life_var') {
+      r.personal_var.push({ name: c.name, amount: c.amount }); cLifeV++;
+    } else if (c.cat === 'fun') {
+      r.fun_total += c.amount; cFun++;
+    } else if (c.cat === 'unclassified') {
+      pendingUnclassified.push(c); cUnc++;
     }
-    e.target.value = '';
-  };
-  reader.readAsArrayBuffer(file);
+  });
+
+  Object.keys(newAcadActual).forEach(id => { r.acad_actual[id] = newAcadActual[id]; });
+  Object.keys(newLifeActual).forEach(id => { r.life_actual[id] = newLifeActual[id]; });
+
+  saveState();
+  renderBudgetList('academy');
+  renderBudgetList('life');
+  renderVarCosts();
+  renderPersonal();
+  renderUnclassified();
+  document.getElementById('kbPaste').value = '';
+  showToast(`분류 완료 · 미분류 ${cUnc}건`);
 });
 
-// 양식 파일 다운로드
-document.getElementById('excelTemplate').addEventListener('click', () => {
-  const template = [
-    ['날짜', '항목', '금액', '주체', '분류'],
-    ['2026-06-04', '학원 월세', 1550000, '학원', '고정'],
-    ['2026-06-03', '강사료', 6450000, '학원', '고정'],
-    ['2026-06-10', '기장료', 150000, '학원', '변동'],
-    ['2026-06-25', '자동차 할부', 338522, '개인', '고정'],
-    ['2026-06-25', '국민연금', 277830, '개인', '고정'],
-    ['2026-06-05', '식비', 300000, '개인', '변동'],
-    ['2026-06-15', '생필품', 80000, '개인', '변동'],
-    ['2026-06-20', '오락비', 120000, '개인', '오락'],
-  ];
-  const ws = XLSX.utils.aoa_to_sheet(template);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, '지출');
-  XLSX.writeFile(wb, '카운트베이시_지출_양식.xlsx');
-  showToast('양식 다운로드됨');
-});
+function renderUnclassified() {
+  const card = document.getElementById('unclassifiedCard');
+  const list = document.getElementById('unclassifiedList');
+  if (pendingUnclassified.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = 'block';
+  list.innerHTML = pendingUnclassified.map((u, idx) => `
+    <div class="unc-item">
+      <div class="unc-head">
+        <span><span class="unc-name">${escapeHtml(u.name)}</span><span class="unc-date">${u.date ? u.date.slice(0,5) : ''}</span></span>
+        <span class="unc-amt">${fmt(u.amount)}</span>
+      </div>
+      <div class="unc-btns">
+        <button class="unc-btn" onclick="classifyUnc(${idx},'acad_var')">학원변동</button>
+        <button class="unc-btn" onclick="classifyUnc(${idx},'life_var')">생활변동</button>
+        <button class="unc-btn" onclick="classifyUnc(${idx},'fun')">용돈</button>
+        <button class="unc-btn skip" onclick="classifyUnc(${idx},'skip')">제외</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.classifyUnc = function(idx, cat) {
+  const u = pendingUnclassified[idx];
+  if (!u) return;
+  const r = getRecord();
+  if (cat === 'acad_var') r.var_costs.push({ name: u.name, amount: u.amount });
+  else if (cat === 'life_var') r.personal_var.push({ name: u.name, amount: u.amount });
+  else if (cat === 'fun') r.fun_total += u.amount;
+  // skip은 그냥 제거
+  pendingUnclassified.splice(idx, 1);
+  saveState();
+  renderVarCosts();
+  renderPersonal();
+  renderUnclassified();
+};
 
 // 변동비 추가
 document.getElementById('addVar').addEventListener('click', () => {
@@ -1703,6 +1816,63 @@ document.querySelectorAll('[data-add-cancel]').forEach(btn => {
   });
 });
 
+// 자산 붙여넣기 (전체 갱신)
+document.getElementById('assetPasteBtn').addEventListener('click', () => {
+  const text = document.getElementById('assetPaste').value.trim();
+  if (!text) { showToast('자산 내용을 붙여넣으세요'); return; }
+  if (!confirm('붙여넣은 내용으로 자산 전체를 교체합니다.\n(기존 자산 항목은 지워지고 새로 채워집니다)\n계속할까요?')) return;
+
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+  const groupMap = {
+    '현금': 'cash', '현금성': 'cash',
+    '투자': 'invest',
+    '절세': 'pension', '연금': 'pension',
+    '부채': 'debt'
+  };
+
+  // 기존 커스텀 자산 + 값 초기화
+  state.customAssets = { cash: [], pension: [], invest: [], debt: [] };
+  const newAssets = {};
+  const newYearly = {};  // 절세 올해납입액은 별도 유지 위해 기존 것 보존
+  Object.keys(state.yearly || {}).forEach(k => { newYearly[k] = state.yearly[k]; });
+
+  let added = 0, failed = 0;
+  lines.forEach(line => {
+    const parts = line.split(/\s+/);
+    if (parts.length < 3) { failed++; return; }
+    const groupWord = parts[0];
+    const amountStr = parts[parts.length - 1].replace(/[,원]/g, '');
+    const amount = parseInt(amountStr);
+    const name = parts.slice(1, parts.length - 1).join(' ');
+
+    let group = null;
+    for (const [k, v] of Object.entries(groupMap)) {
+      if (groupWord.includes(k)) { group = v; break; }
+    }
+    if (!group || !name || isNaN(amount)) { failed++; return; }
+
+    // 기본 항목과 이름 매칭되면 그 id 사용, 아니면 커스텀 추가
+    const baseMatch = ASSET_ACCOUNTS[group].find(a => a.name === name);
+    if (baseMatch) {
+      newAssets[baseMatch.id] = amount;
+    } else {
+      const newId = 'custom_' + group + '_' + Date.now() + '_' + added;
+      state.customAssets[group].push({ id: newId, name });
+      newAssets[newId] = amount;
+    }
+    added++;
+  });
+
+  if (added === 0) { showToast('인식된 자산이 없어요'); return; }
+
+  state.assets = newAssets;
+  state.yearly = newYearly;
+  saveState();
+  renderAssets();
+  document.getElementById('assetPaste').value = '';
+  showToast(`자산 ${added}건 갱신${failed ? ' · 실패 '+failed : ''}`);
+});
+
 // ===== 퀵 입력 오버레이 =====
 let quickType = 'academy';
 
@@ -1807,6 +1977,89 @@ document.getElementById('recSave').addEventListener('click', () => {
   document.getElementById('recQty').value = '';
   renderDiary();
   showToast(recBs === 'buy' ? '매수 기록 저장됨' : '매도 기록 저장됨');
+});
+
+// 투자 기록 여러 건 붙여넣기
+document.getElementById('recPasteBtn').addEventListener('click', () => {
+  const text = document.getElementById('recPaste').value.trim();
+  if (!text) { showToast('내용을 붙여넣으세요'); return; }
+  const account = document.getElementById('pasteAccount').value;
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+  const curYear = new Date().getFullYear();
+  let added = 0;
+
+  lines.forEach(line => {
+    // 형식: 날짜 종목 매수/매도 금액 수량
+    // 예: "8.11 KODEX 200액티브 매수 28355 1"
+    // 뒤에서부터: 수량(마지막 숫자), 금액(그 앞 숫자), 매수/매도, 날짜(맨앞), 종목(가운데)
+    const parts = line.split(/\s+/);
+    if (parts.length < 4) return;
+
+    // 날짜 (맨 앞, 예: 8.11)
+    const dateRaw = parts[0];
+    const dm = dateRaw.match(/(\d{1,2})\.(\d{1,2})/);
+    let date = todayStr();
+    if (dm) {
+      date = `${curYear}-${dm[1].padStart(2,'0')}-${dm[2].padStart(2,'0')}`;
+    }
+
+    // 매수/매도 위치 찾기
+    let bsIdx = parts.findIndex(p => p.includes('매수') || p.includes('구매') || p.includes('매도') || p.includes('판매'));
+    let bs = 'buy';
+    if (bsIdx >= 0 && (parts[bsIdx].includes('매도') || parts[bsIdx].includes('판매'))) bs = 'sell';
+
+    // 금액과 수량 (뒤쪽 숫자들)
+    const nums = parts.map((p,i) => ({v: p.replace(/[,원주]/g,''), i})).filter(x => /^\d+$/.test(x.v) && x.i > 0);
+    if (nums.length < 1) return;
+    // 마지막 숫자 = 수량, 그 앞 = 금액 (금액이 더 큼)
+    let amount, qty;
+    if (nums.length >= 2) {
+      const last = parseInt(nums[nums.length-1].v);
+      const prev = parseInt(nums[nums.length-2].v);
+      // 큰 게 금액, 작은 게 수량
+      amount = Math.max(last, prev);
+      qty = Math.min(last, prev);
+    } else {
+      amount = parseInt(nums[0].v);
+      qty = 0;
+    }
+    if (!amount || amount <= 0) return;
+
+    // 종목명 = 날짜 다음부터 매수/매도 또는 첫 숫자 전까지
+    let endIdx = bsIdx >= 0 ? bsIdx : nums[0].i;
+    const ticker = parts.slice(1, endIdx).join(' ').trim();
+    if (!ticker) return;
+
+    state.diary.unshift({ date, bs, account, ticker, amount, qty });
+    added++;
+  });
+
+  if (added === 0) { showToast('인식된 기록이 없어요'); return; }
+  saveState();
+  document.getElementById('recPaste').value = '';
+  renderDiary();
+  showToast(`${added}건 추가됨`);
+});
+
+// 투자 일기 저장
+document.getElementById('jrnlSave').addEventListener('click', () => {
+  const dateInput = document.getElementById('jrnlDate').value;
+  const note = document.getElementById('jrnlNote').value.trim();
+  if (!note) { showToast('내용을 적어주세요'); return; }
+  let date;
+  if (dateInput) {
+    const [y,m,d] = dateInput.split('-');
+    date = `${y}.${m}.${d}`;
+  } else {
+    date = todayStr().replace(/-/g, '.');
+  }
+  if (!state.journal) state.journal = [];
+  state.journal.unshift({ date, note });
+  saveState();
+  document.getElementById('jrnlNote').value = '';
+  renderJournal();
+  showToast('일기 저장됨');
 });
 
 // 오락비 추가
@@ -1962,6 +2215,7 @@ renderAll();
 initQuickOverlay();
 // 투자 기록 날짜 기본값
 (function(){ const rd = document.getElementById('recDate'); if (rd) rd.value = todayStr(); })();
+(function(){ const jd = document.getElementById('jrnlDate'); if (jd) jd.value = todayStr(); })();
 </script>
 
 </body>
