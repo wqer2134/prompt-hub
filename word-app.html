@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영어공부 기록장</title>
+<style>
+  :root{
+    --black:#121212;
+    --black2:#1c1c1c;
+    --black3:#242424;
+    --amber:#EF9F27;
+    --amber-dim:#a56f1c;
+    --white:#f5f3ef;
+    --gray:#8a8a8a;
+    --line:#333333;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,'Apple SD Gothic Neo','Pretendard','Malgun Gothic',sans-serif;
+    background:var(--black);
+    color:var(--white);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:560px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column;}
+
+  header{
+    padding:26px 20px 16px;
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--black); z-index:10;
+  }
+  header h1{
+    font-size:21px; font-weight:800; letter-spacing:-0.02em;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  header h1 span{color:var(--amber); font-size:13px; font-weight:600;}
+  .stats{margin-top:8px; font-size:12px; color:var(--gray);}
+  .stats b{color:var(--amber); font-weight:700;}
+
+  nav{
+    display:flex; border-bottom:1px solid var(--line);
+    position:sticky; top:76px; background:var(--black); z-index:9;
+  }
+  nav button{
+    flex:1; padding:13px 0; background:none; border:none; color:var(--gray);
+    font-size:13px; font-weight:600; cursor:pointer; position:relative;
+    font-family:inherit;
+  }
+  nav button.active{color:var(--white);}
+  nav button.active::after{
+    content:''; position:absolute; bottom:-1px; left:20%; right:20%; height:2px; background:var(--amber);
+  }
+
+  main{flex:1; padding:20px; padding-bottom:70px;}
+  .empty{text-align:center; padding:60px 20px; color:var(--gray);}
+  .empty b{color:var(--amber);}
+
+  /* ---- log feed ---- */
+  .log-list{display:flex; flex-direction:column; gap:12px;}
+  .log-card{
+    background:var(--black2); border:1px solid var(--line); border-radius:16px;
+    padding:18px 18px; cursor:pointer; position:relative; overflow:hidden;
+  }
+  .log-card::before{content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--amber);}
+  .log-card-top{display:flex; justify-content:space-between; align-items:center;}
+  .log-date{font-size:12px; color:var(--amber); font-weight:700;}
+  .log-count{font-size:11px; color:var(--gray);}
+  .log-word{font-size:22px; font-weight:800; margin-top:6px;}
+  .log-meaning{font-size:13px; color:var(--gray); margin-top:2px;}
+  .log-derivs{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .chip{font-size:11px; padding:3px 9px; border-radius:20px; border:1px solid var(--line); color:#cfcfcf;}
+
+  .log-detail{margin-top:16px; padding-top:16px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:18px;}
+  .sec-num{
+    display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px;
+    background:var(--amber); color:var(--black); font-size:11px; font-weight:800; border-radius:5px; margin-right:6px;
+  }
+  .sec-title{font-size:12px; font-weight:800; color:var(--white); text-transform:uppercase; letter-spacing:0.04em; display:flex; align-items:center; margin-bottom:10px;}
+  .word-row{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .word-row .w{font-weight:800; font-size:16px;}
+  .word-row .m{font-size:13px; color:var(--gray);}
+  .word-row .p{font-size:11px; color:var(--amber); border:1px solid var(--amber-dim); padding:1px 8px; border-radius:20px;}
+  .etym-line{font-size:12px; color:#b8b8b8; margin-top:4px;}
+  .deriv-item{margin-bottom:10px; padding-left:12px; border-left:2px solid var(--line);}
+  .sentence-item{font-size:13px; line-height:1.6; margin-bottom:8px; padding-left:12px; border-left:2px solid var(--line);}
+  .sentence-item .en{color:var(--white); font-weight:500;}
+  .sentence-item .kr{color:var(--gray);}
+  .grammar-item{margin-bottom:10px;}
+  .grammar-item .point{font-size:13px; font-weight:700; color:var(--amber);}
+  .grammar-item .desc{font-size:13px; color:#dcdcdc; margin-top:2px;}
+  .qna-item{margin-bottom:12px;}
+  .qna-item .q{font-size:13px; font-weight:700;}
+  .qna-item .q::before{content:'Q. '; color:var(--amber);}
+  .qna-item .a{font-size:13px; color:#dcdcdc; margin-top:3px;}
+  .qna-item .a::before{content:'A. '; color:var(--amber); font-weight:700;}
+
+  /* ---- Search ---- */
+  .search-box{
+    display:flex; align-items:center; gap:8px; background:var(--black2); border:1px solid var(--line);
+    border-radius:12px; padding:12px 14px; margin-bottom:18px;
+  }
+  .search-box input{flex:1; background:none; border:none; color:var(--white); font-size:14px; font-family:inherit;}
+  .search-box input:focus{outline:none;}
+  .search-box .icon{color:var(--gray); font-size:15px;}
+  .search-results{display:flex; flex-direction:column; gap:10px;}
+  .sr-item{background:var(--black2); border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .sr-hit-type{font-size:10px; color:var(--amber); font-weight:800; text-transform:uppercase; letter-spacing:0.05em;}
+  .sr-word{font-weight:800; font-size:15px; margin-top:4px;}
+  .sr-context{font-size:12px; color:var(--gray); margin-top:3px;}
+  .sr-date{font-size:11px; color:var(--gray); margin-top:6px;}
+
+  /* ---- Add form ---- */
+  .mode-switch{display:flex; gap:8px; margin-bottom:18px;}
+  .mode-btn{
+    flex:1; padding:11px 0; border-radius:10px; border:1px solid var(--line); background:var(--black2);
+    color:var(--gray); font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .mode-btn.active{background:var(--amber); color:var(--black); border-color:var(--amber);}
+
+  .paste-box{display:flex; flex-direction:column; gap:12px; margin-bottom:22px;}
+  .paste-box textarea{
+    width:100%; min-height:160px; background:var(--black2); border:1px solid var(--line); color:var(--white);
+    padding:14px; border-radius:12px; font-size:13px; line-height:1.6; font-family:inherit; resize:vertical;
+  }
+  .paste-box textarea:focus{outline:none; border-color:var(--amber);}
+  .paste-hint{font-size:11px; color:var(--gray); line-height:1.5;}
+  .parse-btn{
+    background:var(--amber); color:var(--black); border:none; padding:14px; border-radius:12px;
+    font-size:14px; font-weight:800; cursor:pointer; font-family:inherit;
+  }
+  .parse-btn:active{opacity:0.85;}
+  .parse-note{font-size:12px; color:var(--amber); background:rgba(239,159,39,0.1); border:1px solid var(--amber-dim); padding:10px 12px; border-radius:10px;}
+
+  .form{display:flex; flex-direction:column; gap:18px;}
+  .field label{font-size:12px; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+  .field input, .field select, .field textarea{
+    width:100%; background:var(--black2); border:1px solid var(--line); color:var(--white);
+    padding:12px 14px; border-radius:10px; font-size:14px; font-family:inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--amber);}
+  .field textarea{min-height:52px; resize:vertical;}
+  .section-block{border:1px solid var(--line); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:14px; background:var(--black2);}
+  .section-block.accent{border-color:var(--amber-dim); background:rgba(239,159,39,0.04);}
+  .section-head{display:flex; align-items:center; gap:8px;}
+  .section-head .sec-num{margin-right:0;}
+  .section-head h3{font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em;}
+  .sub-block{border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--black3); display:flex; flex-direction:column; gap:10px; position:relative;}
+  .sub-block-head{display:flex; justify-content:space-between; align-items:center;}
+  .sub-block-head span{font-size:12px; color:var(--gray); font-weight:700;}
+  .small-remove{background:none; border:none; color:var(--gray); font-size:13px; cursor:pointer; font-family:inherit;}
+  .dashed-btn{
+    background:none; border:1px dashed var(--line); color:var(--gray); padding:11px; border-radius:10px;
+    font-size:13px; cursor:pointer; font-family:inherit; width:100%;
+  }
+  .row2{display:flex; gap:8px;}
+  .row2 input{flex:1;}
+  .submit-btn{
+    background:var(--amber); color:var(--black); border:none; padding:16px; border-radius:12px;
+    font-size:15px; font-weight:800; cursor:pointer; font-family:inherit;
+  }
+  .submit-btn:active{opacity:0.85;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--amber); color:var(--black); padding:12px 20px; border-radius:30px;
+    font-size:13px; font-weight:700; opacity:0; pointer-events:none; transition:opacity .2s ease;
+    max-width:90%; text-align:center; z-index:100;
+  }
+  .toast.show{opacity:1;}
+  ::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const {useState, useEffect, useRef} = React;
+
+/* ---------- storage adapter: Claude artifact storage, fallback to localStorage for standalone hosting (GitHub Pages) ---------- */
+const storageAdapter = {
+  async get(key){
+    if(window.storage && typeof window.storage.get === 'function'){
+      try{ return await window.storage.get(key); } catch(e){ /* fall through */ }
+    }
+    try{
+      const v = localStorage.getItem(key);
+      return v !== null ? {key, value:v, shared:false} : null;
+    } catch(e){ return null; }
+  },
+  async set(key, value){
+    if(window.storage && typeof window.storage.set === 'function'){
+      try{ return await window.storage.set(key, value); } catch(e){ /* fall through */ }
+    }
+    try{ localStorage.setItem(key, value); return {key, value, shared:false}; }
+    catch(e){ return null; }
+  }
+};
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtDate(s){
+  if(!s) return "";
+  const [y,m,d] = s.split('-');
+  return y+'.'+m+'.'+d;
+}
+function uid(prefix){ return (prefix||'e') + '-' + Date.now() + '-' + Math.floor(Math.random()*10000); }
+
+const SEED_ENTRIES = [
+  {
+    id: "seed-1",
+    date: todayStr(),
+    mainWord: { word:"change", meaning:"바꾸다 / 변하다", pos:"동사 / 명사", etym:"라틴어 cambiare → 프랑스어 changer" },
+    derivatives: [
+      { word:"exchange", meaning:"교환하다", pos:"동사 / 명사", comp:"ex-(밖으로/서로) + change" },
+      { word:"unchangeable", meaning:"변하지 않는", pos:"형용사", comp:"un-(~ 아닌) + change + -able" }
+    ],
+    sentences: [
+      { en:"We exchanged phone numbers.", kr:"우리는 전화번호를 교환했다." },
+      { en:"Plans can change.", kr:"계획은 바뀔 수 있다." },
+      { en:"This rule is unchangeable.", kr:"이 규칙은 변하지 않는다." }
+    ],
+    grammar: [
+      { point:"-able", desc:"형용사, '~할 수 있는'" },
+      { point:"-ly", desc:"부사 만드는 경우가 많음" },
+      { point:"plans", desc:"plan의 복수 명사 '계획들'" }
+    ],
+    qna: [
+      { q:"-able이 붙으면?", a:"형용사" },
+      { q:"-ly가 붙으면?", a:"부사인 경우가 많음" },
+      { q:"plans는?", a:"명사" }
+    ]
+  }
+];
+
+/* ---------- parser: turns a pasted GPT-style summary into structured fields ---------- */
+function parseSummaryText(text){
+  const result = { main: null, derivs: [], sentences: [], grammar: [], qna: [] };
+  if(!text || !text.trim()) return result;
+
+  // 1) word blocks: "단어1 change (뜻) 품사: ..., 어원/구성 ..."
+  const chunks = text.split(/(?=단어\s*\d+)/);
+  const words = [];
+  chunks.forEach(chunk=>{
+    const m = chunk.match(/단어\s*(\d+)\s*([A-Za-z][A-Za-z\-']*)\s*\(([^)]+)\)/);
+    if(!m) return;
+    const num = parseInt(m[1]);
+    const word = m[2];
+    const meaning = m[3].trim();
+    const posMatch = chunk.match(/품사\s*:?\s*([^,\n]+),/);
+    const pos = posMatch ? posMatch[1].trim() : "";
+    const etymMatch = chunk.match(/(?:어원|구성)\s*:?\s*([^.]+)\./);
+    const etym = etymMatch ? etymMatch[1].trim() : "";
+    words.push({num, word, meaning, pos, etym});
+  });
+  words.sort((a,b)=>a.num-b.num);
+  if(words.length > 0){
+    result.main = { word: words[0].word, meaning: words[0].meaning, pos: words[0].pos, etym: words[0].etym };
+    result.derivs = words.slice(1).map(w=>({word:w.word, meaning:w.meaning, pos:w.pos, comp:w.etym}));
+  }
+
+  // 2) numbered example sentences: "1) English — 한글."
+  const sentRegex = /(\d+)\)\s*([^—]+)—\s*([^.]+)\./g;
+  let sm, lastSentEnd = 0;
+  while((sm = sentRegex.exec(text)) !== null){
+    result.sentences.push({ en: sm[2].trim(), kr: sm[3].trim() + '.' });
+    lastSentEnd = sm.index + sm[0].length;
+  }
+
+  // 3) Q&A: "Q. 질문? A. 답."
+  const qnaRegex = /Q\.\s*([^?]+\?)\s*A\.\s*([^.]+)\./g;
+  let qm;
+  const qnaMatches = [];
+  while((qm = qnaRegex.exec(text)) !== null){
+    result.qna.push({ q: qm[1].trim(), a: qm[2].trim() });
+    qnaMatches.push(qm.index);
+  }
+
+  // 4) grammar notes: zone between end of last sentence and first "Q."
+  const qIdx = qnaMatches.length > 0 ? text.indexOf('Q.') : -1;
+  const grammarZoneEnd = qIdx >= 0 ? qIdx : text.length;
+  const grammarText = text.slice(lastSentEnd, grammarZoneEnd);
+  const gRegex = /([^:.]+):\s*([^.]+)\./g;
+  let gm;
+  while((gm = gRegex.exec(grammarText)) !== null){
+    const point = gm[1].trim();
+    const desc = gm[2].trim();
+    if(point && desc && point.length < 30) result.grammar.push({point, desc});
+  }
+
+  return result;
+}
+
+function Toast({msg}){ return <div className={"toast" + (msg ? " show" : "")}>{msg}</div>; }
+
+function EntryDetail({entry}){
+  return (
+    <div className="log-detail">
+      <div>
+        <div className="sec-title"><span className="sec-num">1</span>오늘 공부한 단어</div>
+        <div className="word-row">
+          <span className="w">{entry.mainWord.word}</span>
+          <span className="m">{entry.mainWord.meaning}</span>
+          <span className="p">{entry.mainWord.pos}</span>
+        </div>
+        {entry.mainWord.etym && <div className="etym-line">{entry.mainWord.etym}</div>}
+      </div>
+
+      {entry.derivatives && entry.derivatives.length > 0 && (
+        <div>
+          <div className="sec-title"><span className="sec-num">2</span>파생어</div>
+          {entry.derivatives.map((d,i)=>(
+            <div className="deriv-item" key={i}>
+              <div className="word-row">
+                <span className="w">{d.word}</span>
+                <span className="m">{d.meaning}</span>
+                <span className="p">{d.pos}</span>
+              </div>
+              {d.comp && <div className="etym-line">{d.comp}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {entry.sentences && entry.sentences.length > 0 && (
+        <div>
+          <div className="sec-title"><span className="sec-num">3</span>단어가 들어간 문장</div>
+          {entry.sentences.map((s,i)=>(
+            <div className="sentence-item" key={i}>
+              <div className="en">{s.en}</div>
+              {s.kr && <div className="kr">{s.kr}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {entry.grammar && entry.grammar.length > 0 && (
+        <div>
+          <div className="sec-title"><span className="sec-num">4</span>오늘 공부한 문법</div>
+          {entry.grammar.map((g,i)=>(
+            <div className="grammar-item" key={i}>
+              <div className="point">{g.point}</div>
+              <div className="desc">{g.desc}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {entry.qna && entry.qna.length > 0 && (
+        <div>
+          <div className="sec-title"><span className="sec-num">5</span>Q&amp;A</div>
+          {entry.qna.map((qa,i)=>(
+            <div className="qna-item" key={i}>
+              <div className="q">{qa.q}</div>
+              <div className="a">{qa.a}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LogFeed({entries}){
+  const [openId, setOpenId] = useState(null);
+  if(entries.length === 0){
+    return <div className="empty">아직 기록이 없어요.<br/><b>추가</b> 탭에서 오늘 공부한 내용을 기록해보세요.</div>;
+  }
+  const sorted = [...entries].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return (
+    <div className="log-list">
+      {sorted.map(entry=>{
+        const derivWords = (entry.derivatives||[]).map(d=>d.word);
+        const open = openId === entry.id;
+        return (
+          <div className="log-card" key={entry.id} onClick={()=>setOpenId(open ? null : entry.id)}>
+            <div className="log-card-top">
+              <span className="log-date">{fmtDate(entry.date)}</span>
+              <span className="log-count">
+                파생어 {derivWords.length} · 문장 {(entry.sentences||[]).length} · Q&A {(entry.qna||[]).length}
+              </span>
+            </div>
+            <div className="log-word">{entry.mainWord.word}</div>
+            <div className="log-meaning">{entry.mainWord.meaning}</div>
+            {derivWords.length > 0 && (
+              <div className="log-derivs">
+                {derivWords.map((w,i)=>(<span className="chip" key={i}>{w}</span>))}
+              </div>
+            )}
+            {open && <EntryDetail entry={entry} />}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SearchTab({entries}){
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+
+  const hits = [];
+  entries.forEach(entry=>{
+    const push = (type, word, context) => hits.push({ type, word, context, date: entry.date, entryId: entry.id });
+
+    if(q === "" || entry.mainWord.word.toLowerCase().includes(q) || entry.mainWord.meaning.toLowerCase().includes(q)){
+      push("메인 단어", entry.mainWord.word, entry.mainWord.meaning);
+    }
+    (entry.derivatives||[]).forEach(d=>{
+      if(q === "" || d.word.toLowerCase().includes(q) || d.meaning.toLowerCase().includes(q)){
+        push("파생어", d.word, d.meaning + " · " + entry.mainWord.word + "의 파생어");
+      }
+    });
+    (entry.grammar||[]).forEach(g=>{
+      if(q !== "" && (g.point.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q))){
+        push("문법", g.point, g.desc);
+      }
+    });
+    (entry.qna||[]).forEach(qa=>{
+      if(q !== "" && (qa.q.toLowerCase().includes(q) || qa.a.toLowerCase().includes(q))){
+        push("Q&A", qa.q, qa.a);
+      }
+    });
+  });
+
+  const sorted = hits.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+
+  return (
+    <div>
+      <div className="search-box">
+        <span className="icon">🔍</span>
+        <input placeholder="단어, 뜻, 문법, Q&A로 검색" value={query} onChange={e=>setQuery(e.target.value)} />
+      </div>
+      {sorted.length === 0 && <div className="empty">검색 결과가 없어요.</div>}
+      <div className="search-results">
+        {sorted.map((h,i)=>(
+          <div className="sr-item" key={i}>
+            <div className="sr-hit-type">{h.type}</div>
+            <div className="sr-word">{h.word}</div>
+            <div className="sr-context">{h.context}</div>
+            <div className="sr-date">{fmtDate(h.date)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const emptyDeriv = () => ({word:"", meaning:"", pos:"동사", comp:""});
+const emptySentence = () => ({en:"", kr:""});
+const emptyGrammar = () => ({point:"", desc:""});
+const emptyQna = () => ({q:"", a:""});
+
+function AddEntry({entries, onAdd, notify}){
+  const [mode, setMode] = useState("paste"); // 'paste' or 'manual'
+  const [pasteText, setPasteText] = useState("");
+  const [parsedOnce, setParsedOnce] = useState(false);
+
+  const [date, setDate] = useState(todayStr());
+  const [mainWord, setMainWord] = useState({word:"", meaning:"", pos:"동사", etym:""});
+  const [derivatives, setDerivatives] = useState([]);
+  const [sentences, setSentences] = useState([emptySentence(), emptySentence(), emptySentence()]);
+  const [grammar, setGrammar] = useState([emptyGrammar()]);
+  const [qna, setQna] = useState([emptyQna()]);
+
+  const setMainField = (f,v) => setMainWord(prev=>({...prev,[f]:v}));
+
+  const addDeriv = () => setDerivatives(p=>[...p, emptyDeriv()]);
+  const removeDeriv = (i) => setDerivatives(p=>p.filter((_,idx)=>idx!==i));
+  const setDerivField = (i,f,v) => setDerivatives(p=>p.map((d,idx)=>idx===i?{...d,[f]:v}:d));
+
+  const addSentence = () => setSentences(p=>[...p, emptySentence()]);
+  const removeSentence = (i) => setSentences(p=>p.filter((_,idx)=>idx!==i));
+  const setSentenceField = (i,f,v) => setSentences(p=>p.map((s,idx)=>idx===i?{...s,[f]:v}:s));
+
+  const addGrammar = () => setGrammar(p=>[...p, emptyGrammar()]);
+  const removeGrammar = (i) => setGrammar(p=>p.filter((_,idx)=>idx!==i));
+  const setGrammarField = (i,f,v) => setGrammar(p=>p.map((g,idx)=>idx===i?{...g,[f]:v}:g));
+
+  const addQna = () => setQna(p=>[...p, emptyQna()]);
+  const removeQna = (i) => setQna(p=>p.filter((_,idx)=>idx!==i));
+  const setQnaField = (i,f,v) => setQna(p=>p.map((q,idx)=>idx===i?{...q,[f]:v}:q));
+
+  const runParse = () => {
+    const parsed = parseSummaryText(pasteText);
+    if(!parsed.main){
+      notify("단어를 찾지 못했어요. '단어1 word (뜻)' 형식인지 확인해주세요");
+      return;
+    }
+    setMainWord({
+      word: parsed.main.word, meaning: parsed.main.meaning,
+      pos: parsed.main.pos || "동사", etym: parsed.main.etym
+    });
+    setDerivatives(parsed.derivs.length > 0 ? parsed.derivs.map(d=>({...d, pos: d.pos || "동사"})) : []);
+    setSentences(parsed.sentences.length > 0 ? parsed.sentences : [emptySentence(), emptySentence(), emptySentence()]);
+    setGrammar(parsed.grammar.length > 0 ? parsed.grammar : [emptyGrammar()]);
+    setQna(parsed.qna.length > 0 ? parsed.qna : [emptyQna()]);
+    setParsedOnce(true);
+    setMode("manual");
+    notify("자동으로 채웠어요 — 내용 확인 후 저장하세요");
+  };
+
+  const submit = () => {
+    if(!mainWord.word.trim() || !mainWord.meaning.trim()){
+      notify("오늘 공부한 단어와 뜻은 필수예요");
+      return;
+    }
+    const entry = {
+      id: uid('e'),
+      date: date || todayStr(),
+      mainWord: {
+        word: mainWord.word.trim(), meaning: mainWord.meaning.trim(),
+        pos: mainWord.pos, etym: mainWord.etym.trim()
+      },
+      derivatives: derivatives.filter(d=>d.word.trim() && d.meaning.trim())
+        .map(d=>({word:d.word.trim(), meaning:d.meaning.trim(), pos:d.pos, comp:d.comp.trim()})),
+      sentences: sentences.filter(s=>s.en.trim())
+        .map(s=>({en:s.en.trim(), kr:s.kr.trim()})),
+      grammar: grammar.filter(g=>g.point.trim())
+        .map(g=>({point:g.point.trim(), desc:g.desc.trim()})),
+      qna: qna.filter(q=>q.q.trim())
+        .map(q=>({q:q.q.trim(), a:q.a.trim()}))
+    };
+    onAdd(entry);
+    notify(fmtDate(entry.date) + " 기록 저장됨");
+    setDate(todayStr());
+    setMainWord({word:"", meaning:"", pos:"동사", etym:""});
+    setDerivatives([]);
+    setSentences([emptySentence(), emptySentence(), emptySentence()]);
+    setGrammar([emptyGrammar()]);
+    setQna([emptyQna()]);
+    setPasteText("");
+    setParsedOnce(false);
+    setMode("paste");
+  };
+
+  return (
+    <div>
+      <div className="mode-switch">
+        <button className={"mode-btn" + (mode==="paste"?" active":"")} onClick={()=>setMode("paste")}>텍스트 붙여넣기</button>
+        <button className={"mode-btn" + (mode==="manual"?" active":"")} onClick={()=>setMode("manual")}>직접 입력</button>
+      </div>
+
+      {mode === "paste" && (
+        <div className="paste-box">
+          <div className="paste-hint">
+            지피티랑 정리한 요약을 그대로 붙여넣으세요. "단어1 word (뜻) 품사: ..., 어원/구성 ...", 번호 매긴 예문 "1) ... — ...", "포인트: 설명." 문법, "Q. ... A. ..." 형식을 자동으로 인식해요.
+          </div>
+          <textarea
+            value={pasteText}
+            onChange={e=>setPasteText(e.target.value)}
+            placeholder="여기에 요약 텍스트를 붙여넣으세요"
+          />
+          <button className="parse-btn" onClick={runParse}>자동으로 채우기</button>
+        </div>
+      )}
+
+      {mode === "manual" && (
+        <div className="form">
+          {parsedOnce && <div className="parse-note">자동으로 채워졌어요. 틀린 부분 있으면 고친 후 저장하세요.</div>}
+
+          <div className="field">
+            <label>공부한 날짜</label>
+            <input type="date" value={date} onChange={e=>setDate(e.target.value)} />
+          </div>
+
+          <div className="section-block accent">
+            <div className="section-head"><span className="sec-num">1</span><h3>오늘 공부한 단어</h3></div>
+            <div className="field"><label>단어</label>
+              <input value={mainWord.word} onChange={e=>setMainField("word", e.target.value)} placeholder="예: change" />
+            </div>
+            <div className="field"><label>뜻</label>
+              <input value={mainWord.meaning} onChange={e=>setMainField("meaning", e.target.value)} placeholder="예: 바꾸다 / 변하다" />
+            </div>
+            <div className="field"><label>품사</label>
+              <select value={mainWord.pos} onChange={e=>setMainField("pos", e.target.value)}>
+                <option>동사</option><option>명사</option><option>동사 / 명사</option>
+                <option>형용사</option><option>부사</option><option>전치사</option><option>기타</option>
+              </select>
+            </div>
+            <div className="field"><label>어원</label>
+              <textarea value={mainWord.etym} onChange={e=>setMainField("etym", e.target.value)} placeholder="예: 라틴어 cambiare → ..." />
+            </div>
+          </div>
+
+          <div className="section-block">
+            <div className="section-head"><span className="sec-num">2</span><h3>파생어</h3></div>
+            {derivatives.map((d,i)=>(
+              <div className="sub-block" key={i}>
+                <div className="sub-block-head"><span>파생어 {i+1}</span>
+                  <button className="small-remove" onClick={()=>removeDeriv(i)}>삭제</button>
+                </div>
+                <div className="field"><label>단어</label>
+                  <input value={d.word} onChange={e=>setDerivField(i,"word",e.target.value)} placeholder="예: exchange" />
+                </div>
+                <div className="field"><label>뜻</label>
+                  <input value={d.meaning} onChange={e=>setDerivField(i,"meaning",e.target.value)} placeholder="예: 교환하다" />
+                </div>
+                <div className="field"><label>품사</label>
+                  <select value={d.pos} onChange={e=>setDerivField(i,"pos",e.target.value)}>
+                    <option>동사</option><option>명사</option><option>동사 / 명사</option>
+                    <option>형용사</option><option>부사</option><option>전치사</option><option>기타</option>
+                  </select>
+                </div>
+                <div className="field"><label>구성</label>
+                  <input value={d.comp} onChange={e=>setDerivField(i,"comp",e.target.value)} placeholder="예: ex-(서로) + change" />
+                </div>
+              </div>
+            ))}
+            <button className="dashed-btn" onClick={addDeriv}>+ 파생어 추가</button>
+          </div>
+
+          <div className="section-block">
+            <div className="section-head"><span className="sec-num">3</span><h3>단어가 들어간 문장</h3></div>
+            {sentences.map((s,i)=>(
+              <div className="sub-block" key={i}>
+                <div className="sub-block-head"><span>문장 {i+1}</span>
+                  {sentences.length > 1 && <button className="small-remove" onClick={()=>removeSentence(i)}>삭제</button>}
+                </div>
+                <div className="field"><label>영어 문장</label>
+                  <input value={s.en} onChange={e=>setSentenceField(i,"en",e.target.value)} placeholder="예: We exchanged phone numbers." />
+                </div>
+                <div className="field"><label>한글 뜻</label>
+                  <input value={s.kr} onChange={e=>setSentenceField(i,"kr",e.target.value)} placeholder="예: 우리는 전화번호를 교환했다." />
+                </div>
+              </div>
+            ))}
+            <button className="dashed-btn" onClick={addSentence}>+ 문장 추가</button>
+          </div>
+
+          <div className="section-block">
+            <div className="section-head"><span className="sec-num">4</span><h3>오늘 공부한 문법</h3></div>
+            {grammar.map((g,i)=>(
+              <div className="sub-block" key={i}>
+                <div className="sub-block-head"><span>문법 {i+1}</span>
+                  {grammar.length > 1 && <button className="small-remove" onClick={()=>removeGrammar(i)}>삭제</button>}
+                </div>
+                <div className="field"><label>포인트</label>
+                  <input value={g.point} onChange={e=>setGrammarField(i,"point",e.target.value)} placeholder="예: -able" />
+                </div>
+                <div className="field"><label>설명</label>
+                  <input value={g.desc} onChange={e=>setGrammarField(i,"desc",e.target.value)} placeholder="예: 형용사, '~할 수 있는'" />
+                </div>
+              </div>
+            ))}
+            <button className="dashed-btn" onClick={addGrammar}>+ 문법 추가</button>
+          </div>
+
+          <div className="section-block">
+            <div className="section-head"><span className="sec-num">5</span><h3>Q&amp;A</h3></div>
+            {qna.map((qa,i)=>(
+              <div className="sub-block" key={i}>
+                <div className="sub-block-head"><span>Q&amp;A {i+1}</span>
+                  {qna.length > 1 && <button className="small-remove" onClick={()=>removeQna(i)}>삭제</button>}
+                </div>
+                <div className="field"><label>질문</label>
+                  <input value={qa.q} onChange={e=>setQnaField(i,"q",e.target.value)} placeholder="예: -able이 붙으면?" />
+                </div>
+                <div className="field"><label>답</label>
+                  <input value={qa.a} onChange={e=>setQnaField(i,"a",e.target.value)} placeholder="예: 형용사" />
+                </div>
+              </div>
+            ))}
+            <button className="dashed-btn" onClick={addQna}>+ Q&amp;A 추가</button>
+          </div>
+
+          <button className="submit-btn" onClick={submit}>기록 저장</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App(){
+  const [tab, setTab] = useState("log");
+  const [entries, setEntries] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const toastTimer = useRef(null);
+
+  const notify = (msg) => {
+    setToastMsg(msg);
+    if(toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(()=>setToastMsg(""), 2200);
+  };
+
+  useEffect(()=>{
+    (async ()=>{
+      try{
+        const res = await storageAdapter.get('studyLog');
+        if(res && res.value){ setEntries(JSON.parse(res.value)); }
+        else { setEntries(SEED_ENTRIES); await storageAdapter.set('studyLog', JSON.stringify(SEED_ENTRIES)); }
+      } catch(e){
+        setEntries(SEED_ENTRIES);
+        try{ await storageAdapter.set('studyLog', JSON.stringify(SEED_ENTRIES)); } catch(e2){}
+      }
+      setLoaded(true);
+    })();
+  }, []);
+
+  const persist = async (next) => {
+    setEntries(next);
+    try{ await storageAdapter.set('studyLog', JSON.stringify(next)); } catch(e){}
+  };
+
+  const addEntry = (entry) => persist([...entries, entry]);
+
+  if(!loaded){
+    return <div className="app"><main><div className="empty">불러오는 중...</div></main></div>;
+  }
+
+  const totalWords = entries.reduce((sum,e)=> sum + 1 + (e.derivatives||[]).length, 0);
+
+  return (
+    <div className="app">
+      <header>
+        <h1>영어공부 기록장</h1>
+        <div className="stats">총 <b>{entries.length}</b>일 기록 · 단어 <b>{totalWords}</b>개</div>
+      </header>
+      <nav>
+        <button className={tab==="log"?"active":""} onClick={()=>setTab("log")}>기록</button>
+        <button className={tab==="search"?"active":""} onClick={()=>setTab("search")}>검색</button>
+        <button className={tab==="add"?"active":""} onClick={()=>setTab("add")}>추가</button>
+      </nav>
+      <main>
+        {tab==="log" && <LogFeed entries={entries} />}
+        {tab==="search" && <SearchTab entries={entries} />}
+        {tab==="add" && <AddEntry entries={entries} onAdd={addEntry} notify={notify} />}
+      </main>
+      <Toast msg={toastMsg} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+</body>
+</html>
