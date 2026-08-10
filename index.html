@@ -2315,6 +2315,7 @@ renderExAlt();
     {id:'diet',     name:'식단', short:'식단', note:'식단 탭에서 자동 반영돼요', auto:true},
     {id:'reading',  name:'독서', short:'독서', note:'팩 하면서 30분'},
     {id:'guitar',   name:'기타 즉흥연주', short:'기타', note:'퇴근 전 30분'},
+    {id:'drum',     name:'드럼 연습', short:'드럼', note:'레슨 · 매일 30분 연습'},
     {id:'english',  name:'영어 단어 공부', short:'영어', note:'출퇴근 운전하면서 GPT랑 30분'},
     {id:'ledger',   name:'가계부 쓰기', short:'가계부', note:'기상 직후 폰 볼 때'},
     {id:'invest',   name:'투자 공부', short:'투자', note:'홍보 이미지 생성 기다리는 시간'},
@@ -2411,7 +2412,7 @@ renderExAlt();
     box.innerHTML='';
     const dm=displayMonth(t);
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    const counts={exercise:0, diet:0, reading:0, guitar:0, english:0, ledger:0, invest:0, business:0};
+    const counts={exercise:0, diet:0, reading:0, guitar:0, drum:0, english:0, ledger:0, invest:0, business:0};
     for(let d=1; d<=daysInMonth; d++){
       const k=dkey(dm.y, dm.m, d);
       if(k<START_DATE) continue;
@@ -2420,6 +2421,7 @@ renderExAlt();
       const day=rec[k]||{};
       if(day.reading) counts.reading++;
       if(day.guitar) counts.guitar++;
+      if(day.drum) counts.drum++;
       if(day.english) counts.english++;
       if(day.ledger) counts.ledger++;
       if(day.invest) counts.invest++;
@@ -2444,7 +2446,7 @@ renderExAlt();
       const day=rec[k]||{};
       const ex=exerciseDoneOn(k, kb);
       const dt=dietDoneOn(k, diet);
-      if(ex||dt||day.reading||day.guitar||day.english||day.ledger||day.invest||day.business) totalActiveDays++;
+      if(ex||dt||day.reading||day.guitar||day.drum||day.english||day.ledger||day.invest||day.business) totalActiveDays++;
     });
     const sp=START_DATE.split('-').map(Number);
     const start=new Date(sp[0], sp[1]-1, sp[2]);
@@ -2497,12 +2499,13 @@ renderExAlt();
         if(dietDoneOn(k, diet)) cnt++;
         if(day.reading) cnt++;
         if(day.guitar) cnt++;
+        if(day.drum) cnt++;
         if(day.english) cnt++;
         if(day.ledger) cnt++;
         if(day.invest) cnt++;
         if(day.business) cnt++;
-        // scale 0-8 counts onto the existing 5-step color ramp
-        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/8));
+        // scale 0-9 counts onto the existing 5-step color ramp
+        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/9));
         el.className='rec-day'+(step>0?(' d'+step):'')+(k===t.key?' today':'')+(k===recSelKey?' today':'');
         el.style.cursor='pointer';
         el.addEventListener('click', function(){
