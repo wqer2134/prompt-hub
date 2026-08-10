@@ -352,51 +352,28 @@
 <!-- 투자 기록 탭 -->
 <div class="section" id="section-diary">
 
-  <div class="card rec-write">
-    <div class="card-title"><em>투자</em> 기록</div>
-    <div class="card-sub">매수·매도 내역 · 적금 넣듯 기록</div>
+  <div class="card" style="background:linear-gradient(160deg, rgba(212,165,116,0.08) 0%, var(--bg-card) 100%); border-color: rgba(212,165,116,0.2);">
+    <div class="card-title"><em>이번 달</em> 투자</div>
+    <div class="card-sub">적금처럼 · 이번 달 투자에 넣은 총액</div>
 
-    <div class="rec-form">
-      <div class="rec-bs-tabs" id="recBsTabs">
-        <button class="rec-bs-tab buy active" data-bs="buy">매수</button>
-        <button class="rec-bs-tab sell" data-bs="sell">매도</button>
-      </div>
-
-      <div class="rec-row2">
-        <div>
-          <div class="rec-field-label">날짜</div>
-          <input type="date" class="rec-input" id="recDate">
-        </div>
-        <div>
-          <div class="rec-field-label">계좌</div>
-          <select class="rec-select" id="recAccount">
-            <option value="ISA">ISA</option>
-            <option value="연금저축펀드">연금저축펀드</option>
-            <option value="IRP">IRP</option>
-            <option value="일반증권">일반증권</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <div class="rec-field-label">종목명</div>
-        <input type="text" class="rec-input" id="recTicker" placeholder="예: TIGER 미국S&P500">
-      </div>
-
-      <div class="rec-row2">
-        <div>
-          <div class="rec-field-label">금액 (원)</div>
-          <input type="number" class="rec-input num" id="recAmount" placeholder="500000" inputmode="numeric">
-        </div>
-        <div>
-          <div class="rec-field-label">수량 <span style="color:var(--text-3);font-weight:400;">(선택)</span></div>
-          <input type="number" class="rec-input num" id="recQty" placeholder="10">
-        </div>
-      </div>
-
-      <button class="btn full" id="recSave" style="width:100%;padding:15px;font-size:15px;margin-top:4px;">기록 저장</button>
+    <div class="hero-card" style="margin:8px 0 16px;padding:24px;background:transparent;border:none;">
+      <div class="hero-label">이번 달 총 투자</div>
+      <div class="hero-num" id="investMonthTotal" style="color:var(--accent);">0</div>
     </div>
+
+    <div class="rec-field-label" style="margin-bottom:8px;">고정 납입 (매달 자동이체 · 직접 수정)</div>
+    <div class="variance-grid header" style="grid-template-columns:1fr auto;">
+      <div>계좌</div><div>금액 (원)</div>
+    </div>
+    <div id="fixedInvestList"></div>
+
+    <div class="rec-field-label" style="margin:16px 0 8px;">변동 (붙여넣기 거래에서 자동)</div>
+    <div class="variance-grid" style="grid-template-columns:1fr auto;">
+      <div class="variance-name">이번 달 매수 (거래 내역)</div>
+      <div class="variance-num num-mono" id="investVarTotal">0</div>
+    </div>
+
+    <div class="help">고정 납입은 매달 같으니 <strong>한 번 정해두면</strong> 자동으로 잡혀요. 변동은 아래 붙여넣기 한 <strong>이번 달 매수</strong>가 자동 합산돼요.</div>
   </div>
 
   <div class="card" style="background:linear-gradient(160deg, rgba(122,156,181,0.06) 0%, var(--bg-card) 100%); border-color: rgba(122,156,181,0.15);">
@@ -417,27 +394,6 @@
 8.10 KODEX 200액티브 매수 29010 1" style="width:100%;min-height:100px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--mono);font-size:13px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.5;"></textarea>
     <button class="btn full" id="recPasteBtn" style="width:100%;padding:15px;">📥 여러 건 넣기</button>
     <div class="help">형식: <strong>날짜 종목 매수/매도 금액 수량</strong> (한 줄에 한 건). 위에서 선택한 계좌로 들어가요. 클로드가 정리해준 텍스트를 그대로 붙여넣으면 돼요.</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><em>보유</em> 종목</div>
-    <div class="card-sub">종목별 투자원금 · 평가액 입력 시 손익 자동</div>
-    <div id="holdingList" style="margin-top:8px;">
-      <div class="empty">아직 매수 기록이 없어요</div>
-    </div>
-    <div class="stat-row" style="margin-top:16px;">
-      <div class="stat-mini">
-        <div class="num-label">총 투자원금</div>
-        <div class="stat-mini-num" id="holdingInvested">0</div>
-        <div class="stat-mini-sub">순매수 합계</div>
-      </div>
-      <div class="stat-mini">
-        <div class="num-label">총 평가손익</div>
-        <div class="stat-mini-num" id="holdingPnl">—</div>
-        <div class="stat-mini-sub">평가액 − 원금</div>
-      </div>
-    </div>
-    <div class="help">각 종목의 <strong>현재 평가액</strong>을 입력하면 손익이 자동 계산돼요. 평가액은 월 1회 정도 증권 앱 보고 갱신하면 충분해요.</div>
   </div>
 
   <div class="card">
@@ -830,26 +786,17 @@ const LIFE_BUDGET = [
   { id: 'gas',       name: '가스비',       amount: 12730 },
 ];
 
+const FIXED_INVEST = [
+  { id: 'fi_isa',     name: 'ISA',      amount: 500000 },
+  { id: 'fi_pension', name: '연금저축',  amount: 300000 },
+  { id: 'fi_irp',     name: 'IRP',      amount: 250000 },
+];
+
 const ASSET_ACCOUNTS = {
-  cash: [
-    { id: 'acad_bank',  name: '학원 통장' },
-    { id: 'life_bank',  name: '생활 통장' },
-    { id: 'home_cash',  name: '집 보관 현금' },
-    { id: 'cma',        name: 'CMA' },
-  ],
-  pension: [
-    { id: 'nh_pension',   name: '노란우산공제', track_yearly: true },
-    { id: 'pension_ins',  name: '연금보험 (우체국)',     track_yearly: true, ded_group: 'pension_total' },
-    { id: 'pension_fund', name: '연금저축펀드 (삼성증권)', track_yearly: true, ded_group: 'pension_total' },
-    { id: 'irp',          name: 'IRP',         track_yearly: true },
-  ],
-  invest: [
-    { id: 'isa',          name: 'ISA',         track_yearly: true },
-    { id: 'stock',        name: '일반증권' },
-  ],
-  debt: [
-    { id: 'car_loan_balance', name: '자동차 할부 잔액' },
-  ],
+  cash: [],
+  pension: [],
+  invest: [],
+  debt: [],
 };
 
 const ROUTING = { nh_pension: 250000, pension_save: 500000, irp: 250000, isa: 1670000 };
@@ -876,6 +823,10 @@ function loadState() {
   if (!state.diary) state.diary = [];
   if (!state.holdingEval) state.holdingEval = {};
   if (!state.journal) state.journal = [];
+  if (!state.fixedInvest) {
+    state.fixedInvest = {};
+    FIXED_INVEST.forEach(f => { state.fixedInvest[f.id] = f.amount; });
+  }
 }
 
 function saveState() {
@@ -1365,6 +1316,52 @@ function renderTrend() {
 
 let recBs = 'buy';
 
+function renderInvestMonth() {
+  // 고정 납입 렌더
+  const fixedList = document.getElementById('fixedInvestList');
+  if (!fixedList) return;
+  if (!state.fixedInvest) {
+    state.fixedInvest = {};
+    FIXED_INVEST.forEach(f => { state.fixedInvest[f.id] = f.amount; });
+  }
+  fixedList.innerHTML = FIXED_INVEST.map(f => {
+    const val = state.fixedInvest[f.id] !== undefined ? state.fixedInvest[f.id] : f.amount;
+    return `
+      <div class="variance-grid" style="grid-template-columns:1fr auto;">
+        <div class="variance-name">${f.name}</div>
+        <div class="variance-num">
+          <input type="number" value="${val}" data-fixed-invest="${f.id}">
+        </div>
+      </div>
+    `;
+  }).join('');
+  fixedList.querySelectorAll('input[data-fixed-invest]').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const id = e.target.dataset.fixedInvest;
+      state.fixedInvest[id] = parseFloat(e.target.value) || 0;
+      saveState();
+      renderInvestMonth();
+    });
+  });
+
+  const fixedTotal = FIXED_INVEST.reduce((s,f) => {
+    const v = state.fixedInvest[f.id];
+    return s + (v !== undefined ? v : f.amount);
+  }, 0);
+
+  // 변동 = 이번 달 거래내역의 매수 합계
+  const curMonth = state.currentMonth; // 'YYYY-MM'
+  const varTotal = (state.diary || []).reduce((s, d) => {
+    if (d.bs !== 'buy') return s;
+    // d.date는 'YYYY-MM-DD'
+    if (d.date && d.date.slice(0,7) === curMonth) return s + d.amount;
+    return s;
+  }, 0);
+
+  document.getElementById('investVarTotal').textContent = varTotal.toLocaleString('ko-KR');
+  document.getElementById('investMonthTotal').textContent = fmt(fixedTotal + varTotal);
+}
+
 function renderDiary() {
   const records = state.diary || [];
 
@@ -1385,77 +1382,6 @@ function renderDiary() {
       </div>
     `).join('');
   }
-
-  // 보유 종목 요약 (종목별 순매수 = 매수합 - 매도합)
-  const holdings = {};
-  records.forEach(d => {
-    const key = (d.account || '') + '|' + (d.ticker || '');
-    if (!holdings[key]) holdings[key] = { account: d.account, ticker: d.ticker, invested: 0, qty: 0 };
-    if (d.bs === 'buy') { holdings[key].invested += d.amount; holdings[key].qty += (d.qty || 0); }
-    else { holdings[key].invested -= d.amount; holdings[key].qty -= (d.qty || 0); }
-  });
-
-  const holdingArr = Object.entries(holdings)
-    .map(([key, h]) => ({ key, ...h }))
-    .filter(h => h.invested > 0);  // 순매수 남아있는 것만
-
-  const hList = document.getElementById('holdingList');
-  if (holdingArr.length === 0) {
-    hList.innerHTML = '<div class="empty">아직 매수 기록이 없어요</div>';
-  } else {
-    hList.innerHTML = holdingArr.map(h => {
-      const evalVal = (state.holdingEval && state.holdingEval[h.key]) || 0;
-      const pnl = evalVal > 0 ? evalVal - h.invested : null;
-      let pnlHtml = '<span class="holding-pnl" style="color:var(--text-3);">평가액 입력</span>';
-      if (pnl !== null) {
-        const cls = pnl >= 0 ? 'plus' : 'minus';
-        const rate = h.invested > 0 ? (pnl / h.invested * 100).toFixed(1) : 0;
-        pnlHtml = `<span class="holding-pnl ${cls}">${pnl >= 0 ? '+' : ''}${fmt(pnl)}<br><span style="font-size:11px;">${pnl >= 0 ? '+' : ''}${rate}%</span></span>`;
-      }
-      return `
-        <div class="holding-row">
-          <div>
-            <div class="holding-name">${escapeHtml(h.ticker || '(종목 없음)')}</div>
-            <div class="holding-sub">${escapeHtml(h.account)}${h.qty ? ' · ' + h.qty + '주' : ''}</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="holding-invested">원금 ${fmt(h.invested)}</div>
-            <input type="number" class="holding-eval-input" placeholder="평가액" value="${evalVal || ''}" data-eval-key="${h.key}">
-          </div>
-          ${pnlHtml}
-        </div>
-      `;
-    }).join('');
-
-    hList.querySelectorAll('.holding-eval-input').forEach(inp => {
-      inp.addEventListener('change', e => {
-        const key = e.target.dataset.evalKey;
-        if (!state.holdingEval) state.holdingEval = {};
-        state.holdingEval[key] = parseFloat(e.target.value) || 0;
-        saveState();
-        renderDiary();
-      });
-    });
-  }
-
-  // 총 투자원금 + 총 평가손익
-  const totalInvested = holdingArr.reduce((s,h) => s + h.invested, 0);
-  let totalEval = 0, hasEval = false;
-  holdingArr.forEach(h => {
-    const ev = (state.holdingEval && state.holdingEval[h.key]) || 0;
-    if (ev > 0) { totalEval += ev; hasEval = true; }
-    else { totalEval += h.invested; }  // 평가액 없으면 원금으로
-  });
-  document.getElementById('holdingInvested').textContent = fmt(totalInvested);
-  const pnlEl = document.getElementById('holdingPnl');
-  if (hasEval) {
-    const totalPnl = totalEval - totalInvested;
-    pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + fmt(totalPnl);
-    pnlEl.style.color = totalPnl >= 0 ? 'var(--sage)' : 'var(--rose)';
-  } else {
-    pnlEl.textContent = '—';
-    pnlEl.style.color = 'var(--text-3)';
-  }
 }
 
 function escapeHtml(s) {
@@ -1469,6 +1395,7 @@ window.deleteDiary = function(idx) {
   state.diary.splice(idx, 1);
   saveState();
   renderDiary();
+  renderInvestMonth();
 };
 
 // 투자 일기
@@ -1546,6 +1473,7 @@ function renderAll() {
   renderDiary();
   renderPersonal();
   renderJournal();
+  renderInvestMonth();
 }
 
 // 이벤트
@@ -1948,37 +1876,6 @@ document.getElementById('openQuickBtn').addEventListener('click', () => {
   document.getElementById('quickOverlay').classList.remove('hidden');
 });
 
-// 투자 기록 이벤트
-document.querySelectorAll('.rec-bs-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.rec-bs-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    recBs = tab.dataset.bs;
-  });
-});
-document.getElementById('recSave').addEventListener('click', () => {
-  const date = document.getElementById('recDate').value || todayStr();
-  const account = document.getElementById('recAccount').value;
-  const ticker = document.getElementById('recTicker').value.trim();
-  const amount = parseFloat(document.getElementById('recAmount').value);
-  const qty = parseFloat(document.getElementById('recQty').value) || 0;
-
-  if (!ticker) { showToast('종목명 입력'); return; }
-  if (isNaN(amount) || amount <= 0) { showToast('금액 확인'); return; }
-
-  state.diary.unshift({
-    date, bs: recBs, account, ticker,
-    amount: Math.round(amount), qty
-  });
-  saveState();
-
-  document.getElementById('recTicker').value = '';
-  document.getElementById('recAmount').value = '';
-  document.getElementById('recQty').value = '';
-  renderDiary();
-  showToast(recBs === 'buy' ? '매수 기록 저장됨' : '매도 기록 저장됨');
-});
-
 // 투자 기록 여러 건 붙여넣기
 document.getElementById('recPasteBtn').addEventListener('click', () => {
   const text = document.getElementById('recPaste').value.trim();
@@ -2039,6 +1936,7 @@ document.getElementById('recPasteBtn').addEventListener('click', () => {
   saveState();
   document.getElementById('recPaste').value = '';
   renderDiary();
+  renderInvestMonth();
   showToast(`${added}건 추가됨`);
 });
 
@@ -2214,7 +2112,6 @@ loadState();
 renderAll();
 initQuickOverlay();
 // 투자 기록 날짜 기본값
-(function(){ const rd = document.getElementById('recDate'); if (rd) rd.value = todayStr(); })();
 (function(){ const jd = document.getElementById('jrnlDate'); if (jd) jd.value = todayStr(); })();
 </script>
 
