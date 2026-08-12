@@ -262,7 +262,7 @@ function parseSummaryText(text){
   const chunks = text.split(/(?=단어\s*\d+)/);
   const words = [];
   chunks.forEach(chunk=>{
-    const m = chunk.match(/단어\s*(\d+)\s*([A-Za-z][A-Za-z\-']*)\s*\(([^)]+)\)/);
+    const m = chunk.match(/단어\s*(\d+)\s*([A-Za-z][A-Za-z\-' ]*?)\s*\(([^)]+)\)/);
     if(!m) return;
     const num = parseInt(m[1]);
     const word = m[2];
