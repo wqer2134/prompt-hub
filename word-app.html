@@ -286,7 +286,7 @@ function parseSummaryText(text){
     lastSentEnd = sm.index + sm[0].length;
   }
 
-  const qnaRegex = /Q\.\s*([^?]+\?)\s*A\.\s*([^.]+)\./g;
+  const qnaRegex = /Q\.\s*([^?]+\?)\s*A\.\s*([\s\S]+?)(?=(?:\r?\n\s*)?Q\.|$)/g;
   let qm;
   const qnaMatches = [];
   while((qm = qnaRegex.exec(text)) !== null){
