@@ -279,10 +279,12 @@ function parseSummaryText(text){
     result.derivs = words.slice(1).map(w=>({word:w.word, meaning:w.meaning, pos:w.pos, comp:w.etym}));
   }
 
-  const sentRegex = /(\d+)\)\s*([^—]+)—\s*([^.]+)\./g;
+  const sentRegex = /(\d+)\)\s*([^—]+)—\s*([\s\S]+?)(?=(?:\r?\n\s*)?\d+\)|(?:\r?\n\s*)?[^:\n]{1,20}:|Q\.|$)/g;
   let sm, lastSentEnd = 0;
   while((sm = sentRegex.exec(text)) !== null){
-    result.sentences.push({ en: sm[2].trim(), kr: sm[3].trim() + '.' });
+    let kr = sm[3].trim();
+    if(!/[.!?]$/.test(kr)) kr += '.';
+    result.sentences.push({ en: sm[2].trim(), kr });
     lastSentEnd = sm.index + sm[0].length;
   }
 
@@ -309,6 +311,11 @@ function parseSummaryText(text){
 }
 
 function Toast({msg}){ return <div className={"toast" + (msg ? " show" : "")}>{msg}</div>; }
+
+const POS_OPTIONS = ["동사","명사","동사 / 명사","형용사","부사","대명사","접속사","전치사","전치사구","감탄사","관용 표현","축약형","기타"];
+function posOptionsFor(current){
+  return POS_OPTIONS.includes(current) || !current ? POS_OPTIONS : [current, ...POS_OPTIONS];
+}
 
 const emptyDeriv = () => ({word:"", meaning:"", pos:"동사", comp:""});
 const emptySentence = () => ({en:"", kr:""});
@@ -393,8 +400,7 @@ function EntryForm({initial, onSubmit, onCancel, submitLabel, topNote}){
         </div>
         <div className="field"><label>품사</label>
           <select value={mainWord.pos} onChange={e=>setMainField("pos", e.target.value)}>
-            <option>동사</option><option>명사</option><option>동사 / 명사</option>
-            <option>형용사</option><option>부사</option><option>전치사</option><option>기타</option>
+            {posOptionsFor(mainWord.pos).map(p=>(<option key={p}>{p}</option>))}
           </select>
         </div>
         <div className="field"><label>어원</label>
@@ -417,8 +423,7 @@ function EntryForm({initial, onSubmit, onCancel, submitLabel, topNote}){
             </div>
             <div className="field"><label>품사</label>
               <select value={d.pos} onChange={e=>setDerivField(i,"pos",e.target.value)}>
-                <option>동사</option><option>명사</option><option>동사 / 명사</option>
-                <option>형용사</option><option>부사</option><option>전치사</option><option>기타</option>
+                {posOptionsFor(d.pos).map(p=>(<option key={p}>{p}</option>))}
               </select>
             </div>
             <div className="field"><label>구성</label>
