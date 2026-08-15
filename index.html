@@ -353,7 +353,7 @@
     <div class="ex-list" id="exList"></div>
     <div class="ex-alt-wrap">
       <div class="ex-alt-label">케틀벨 안 하는 날에는</div>
-      <button class="start-btn" onclick="startCycleSession()">🚴 실내자전거 + 아령 이어서 시작 (30분)</button>
+      <button class="start-btn" onclick="startCycleSession()">🚴 실내자전거 시작 (25분)</button>
       <div class="ex-alt-note" id="exAlt"></div>
     </div>
   </div>
@@ -463,13 +463,13 @@
 <div class="overlay" id="cycleOverlay">
   <div class="ov-header">
     <button class="ov-back" onclick="abortCycleSession()">← 종료</button>
-    <div class="ov-title">실내자전거 + 아령</div>
+    <div class="ov-title">실내자전거</div>
     <div style="width:50px"></div>
   </div>
   <div class="run-panel active" style="justify-content:center;">
     <div class="set-label" id="cycleSegLabel">1 / 5 구간</div>
     <div class="big-num" id="cycleTimer" style="margin-top:14px; font-size:44px;">30:00</div>
-    <div class="figure-wrap" style="margin:6px auto 0; max-width:200px;">
+    <div class="figure-wrap" id="cycleFigureWrap" style="margin:6px auto 0; max-width:200px;">
       <svg id="cycleFigure" viewBox="0 0 100 78" xmlns="http://www.w3.org/2000/svg">
         <line class="fig-bone" id="cyShoulderLine"/>
         <line class="fig-bone" id="cyNeck"/>
@@ -482,6 +482,12 @@
         <circle class="fig-kb" id="cyKbL" r="5.5"/>
         <circle class="fig-kb" id="cyKbR" r="5.5"/>
       </svg>
+    </div>
+    <div id="cycleVideoWrap" style="display:none; width:100%; max-width:340px; margin:6px auto 0;">
+      <div style="position:relative; width:100%; padding-top:56.25%; border-radius:14px; overflow:hidden; background:#000;">
+        <iframe id="cycleVideoFrame" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
     </div>
     <div class="ex-label" id="cycleExName" style="margin-top:6px;">🚴 워밍업 (페달만)</div>
     <div class="set-dots" id="cycleDots" style="margin-top:18px;"></div>
@@ -1701,14 +1707,13 @@ function renderExList(){
   });
 }
 
-const CYCLE_LABEL='실내자전거 30분';
+const CYCLE_LABEL='실내자전거 25분';
 const CYCLE_EX_NAMES=['바이셉 컬','레터럴 레이즈','프론트 레이즈','트라이셉 익스텐션'];
+const CYCLE_VIDEO_ID='7nTPXViyz6U';
 const CYCLE_SEGMENTS=[
-  {label:'워밍업 (페달만)', exName:null, sec:120},
-  {label:'바이셉 컬', exName:'바이셉 컬', sec:420},
-  {label:'레터럴 레이즈', exName:'레터럴 레이즈', sec:420},
-  {label:'프론트 레이즈', exName:'프론트 레이즈', sec:420},
-  {label:'트라이셉 익스텐션', exName:'트라이셉 익스텐션', sec:420}
+  {label:'유튜브 보면서 페달만', type:'video', sec:900},
+  {label:'일어서서 타기', type:'stand', sec:300},
+  {label:'마무리 페달', type:'cooldown', sec:300}
 ];
 const CYCLE_TOTAL_SEC=CYCLE_SEGMENTS.reduce((s,seg)=>s+seg.sec,0);
 
@@ -1721,10 +1726,14 @@ function renderExAlt(){
   const done=isCycleDoneToday();
   el.textContent = done
     ? '오늘 이미 완료했어요 ✓ (다시 하면 기록은 그대로예요)'
-    : '워밍업 2분 + 바이셉 컬·레터럴 레이즈·프론트 레이즈·트라이셉 익스텐션 각 7분, 총 30분';
+    : '유튜브 보며 페달 15분 + 일어서서 타기 5분 + 마무리 5분, 총 25분';
 }
 
 const CYCLE_POSE_MAP={'바이셉 컬':'bicepcurl','레터럴 레이즈':'lateralraise','프론트 레이즈':'frontraise','트라이셉 익스텐션':'tricepext'};
+function setKbVisible(visible){
+  const kbL=document.getElementById('cyKbL'); if(kbL) kbL.style.opacity=visible?'1':'0';
+  const kbR=document.getElementById('cyKbR'); if(kbR) kbR.style.opacity=visible?'1':'0';
+}
 function drawUpperFront(j){
   setBone('cyShoulderLine', j.shoulderL, j.shoulderR);
   setBone('cyNeck', j.head, j.neck);
@@ -1737,21 +1746,34 @@ function drawUpperFront(j){
   const kbL=document.getElementById('cyKbL'); if(kbL){ kbL.setAttribute('cx',j.handL[0]); kbL.setAttribute('cy',j.handL[1]); }
   const kbR=document.getElementById('cyKbR'); if(kbR){ kbR.setAttribute('cx',j.handR[0]); kbR.setAttribute('cy',j.handR[1]); }
 }
-let cycleFigRaf=null, cycleFigStart=0, cycleFigExName=undefined;
-function startCycleFigure(exName){
-  if(exName===cycleFigExName && cycleFigRaf) return; // 이미 같은 동작 재생 중이면 유지
-  cycleFigExName=exName;
+let cycleFigRaf=null, cycleFigStart=0, cycleFigMode=undefined;
+function startCycleFigure(mode){
+  if(mode===cycleFigMode && cycleFigRaf) return; // 이미 같은 동작 재생 중이면 유지
+  cycleFigMode=mode;
   if(cycleFigRaf) cancelAnimationFrame(cycleFigRaf);
-  const poseKey = exName ? CYCLE_POSE_MAP[exName] : null;
+  const poseKey = (mode && CYCLE_POSE_MAP[mode]) || null;
   const pose = poseKey ? POSES[poseKey] : null;
+  setKbVisible(!!pose); // 아령 동작일 때만 아령 표시
   cycleFigStart=performance.now();
-  const period=1800, idlePeriod=2400;
+  const period=1800;
   const loop=(ts)=>{
     if(pose){
       const t=((ts-cycleFigStart)%period)/period;
       const k=(1-Math.cos(t*2*Math.PI))/2;
       drawUpperFront(poseAt(pose,k));
+    } else if(mode==='stand'){
+      // 일어서서 타기: 상체 숙이고 핸들 낮게 잡은 채 빠르게 위아래로 들썩
+      const standPeriod=900;
+      const t=((ts-cycleFigStart)%standPeriod)/standPeriod;
+      const bounce=Math.abs(Math.sin(t*2*Math.PI))*4;
+      drawUpperFront({
+        head:[50,17-bounce*0.3], neck:[50,33-bounce*0.3], shoulderL:[36,35-bounce*0.3], shoulderR:[64,35-bounce*0.3], hip:[50,64-bounce*0.3],
+        elbowL:[29,52-bounce*0.5], handL:[38,64-bounce], elbowR:[71,52-bounce*0.5], handR:[62,64-bounce],
+        kb:[50,64]
+      });
     } else {
+      // 마무리 페달 (쿨다운): 편안하게 앉아서 천천히 좌우로 흔들
+      const idlePeriod=2600;
       const t=((ts-cycleFigStart)%idlePeriod)/idlePeriod;
       const sway=Math.sin(t*2*Math.PI)*2;
       drawUpperFront({
@@ -1766,7 +1788,7 @@ function startCycleFigure(exName){
 }
 function stopCycleFigure(){
   if(cycleFigRaf){ cancelAnimationFrame(cycleFigRaf); cycleFigRaf=null; }
-  cycleFigExName=undefined;
+  cycleFigMode=undefined;
 }
 
 let cycleElapsed=0, cyclePaused=false, cycleTimerId=null;
@@ -1776,11 +1798,10 @@ function cycleSegAt(elapsed){
   return CYCLE_SEGMENTS.length-1;
 }
 function startCycleSession(){
-  cycleElapsed=0; cyclePaused=false;
+  cycleElapsed=0; cyclePaused=false; cycleVideoLoadedFor=null;
   document.getElementById('cycleOverlay').classList.add('active');
   document.getElementById('cyclePauseBtn').textContent='일시정지';
   updateCycleUI();
-  startCycleFigure(CYCLE_SEGMENTS[0].exName);
   if(cycleTimerId) clearInterval(cycleTimerId);
   cycleTimerId=setInterval(()=>{
     if(cyclePaused) return;
@@ -1790,6 +1811,7 @@ function startCycleSession(){
   }, 1000);
   requestWake();
 }
+let cycleVideoLoadedFor=null;
 function updateCycleUI(){
   const remain=CYCLE_TOTAL_SEC-cycleElapsed;
   const mm=String(Math.floor(remain/60)).padStart(2,'0');
@@ -1798,8 +1820,27 @@ function updateCycleUI(){
   const idx=cycleSegAt(cycleElapsed);
   const seg=CYCLE_SEGMENTS[idx];
   const segLabelEl=document.getElementById('cycleSegLabel'); if(segLabelEl) segLabelEl.textContent=(idx+1)+' / '+CYCLE_SEGMENTS.length+' 구간';
-  const nameEl=document.getElementById('cycleExName'); if(nameEl) nameEl.textContent = seg.exName ? ('🏋️ '+seg.exName) : '🚴 워밍업 (페달만)';
-  startCycleFigure(seg.exName);
+  const nameEl=document.getElementById('cycleExName');
+  const figWrap=document.getElementById('cycleFigureWrap');
+  const vidWrap=document.getElementById('cycleVideoWrap');
+  if(seg.type==='video'){
+    stopCycleFigure();
+    if(figWrap) figWrap.style.display='none';
+    if(vidWrap) vidWrap.style.display='block';
+    if(nameEl) nameEl.textContent='🎥 유튜브 보면서 페달만';
+    if(cycleVideoLoadedFor!==idx){
+      const frame=document.getElementById('cycleVideoFrame');
+      if(frame) frame.src='https://www.youtube.com/embed/'+CYCLE_VIDEO_ID+'?rel=0';
+      cycleVideoLoadedFor=idx;
+    }
+  } else {
+    if(vidWrap) vidWrap.style.display='none';
+    if(figWrap) figWrap.style.display='';
+    if(nameEl) nameEl.textContent = seg.type==='stand' ? '🚴 일어서서 타기'
+      : seg.type==='cooldown' ? '🚴 마무리 페달'
+      : (seg.exName ? ('🏋️ '+seg.exName) : '🚴 페달만');
+    startCycleFigure(seg.type==='stand' ? 'stand' : seg.type==='cooldown' ? 'cooldown' : seg.exName);
+  }
   renderCycleDots(idx);
 }
 function renderCycleDots(curIdx){
@@ -1825,19 +1866,26 @@ function skipCycleSegment(){
   if(!moved || cycleElapsed>=CYCLE_TOTAL_SEC){ finishCycleSession(); return; }
   updateCycleUI();
 }
+function stopCycleVideo(){
+  const frame=document.getElementById('cycleVideoFrame');
+  if(frame) frame.src='';
+  cycleVideoLoadedFor=null;
+}
 function abortCycleSession(){
   if(cycleElapsed>10 && !confirm('종료할까요? 지금까지는 기록되지 않아요.')) return;
   if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
   stopCycleFigure();
+  stopCycleVideo();
   document.getElementById('cycleOverlay').classList.remove('active');
 }
 function finishCycleSession(){
   if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
   stopCycleFigure();
+  stopCycleVideo();
   document.getElementById('cycleOverlay').classList.remove('active');
   const k=todayKey();
   if(!state.days[k]) state.days[k]=[];
-  [CYCLE_LABEL, ...CYCLE_EX_NAMES].forEach(nm=>{ if(!state.days[k].includes(nm)) state.days[k].push(nm); });
+  if(!state.days[k].includes(CYCLE_LABEL)) state.days[k].push(CYCLE_LABEL);
   save();
   if(typeof renderCalendar==='function') renderCalendar();
   renderExAlt();
@@ -1845,7 +1893,7 @@ function finishCycleSession(){
   document.getElementById('runPanel').classList.remove('active');
   document.getElementById('donePanel').classList.add('active');
   document.getElementById('ovTitle').textContent='완료';
-  document.getElementById('doneSummary').textContent='실내자전거 30분 + 아령 4종 완료!';
+  document.getElementById('doneSummary').textContent='실내자전거 25분 완료!';
   document.getElementById('doneLogged').textContent='오늘('+k+') 캘린더에 기록됐어요 ✓';
   document.getElementById('overlay').classList.add('active');
 }
