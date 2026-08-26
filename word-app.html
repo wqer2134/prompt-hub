@@ -36,6 +36,11 @@
     display:flex; align-items:baseline; gap:8px;
   }
   header h1 span{color:var(--amber); font-size:13px; font-weight:600;}
+  .backup-btn{
+    margin-top:12px; width:100%; padding:10px 0; border-radius:10px; border:1px solid var(--amber-dim);
+    background:none; color:var(--amber); font-size:12px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .backup-btn:active{opacity:0.8;}
   .stats{margin-top:8px; font-size:12px; color:var(--gray);}
   .stats b{color:var(--amber); font-weight:700;}
 
@@ -812,6 +817,20 @@ function App(){
   const updateEntry = (id, cleaned) => persist(entries.map(e => e.id === id ? { id, ...cleaned } : e));
   const deleteEntry = (id) => persist(entries.filter(e => e.id !== id));
 
+  const backup = () => {
+    const blob = new Blob([JSON.stringify(entries, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = todayStr();
+    a.href = url;
+    a.download = '영어기록장_백업_' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('백업 파일 다운로드됨');
+  };
+
   if(!loaded){
     return <div className="app"><main><div className="empty">불러오는 중...</div></main></div>;
   }
@@ -823,6 +842,7 @@ function App(){
       <header>
         <h1>영어공부 기록장</h1>
         <div className="stats">총 <b>{entries.length}</b>일 기록 · 단어 <b>{totalWords}</b>개</div>
+        <button className="backup-btn" onClick={backup}>⬇ 백업 파일로 저장</button>
       </header>
       <nav>
         <button className={tab==="log"?"active":""} onClick={()=>setTab("log")}>기록</button>
