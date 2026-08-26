@@ -299,13 +299,14 @@ function parseSummaryText(text){
   const qIdx = qnaMatches.length > 0 ? text.indexOf('Q.') : -1;
   const grammarZoneEnd = qIdx >= 0 ? qIdx : text.length;
   const grammarText = text.slice(lastSentEnd, grammarZoneEnd);
-  const gRegex = /([^:.]+):\s*([^.]+)\./g;
-  let gm;
-  while((gm = gRegex.exec(grammarText)) !== null){
-    const point = gm[1].trim();
-    const desc = gm[2].trim();
-    if(point && desc && point.length < 30) result.grammar.push({point, desc});
-  }
+  grammarText.split(/\r?\n/).forEach(line=>{
+    const lm = line.match(/^\s*([^:]+):\s*(.+?)\s*$/);
+    if(!lm) return;
+    const point = lm[1].trim();
+    let desc = lm[2].trim();
+    if(desc.endsWith('.')) desc = desc.slice(0, -1);
+    if(point && desc && point.length < 40) result.grammar.push({point, desc});
+  });
 
   return result;
 }
