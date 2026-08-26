@@ -718,7 +718,7 @@ function AddEntry({onAdd, notify}){
     setParsedOnce(true);
     setFormKey(k=>k+1);
     setMode("manual");
-    notify("자동으로 채웠어요 — 내용 확인 후 저장하세요");
+    notify("파생어 " + parsed.derivs.length + " · 문장 " + parsed.sentences.length + " · 문법 " + parsed.grammar.length + " · Q&A " + parsed.qna.length + "개 인식됨");
   };
 
   const reset = () => {
@@ -786,7 +786,7 @@ function App(){
   const notify = (msg) => {
     setToastMsg(msg);
     if(toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(()=>setToastMsg(""), 2200);
+    toastTimer.current = setTimeout(()=>setToastMsg(""), 5000);
   };
 
   useEffect(()=>{
