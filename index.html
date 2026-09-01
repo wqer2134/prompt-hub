@@ -277,7 +277,7 @@
 
   /* ===== record (기록) styles ===== */
   /* shared styles: 기록 + 식단 tabs */
-  #tab-record, #tab-diet{font-family:'Pretendard',-apple-system,sans-serif;}
+  #tab-record{font-family:'Pretendard',-apple-system,sans-serif;}
   .rec-today{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
   .rec-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
     border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .15s ease;-webkit-tap-highlight-color:transparent;}
@@ -314,12 +314,7 @@
   .rec-day.d5{background:var(--amber);color:#1a1815;}
   .rec-cal-legend{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px;font-size:10px;color:var(--muted);}
   .rec-cal-legend .sq{width:11px;height:11px;border-radius:3px;}
-  /* diet-tab specific: food tag chips */
-  .diet-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
-  .diet-tag{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 16px;
-    font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease;-webkit-tap-highlight-color:transparent;}
-  .diet-tag.on{background:var(--amber);border-color:var(--amber);color:#1a1815;}
-  /* date navigator (기록/식단 공용) */
+  /* date navigator (기록 탭) */
   .rec-datenav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px;}
   .rec-datenav button{background:var(--panel);border:1px solid var(--line);color:var(--ink);
     width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
@@ -337,7 +332,6 @@
     <button data-tab="kb" data-sub="calendar">캘린더</button>
     <button data-tab="fortune">운세</button>
     <button data-tab="book">100권</button>
-    <button data-tab="diet">식단</button>
     <button data-tab="record">기록</button>
   </div>
 
@@ -493,7 +487,7 @@
     <div class="set-dots" id="cycleDots" style="margin-top:18px;"></div>
     <div class="controls" style="margin-top:28px;">
       <button class="ctrl-btn" id="cyclePauseBtn" onclick="toggleCyclePause()">일시정지</button>
-      <button class="ctrl-btn" onclick="skipCycleSegment()">다음 구간</button>
+      <button class="ctrl-btn" id="cycleSkipBtn" onclick="skipCycleSegment()">다음 구간</button>
       <button class="ctrl-btn" onclick="finishCycleSession()">완료</button>
     </div>
   </div>
@@ -658,48 +652,6 @@
 <button class="reset-btn" id="bookResetBtn">전체 기록 초기화</button>
   </div>
 
-  <div id="tab-diet" class="tabpane">
-<header>
-  <div class="eyebrow">Count Basie · Diet</div>
-  <h1 id="dietTitle">오늘의 식단</h1>
-  <div class="sub" id="dietDateLabel"></div>
-  <div class="rec-datenav">
-    <button id="dietPrevDay">◀</button>
-    <span class="rec-datelabel" id="dietSelLabel"></span>
-    <button id="dietNextDay">▶</button>
-    <button class="rec-today-btn" id="dietTodayBtn" style="display:none;">오늘로</button>
-  </div>
-</header>
-
-<div class="rec-today">
-  <div class="rec-item" id="dietTodayToggle">
-    <div class="rec-check" id="dietTodayCheck"></div>
-    <div class="rec-label">
-      <div class="rec-name">단백질 위주로 챙겼어요</div>
-      <div class="rec-note">두유·소고기·돼지고기·고등어·김치·바나나·크래미오이샐러드 기준</div>
-    </div>
-  </div>
-</div>
-
-<div class="rec-section">
-  <div class="rec-section-title">오늘 먹은 것 (선택)</div>
-  <div class="diet-tags" id="dietTags"></div>
-</div>
-
-<div class="rec-section">
-  <div class="rec-section-title">이번 달</div>
-  <div class="rec-total-stats" id="dietMonthStats"></div>
-</div>
-
-<div class="rec-section">
-  <div class="rec-section-title" id="dietCalTitle">이번 달 한눈에</div>
-  <div class="rec-weekday-row"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
-  <div class="rec-cal-grid" id="dietCalGrid"></div>
-</div>
-
-<button class="reset-btn" id="dietResetBtn">식단 기록 초기화</button>
-  </div>
-
   <div id="tab-record" class="tabpane">
 <header>
   <div class="eyebrow">Count Basie · Record</div>
@@ -758,7 +710,6 @@
       if(el)el.classList.add('active');
       if(b.dataset.sub && typeof window.switchTab==='function'){ window.switchTab(b.dataset.sub); }
       if(b.dataset.tab==='record' && typeof window.renderRecord==='function'){ window.renderRecord(); }
-      if(b.dataset.tab==='diet' && typeof window.renderDiet==='function'){ window.renderDiet(); }
       window.scrollTo(0,0);
     });
   });
@@ -1710,12 +1661,11 @@ function renderExList(){
 const CYCLE_LABEL='실내자전거 25분';
 const CYCLE_EX_NAMES=['바이셉 컬','레터럴 레이즈','프론트 레이즈','트라이셉 익스텐션'];
 const CYCLE_VIDEO_ID='7nTPXViyz6U';
-const CYCLE_SEGMENTS=[
-  {label:'유튜브 보면서 페달만', type:'video', sec:900},
+const CYCLE_TIMED_SEGMENTS=[
   {label:'일어서서 타기', type:'stand', sec:300},
   {label:'마무리 페달', type:'cooldown', sec:300}
 ];
-const CYCLE_TOTAL_SEC=CYCLE_SEGMENTS.reduce((s,seg)=>s+seg.sec,0);
+const CYCLE_TIMED_TOTAL=CYCLE_TIMED_SEGMENTS.reduce((s,seg)=>s+seg.sec,0);
 
 function isCycleDoneToday(){
   const k=todayKey();
@@ -1726,7 +1676,7 @@ function renderExAlt(){
   const done=isCycleDoneToday();
   el.textContent = done
     ? '오늘 이미 완료했어요 ✓ (다시 하면 기록은 그대로예요)'
-    : '유튜브 보며 페달 15분 + 일어서서 타기 5분 + 마무리 5분, 총 25분';
+    : '유튜브 보며 페달 (광고·휴식 포함, 원할 때 다음으로) + 일어서서 타기 5분 + 마무리 5분';
 }
 
 const CYCLE_POSE_MAP={'바이셉 컬':'bicepcurl','레터럴 레이즈':'lateralraise','프론트 레이즈':'frontraise','트라이셉 익스텐션':'tricepext'};
@@ -1791,62 +1741,79 @@ function stopCycleFigure(){
   cycleFigMode=undefined;
 }
 
-let cycleElapsed=0, cyclePaused=false, cycleTimerId=null;
+let cycleElapsed=0, cyclePaused=false, cycleTimerId=null, cyclePhase='video', cycleVideoLoadedFor=null;
 function cycleSegAt(elapsed){
   let acc=0;
-  for(let i=0;i<CYCLE_SEGMENTS.length;i++){ acc+=CYCLE_SEGMENTS[i].sec; if(elapsed<acc) return i; }
-  return CYCLE_SEGMENTS.length-1;
+  for(let i=0;i<CYCLE_TIMED_SEGMENTS.length;i++){ acc+=CYCLE_TIMED_SEGMENTS[i].sec; if(elapsed<acc) return i; }
+  return CYCLE_TIMED_SEGMENTS.length-1;
 }
 function startCycleSession(){
-  cycleElapsed=0; cyclePaused=false; cycleVideoLoadedFor=null;
+  cyclePhase='video'; cycleElapsed=0; cyclePaused=false; cycleVideoLoadedFor=null;
   document.getElementById('cycleOverlay').classList.add('active');
-  document.getElementById('cyclePauseBtn').textContent='일시정지';
+  if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
+  showVideoPhaseUI();
+  requestWake();
+}
+function showVideoPhaseUI(){
+  stopCycleFigure();
+  const figWrap=document.getElementById('cycleFigureWrap');
+  const vidWrap=document.getElementById('cycleVideoWrap');
+  const timerEl=document.getElementById('cycleTimer');
+  const segLabelEl=document.getElementById('cycleSegLabel');
+  const nameEl=document.getElementById('cycleExName');
+  const pauseBtn=document.getElementById('cyclePauseBtn');
+  const skipBtn=document.getElementById('cycleSkipBtn');
+  if(figWrap) figWrap.style.display='none';
+  if(vidWrap) vidWrap.style.display='block';
+  if(timerEl) timerEl.textContent='▶';
+  if(segLabelEl) segLabelEl.textContent='광고·휴식 포함, 준비되면 다음으로';
+  if(nameEl) nameEl.textContent='🎥 유튜브 보면서 페달만';
+  if(pauseBtn) pauseBtn.style.display='none';
+  if(skipBtn) skipBtn.textContent='다음으로 ▶ (운동 시작)';
+  if(cycleVideoLoadedFor!==1){
+    const frame=document.getElementById('cycleVideoFrame');
+    if(frame) frame.src='https://www.youtube.com/embed/'+CYCLE_VIDEO_ID+'?rel=0';
+    cycleVideoLoadedFor=1;
+  }
+  renderCycleDots(-1);
+}
+function enterTimedPhase(){
+  cyclePhase='timed'; cycleElapsed=0; cyclePaused=false;
+  stopCycleVideo();
+  const pauseBtn=document.getElementById('cyclePauseBtn');
+  const skipBtn=document.getElementById('cycleSkipBtn');
+  if(pauseBtn){ pauseBtn.style.display=''; pauseBtn.textContent='일시정지'; }
+  if(skipBtn) skipBtn.textContent='다음 구간';
   updateCycleUI();
   if(cycleTimerId) clearInterval(cycleTimerId);
   cycleTimerId=setInterval(()=>{
     if(cyclePaused) return;
     cycleElapsed++;
-    if(cycleElapsed>=CYCLE_TOTAL_SEC){ finishCycleSession(); return; }
+    if(cycleElapsed>=CYCLE_TIMED_TOTAL){ finishCycleSession(); return; }
     updateCycleUI();
   }, 1000);
-  requestWake();
 }
-let cycleVideoLoadedFor=null;
 function updateCycleUI(){
-  const remain=CYCLE_TOTAL_SEC-cycleElapsed;
+  const remain=CYCLE_TIMED_TOTAL-cycleElapsed;
   const mm=String(Math.floor(remain/60)).padStart(2,'0');
   const ss=String(remain%60).padStart(2,'0');
   const timerEl=document.getElementById('cycleTimer'); if(timerEl) timerEl.textContent=mm+':'+ss;
   const idx=cycleSegAt(cycleElapsed);
-  const seg=CYCLE_SEGMENTS[idx];
-  const segLabelEl=document.getElementById('cycleSegLabel'); if(segLabelEl) segLabelEl.textContent=(idx+1)+' / '+CYCLE_SEGMENTS.length+' 구간';
+  const seg=CYCLE_TIMED_SEGMENTS[idx];
+  const segLabelEl=document.getElementById('cycleSegLabel'); if(segLabelEl) segLabelEl.textContent=(idx+1)+' / '+CYCLE_TIMED_SEGMENTS.length+' 구간';
   const nameEl=document.getElementById('cycleExName');
   const figWrap=document.getElementById('cycleFigureWrap');
   const vidWrap=document.getElementById('cycleVideoWrap');
-  if(seg.type==='video'){
-    stopCycleFigure();
-    if(figWrap) figWrap.style.display='none';
-    if(vidWrap) vidWrap.style.display='block';
-    if(nameEl) nameEl.textContent='🎥 유튜브 보면서 페달만';
-    if(cycleVideoLoadedFor!==idx){
-      const frame=document.getElementById('cycleVideoFrame');
-      if(frame) frame.src='https://www.youtube.com/embed/'+CYCLE_VIDEO_ID+'?rel=0';
-      cycleVideoLoadedFor=idx;
-    }
-  } else {
-    if(vidWrap) vidWrap.style.display='none';
-    if(figWrap) figWrap.style.display='';
-    if(nameEl) nameEl.textContent = seg.type==='stand' ? '🚴 일어서서 타기'
-      : seg.type==='cooldown' ? '🚴 마무리 페달'
-      : (seg.exName ? ('🏋️ '+seg.exName) : '🚴 페달만');
-    startCycleFigure(seg.type==='stand' ? 'stand' : seg.type==='cooldown' ? 'cooldown' : seg.exName);
-  }
+  if(vidWrap) vidWrap.style.display='none';
+  if(figWrap) figWrap.style.display='';
+  if(nameEl) nameEl.textContent = seg.type==='stand' ? '🚴 일어서서 타기' : '🚴 마무리 페달';
+  startCycleFigure(seg.type);
   renderCycleDots(idx);
 }
 function renderCycleDots(curIdx){
   const c=document.getElementById('cycleDots'); if(!c) return;
   c.innerHTML='';
-  CYCLE_SEGMENTS.forEach((s,i)=>{
+  CYCLE_TIMED_SEGMENTS.forEach((s,i)=>{
     const d=document.createElement('div'); d.className='set-dot';
     if(i<curIdx) d.classList.add('done');
     if(i===curIdx) d.classList.add('current');
@@ -1854,16 +1821,18 @@ function renderCycleDots(curIdx){
   });
 }
 function toggleCyclePause(){
+  if(cyclePhase!=='timed') return;
   cyclePaused=!cyclePaused;
   document.getElementById('cyclePauseBtn').textContent = cyclePaused ? '재개' : '일시정지';
 }
 function skipCycleSegment(){
+  if(cyclePhase==='video'){ enterTimedPhase(); return; }
   let acc=0, moved=false;
-  for(let i=0;i<CYCLE_SEGMENTS.length;i++){
-    acc+=CYCLE_SEGMENTS[i].sec;
+  for(let i=0;i<CYCLE_TIMED_SEGMENTS.length;i++){
+    acc+=CYCLE_TIMED_SEGMENTS[i].sec;
     if(cycleElapsed<acc){ cycleElapsed=acc; moved=true; break; }
   }
-  if(!moved || cycleElapsed>=CYCLE_TOTAL_SEC){ finishCycleSession(); return; }
+  if(!moved || cycleElapsed>=CYCLE_TIMED_TOTAL){ finishCycleSession(); return; }
   updateCycleUI();
 }
 function stopCycleVideo(){
@@ -1872,7 +1841,7 @@ function stopCycleVideo(){
   cycleVideoLoadedFor=null;
 }
 function abortCycleSession(){
-  if(cycleElapsed>10 && !confirm('종료할까요? 지금까지는 기록되지 않아요.')) return;
+  if((cyclePhase==='timed'||cycleElapsed>10) && !confirm('종료할까요? 지금까지는 기록되지 않아요.')) return;
   if(cycleTimerId){ clearInterval(cycleTimerId); cycleTimerId=null; }
   stopCycleFigure();
   stopCycleVideo();
@@ -1893,7 +1862,7 @@ function finishCycleSession(){
   document.getElementById('runPanel').classList.remove('active');
   document.getElementById('donePanel').classList.add('active');
   document.getElementById('ovTitle').textContent='완료';
-  document.getElementById('doneSummary').textContent='실내자전거 25분 완료!';
+  document.getElementById('doneSummary').textContent='실내자전거 완료!';
   document.getElementById('doneLogged').textContent='오늘('+k+') 캘린더에 기록됐어요 ✓';
   document.getElementById('overlay').classList.add('active');
 }
@@ -2355,12 +2324,10 @@ renderExAlt();
   const REC_KEY='daily_record_v1';
   const KB_KEY='kb_simple_v1';
   const BOOK_KEY='investment-100-books-checked';
-  const DIET_KEY='diet_log_v1';
   const START_DATE='2026-08-01';
 
   const ITEMS=[
     {id:'exercise', name:'운동', short:'운동', note:'켓틀벨 탭에서 자동 반영돼요', auto:true},
-    {id:'diet',     name:'식단', short:'식단', note:'식단 탭에서 자동 반영돼요', auto:true},
     {id:'reading',  name:'독서', short:'독서', note:'팩 하면서 30분'},
     {id:'guitar',   name:'기타 즉흥연주', short:'기타', note:'퇴근 전 30분'},
     {id:'drum',     name:'드럼 연습', short:'드럼', note:'레슨 · 매일 30분 연습'},
@@ -2396,20 +2363,16 @@ renderExAlt();
   function saveRec(obj){ localStorage.setItem(REC_KEY, JSON.stringify(obj)); }
   function loadKB(){ try{ return JSON.parse(localStorage.getItem(KB_KEY)||'{}'); }catch(e){ return {}; } }
   function loadBook(){ try{ return JSON.parse(localStorage.getItem(BOOK_KEY)||'{}'); }catch(e){ return {}; } }
-  function loadDiet(){ try{ return JSON.parse(localStorage.getItem(DIET_KEY)||'{}'); }catch(e){ return {}; } }
   function exerciseDoneOn(key, kbData){ const days=(kbData&&kbData.days)||{}; return !!(days[key] && days[key].length>0); }
-  function dietDoneOn(key, dietData){ const d=(dietData||{})[key]; return !!(d && d.ok); }
 
-  function renderToday(selKey, rec, kb, diet){
+  function renderToday(selKey, rec, kb){
     const wrap=document.getElementById('recToday'); if(!wrap) return;
     wrap.innerHTML='';
     const today=rec[selKey]||{};
     const exDone=exerciseDoneOn(selKey, kb);
-    const dietDone=dietDoneOn(selKey, diet);
     ITEMS.forEach(item=>{
       let on;
       if(item.id==='exercise') on=exDone;
-      else if(item.id==='diet') on=dietDone;
       else on=!!today[item.id];
       const div=document.createElement('div');
       div.className='rec-item'+(on?' on':'');
@@ -2455,17 +2418,16 @@ renderExAlt();
     return {y:t.y, m:t.m};
   }
 
-  function renderMonthStats(t, rec, kb, diet){
+  function renderMonthStats(t, rec, kb){
     const box=document.getElementById('recMonthStats'); if(!box) return;
     box.innerHTML='';
     const dm=displayMonth(t);
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    const counts={exercise:0, diet:0, reading:0, guitar:0, drum:0, english:0, ledger:0, invest:0, business:0};
+    const counts={exercise:0, reading:0, guitar:0, drum:0, english:0, ledger:0, invest:0, business:0};
     for(let d=1; d<=daysInMonth; d++){
       const k=dkey(dm.y, dm.m, d);
       if(k<START_DATE) continue;
       if(exerciseDoneOn(k, kb)) counts.exercise++;
-      if(dietDoneOn(k, diet)) counts.diet++;
       const day=rec[k]||{};
       if(day.reading) counts.reading++;
       if(day.guitar) counts.guitar++;
@@ -2482,19 +2444,17 @@ renderExAlt();
     });
   }
 
-  function renderTotalStats(rec, kb, book, diet){
+  function renderTotalStats(rec, kb, book){
     const box=document.getElementById('recTotalStats'); if(!box) return;
     box.innerHTML='';
     const kbDays=Object.keys((kb&&kb.days)||{}).filter(k=>k>=START_DATE);
-    const dietDays=Object.keys(diet||{}).filter(k=>k>=START_DATE);
     const recDays=Object.keys(rec).filter(k=>k>=START_DATE);
-    const allDates=new Set(kbDays.concat(dietDays).concat(recDays));
+    const allDates=new Set(kbDays.concat(recDays));
     let totalActiveDays=0;
     allDates.forEach(k=>{
       const day=rec[k]||{};
       const ex=exerciseDoneOn(k, kb);
-      const dt=dietDoneOn(k, diet);
-      if(ex||dt||day.reading||day.guitar||day.drum||day.english||day.ledger||day.invest||day.business) totalActiveDays++;
+      if(ex||day.reading||day.guitar||day.drum||day.english||day.ledger||day.invest||day.business) totalActiveDays++;
     });
     const sp=START_DATE.split('-').map(Number);
     const start=new Date(sp[0], sp[1]-1, sp[2]);
@@ -2522,7 +2482,7 @@ renderExAlt();
     });
   }
 
-  function renderCalendar(t, rec, kb, diet){
+  function renderCalendar(t, rec, kb){
     const dm=displayMonth(t);
     const title=document.getElementById('recCalTitle');
     if(title) title.textContent=dm.y+'년 '+dm.m+'월 한눈에'+(dm.m!==t.m||dm.y!==t.y?' (8/1부터 시작)':'');
@@ -2544,7 +2504,6 @@ renderExAlt();
         const day=rec[k]||{};
         let cnt=0;
         if(exerciseDoneOn(k, kb)) cnt++;
-        if(dietDoneOn(k, diet)) cnt++;
         if(day.reading) cnt++;
         if(day.guitar) cnt++;
         if(day.drum) cnt++;
@@ -2552,8 +2511,8 @@ renderExAlt();
         if(day.ledger) cnt++;
         if(day.invest) cnt++;
         if(day.business) cnt++;
-        // scale 0-9 counts onto the existing 5-step color ramp
-        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/9));
+        // scale 0-8 counts onto the existing 5-step color ramp
+        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/8));
         el.className='rec-day'+(step>0?(' d'+step):'')+(k===t.key?' today':'')+(k===recSelKey?' today':'');
         el.style.cursor='pointer';
         el.addEventListener('click', function(){
@@ -2573,12 +2532,12 @@ renderExAlt();
     recSelKey=clampKey(recSelKey);
     const label=document.getElementById('recordDateLabel');
     if(label) label.textContent=t.y+'.'+pad2(t.m)+'.'+pad2(t.d)+' 기준';
-    const rec=loadRec(), kb=loadKB(), book=loadBook(), diet=loadDiet();
+    const rec=loadRec(), kb=loadKB(), book=loadBook();
     renderDateNav(recSelKey);
-    renderToday(recSelKey, rec, kb, diet);
-    renderMonthStats(t, rec, kb, diet);
-    renderTotalStats(rec, kb, book, diet);
-    renderCalendar(t, rec, kb, diet);
+    renderToday(recSelKey, rec, kb);
+    renderMonthStats(t, rec, kb);
+    renderTotalStats(rec, kb, book);
+    renderCalendar(t, rec, kb);
   }
 
   const recPrevBtn=document.getElementById('recPrevDay');
@@ -2614,203 +2573,6 @@ renderExAlt();
 })();
 </script>
 
-<script>
-/* ===== diet (식단) engine ===== */
-(function(){
-  const DIET_KEY='diet_log_v1';
-  const START_DATE='2026-08-01';
-  const FOOD_TAGS=['두유','소고기','돼지고기','고등어','김치','바나나','크래미오이샐러드'];
-  let dietSelKey=null;
-
-  function pad2(n){ return String(n).padStart(2,'0'); }
-  function dkey(y,m,d){ return y+'-'+pad2(m)+'-'+pad2(d); }
-  function todayD(){
-    const d=new Date();
-    return {y:d.getFullYear(), m:d.getMonth()+1, d:d.getDate(), key:dkey(d.getFullYear(), d.getMonth()+1, d.getDate())};
-  }
-  function keyToDate(k){ const p=k.split('-').map(Number); return new Date(p[0],p[1]-1,p[2]); }
-  function shiftKey(k, delta){ const dt=keyToDate(k); dt.setDate(dt.getDate()+delta); return dkey(dt.getFullYear(), dt.getMonth()+1, dt.getDate()); }
-  function clampKey(k){
-    const todayKey=todayD().key;
-    if(k<START_DATE) return START_DATE;
-    if(k>todayKey) return todayKey;
-    return k;
-  }
-  function labelForKey(k){
-    const dt=keyToDate(k);
-    const wd=['일','월','화','수','목','금','토'][dt.getDay()];
-    return (dt.getMonth()+1)+'.'+dt.getDate()+' ('+wd+')';
-  }
-  function loadDiet(){ try{ return JSON.parse(localStorage.getItem(DIET_KEY)||'{}'); }catch(e){ return {}; } }
-  function saveDiet(obj){ localStorage.setItem(DIET_KEY, JSON.stringify(obj)); }
-  function displayMonth(t){
-    if(t.key < START_DATE){
-      const sp=START_DATE.split('-').map(Number);
-      return {y:sp[0], m:sp[1]};
-    }
-    return {y:t.y, m:t.m};
-  }
-
-  function renderDateNav(selKey){
-    const todayKey=todayD().key;
-    const isToday=(selKey===todayKey);
-    const title=document.getElementById('dietTitle');
-    if(title) title.textContent = isToday ? '오늘의 식단' : labelForKey(selKey)+' 식단';
-    const lbl=document.getElementById('dietSelLabel');
-    if(lbl){ lbl.textContent=labelForKey(selKey); lbl.classList.toggle('editing', !isToday); }
-    const prevBtn=document.getElementById('dietPrevDay');
-    const nextBtn=document.getElementById('dietNextDay');
-    const todayBtn=document.getElementById('dietTodayBtn');
-    if(prevBtn) prevBtn.disabled = (selKey<=START_DATE);
-    if(nextBtn) nextBtn.disabled = isToday;
-    if(todayBtn) todayBtn.style.display = isToday ? 'none' : '';
-  }
-
-  function renderToday(selKey, diet){
-    const today=diet[selKey]||{ok:false, tags:[]};
-    const item=document.getElementById('dietTodayToggle');
-    const check=document.getElementById('dietTodayCheck');
-    if(item){
-      item.classList.toggle('on', !!today.ok);
-      if(check) check.textContent=today.ok?'✓':'';
-    }
-    const tagsBox=document.getElementById('dietTags'); if(!tagsBox) return;
-    tagsBox.innerHTML='';
-    FOOD_TAGS.forEach(tag=>{
-      const on=(today.tags||[]).indexOf(tag)>=0;
-      const el=document.createElement('div');
-      el.className='diet-tag'+(on?' on':'');
-      el.textContent=tag;
-      el.addEventListener('click', function(){
-        const d=loadDiet();
-        if(!d[selKey]) d[selKey]={ok:false, tags:[]};
-        const tags=d[selKey].tags||[];
-        const idx=tags.indexOf(tag);
-        if(idx>=0) tags.splice(idx,1); else tags.push(tag);
-        d[selKey].tags=tags;
-        saveDiet(d);
-        renderDiet();
-      });
-      tagsBox.appendChild(el);
-    });
-  }
-
-  function renderMonthStats(t, diet){
-    const box=document.getElementById('dietMonthStats'); if(!box) return;
-    box.innerHTML='';
-    const dm=displayMonth(t);
-    const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    let count=0;
-    for(let d=1; d<=daysInMonth; d++){
-      const k=dkey(dm.y, dm.m, d);
-      if(k<START_DATE) continue;
-      if(diet[k] && diet[k].ok) count++;
-    }
-    let totalCount=0;
-    Object.keys(diet).forEach(k=>{ if(k>=START_DATE && diet[k] && diet[k].ok) totalCount++; });
-    const items=[
-      {n:count, l:'이번 달 실천일'},
-      {n:totalCount, l:'전체 누적일'}
-    ];
-    items.forEach(it=>{
-      const el=document.createElement('div'); el.className='rec-tstat';
-      el.innerHTML='<div class="n">'+it.n+'</div><div class="l">'+it.l+'</div>';
-      box.appendChild(el);
-    });
-  }
-
-  function renderCalendar(t, diet){
-    const dm=displayMonth(t);
-    const title=document.getElementById('dietCalTitle');
-    if(title) title.textContent=dm.y+'년 '+dm.m+'월 한눈에'+(dm.m!==t.m||dm.y!==t.y?' (8/1부터 시작)':'');
-    const grid=document.getElementById('dietCalGrid'); if(!grid) return;
-    grid.innerHTML='';
-    const firstDow=new Date(dm.y, dm.m-1, 1).getDay();
-    const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    for(let i=0; i<firstDow; i++){
-      const e=document.createElement('div'); e.className='rec-day empty'; grid.appendChild(e);
-    }
-    for(let d=1; d<=daysInMonth; d++){
-      const k=dkey(dm.y, dm.m, d);
-      const el=document.createElement('div');
-      el.textContent=d;
-      if(k<START_DATE || k>t.key){
-        el.className='rec-day';
-        el.style.opacity='0.35';
-      } else {
-        const on=!!(diet[k] && diet[k].ok);
-        el.className='rec-day'+(on?' d5':'')+(k===dietSelKey?' today':'');
-        el.style.cursor='pointer';
-        el.addEventListener('click', function(){
-          dietSelKey=k;
-          renderDiet();
-          const wrap=document.getElementById('dietTodayToggle');
-          if(wrap) wrap.scrollIntoView({behavior:'smooth', block:'start'});
-        });
-      }
-      grid.appendChild(el);
-    }
-  }
-
-  function renderDiet(){
-    const t=todayD();
-    if(!dietSelKey) dietSelKey=t.key;
-    dietSelKey=clampKey(dietSelKey);
-    const label=document.getElementById('dietDateLabel');
-    if(label) label.textContent=t.y+'.'+pad2(t.m)+'.'+pad2(t.d)+' 기준';
-    const diet=loadDiet();
-    renderDateNav(dietSelKey);
-    renderToday(dietSelKey, diet);
-    renderMonthStats(t, diet);
-    renderCalendar(t, diet);
-  }
-
-  const toggle=document.getElementById('dietTodayToggle');
-  if(toggle){
-    toggle.addEventListener('click', function(){
-      if(!dietSelKey) dietSelKey=todayD().key;
-      const d=loadDiet();
-      if(!d[dietSelKey]) d[dietSelKey]={ok:false, tags:[]};
-      d[dietSelKey].ok=!d[dietSelKey].ok;
-      saveDiet(d);
-      renderDiet();
-      if(typeof window.renderRecord==='function') window.renderRecord();
-    });
-  }
-
-  const dietPrevBtn=document.getElementById('dietPrevDay');
-  const dietNextBtn=document.getElementById('dietNextDay');
-  const dietTodayBtn=document.getElementById('dietTodayBtn');
-  if(dietPrevBtn) dietPrevBtn.addEventListener('click', function(){
-    if(!dietSelKey) dietSelKey=todayD().key;
-    dietSelKey=clampKey(shiftKey(dietSelKey,-1));
-    renderDiet();
-  });
-  if(dietNextBtn) dietNextBtn.addEventListener('click', function(){
-    if(!dietSelKey) dietSelKey=todayD().key;
-    dietSelKey=clampKey(shiftKey(dietSelKey,1));
-    renderDiet();
-  });
-  if(dietTodayBtn) dietTodayBtn.addEventListener('click', function(){
-    dietSelKey=todayD().key;
-    renderDiet();
-  });
-
-  const resetBtn=document.getElementById('dietResetBtn');
-  if(resetBtn){
-    resetBtn.addEventListener('click', function(){
-      if(confirm('식단 기록을 초기화할까요?')){
-        localStorage.removeItem(DIET_KEY);
-        renderDiet();
-        if(typeof window.renderRecord==='function') window.renderRecord();
-      }
-    });
-  }
-
-  window.renderDiet=renderDiet;
-  renderDiet();
-})();
-</script>
 
 </body>
 </html>
