@@ -277,7 +277,7 @@ function parseSummaryText(text){
     const pos = posMatch ? posMatch[1].trim() : "";
     const pronMatch = chunk.match(/발음\s*:?\s*([^,\n]+)/);
     const pron = pronMatch ? pronMatch[1].trim() : "";
-    const etymMatch = chunk.match(/(?:어원|구성)\s*:?\s*([^.]+)\./);
+    const etymMatch = chunk.match(/,\s*(?:어원|구성)\s*:?\s*([^.]+)\./);
     const etym = etymMatch ? etymMatch[1].trim() : "";
     words.push({num, word, meaning, pos, pron, etym});
   });
@@ -287,7 +287,7 @@ function parseSummaryText(text){
     result.derivs = words.slice(1).map(w=>({word:w.word, meaning:w.meaning, pos:w.pos, pron:w.pron, comp:w.etym}));
   }
 
-  const sentRegex = /(\d+)\)\s*([^—]+)—\s*([\s\S]+?)(?=(?:\r?\n\s*)?\d+\)|(?:\r?\n\s*)?[^:\n]{1,20}:|Q\.|$)/g;
+  const sentRegex = /(\d+)\)\s*([^—]+)—\s*([\s\S]+?)(?=(?:\r?\n\s*)?\d+\)|\r?\n\s*[^:\n]{1,60}:|Q\.|$)/g;
   let sm, lastSentEnd = 0;
   while((sm = sentRegex.exec(text)) !== null){
     let kr = sm[3].trim();
