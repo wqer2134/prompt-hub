@@ -344,12 +344,12 @@
 </header>
 <main>
   <div class="tab-page active" id="workoutPage">
-    <div class="ex-list" id="exList"></div>
-    <div class="ex-alt-wrap">
+    <div class="ex-alt-wrap" style="margin-top:0; padding-top:0; border-top:none;">
       <div class="ex-alt-label">케틀벨 안 하는 날에는</div>
       <button class="start-btn" onclick="startCycleSession()">🚴 실내자전거 시작 (25분)</button>
       <div class="ex-alt-note" id="exAlt"></div>
     </div>
+    <div class="ex-list" id="exList" style="margin-top:20px; padding-top:14px; border-top:1px dashed var(--line);"></div>
   </div>
   <div class="tab-page" id="calendarPage">
     <div class="cal-summary">
@@ -2326,16 +2326,33 @@ renderExAlt();
   const BOOK_KEY='investment-100-books-checked';
   const START_DATE='2026-08-01';
 
-  const ITEMS=[
-    {id:'exercise', name:'운동', short:'운동', note:'켓틀벨 탭에서 자동 반영돼요', auto:true},
-    {id:'reading',  name:'독서', short:'독서', note:'팩 하면서 30분'},
-    {id:'guitar',   name:'기타 즉흥연주', short:'기타', note:'퇴근 전 30분'},
-    {id:'drum',     name:'드럼 연습', short:'드럼', note:'레슨 · 매일 30분 연습'},
-    {id:'english',  name:'영어 단어 공부', short:'영어', note:'출퇴근 운전하면서 GPT랑 30분'},
-    {id:'ledger',   name:'가계부 쓰기', short:'가계부', note:'기상 직후 폰 볼 때'},
-    {id:'invest',   name:'투자 공부', short:'투자', note:'홍보 이미지 생성 기다리는 시간'},
-    {id:'business', name:'사업 (홍보 · 콘텐츠)', short:'사업', note:'이미지 생성 기다리는 시간'}
+  const ROUTINES=[
+    {title:'오전 루틴', items:[
+      {id:'ledger',  name:'가계부 쓰기', short:'가계부', note:'기상 직후 폰 볼 때'},
+      {id:'ex',      name:'운동', short:'운동', note:'켓틀벨 탭에서 자동 반영돼요', auto:true},
+      {id:'ad',      name:'광고 업로드', short:'광고'},
+      {id:'yt_up',   name:'유튜브 업로드', short:'유튜브'},
+      {id:'econ',    name:'경제 공부', short:'경제공부'},
+      {id:'english', name:'출퇴근 영어공부', short:'영어'}
+    ]},
+    {title:'오후 루틴', items:[
+      {id:'ops',         name:'운영 (출결·미납·신규등록)', short:'운영'},
+      {id:'guitarbook',  name:'일렉기타 교재 만들기', short:'교재'},
+      {id:'insta',       name:'인스타그램 컨텐츠 만들기', short:'인스타'},
+      {id:'yt_prep',     name:'유튜브 컨텐츠 준비', short:'유튜브준비'},
+      {id:'subs',        name:'구독서비스 컨텐츠 만들기', short:'구독컨텐츠'},
+      {id:'solo_guitar', name:'솔로 기타 연습', short:'솔로기타'},
+      {id:'drum',        name:'드럼 연습', short:'드럼'},
+      {id:'audiobook',   name:'오디오북 - 고전 읽기', short:'오디오북'}
+    ]},
+    {title:'퇴근 루틴', items:[
+      {id:'diary',    name:'일기 쓰기', short:'일기'},
+      {id:'pack',     name:'팩 하기', short:'팩'},
+      {id:'econbook', name:'경제책 읽기', short:'경제책'},
+      {id:'stretch',  name:'누워서 스트레칭', short:'스트레칭'}
+    ]}
   ];
+  const ALL_ITEMS=ROUTINES.reduce((a,r)=>a.concat(r.items),[]);
 
   let recSelKey=null; // 현재 편집 중인 날짜 (기본값: 오늘)
 
@@ -2370,28 +2387,35 @@ renderExAlt();
     wrap.innerHTML='';
     const today=rec[selKey]||{};
     const exDone=exerciseDoneOn(selKey, kb);
-    ITEMS.forEach(item=>{
-      let on;
-      if(item.id==='exercise') on=exDone;
-      else on=!!today[item.id];
-      const div=document.createElement('div');
-      div.className='rec-item'+(on?' on':'');
-      div.innerHTML=
-        '<div class="rec-check">'+(on?'✓':'')+'</div>'+
-        '<div class="rec-label"><div class="rec-name">'+item.name+'</div><div class="rec-note">'+item.note+'</div></div>'+
-        (item.auto?'<div class="rec-auto-badge">자동</div>':'');
-      if(!item.auto){
-        div.addEventListener('click', function(){
-          const r=loadRec();
-          if(!r[selKey]) r[selKey]={};
-          r[selKey][item.id]=!r[selKey][item.id];
-          saveRec(r);
-          renderRecord();
-        });
-      } else {
-        div.style.cursor='default';
-      }
-      wrap.appendChild(div);
+    ROUTINES.forEach(routine=>{
+      const head=document.createElement('div');
+      head.className='rec-section-title';
+      head.style.marginTop='18px';
+      head.textContent=routine.title;
+      wrap.appendChild(head);
+      routine.items.forEach(item=>{
+        let on;
+        if(item.auto) on=exDone;
+        else on=!!today[item.id];
+        const div=document.createElement('div');
+        div.className='rec-item'+(on?' on':'');
+        div.innerHTML=
+          '<div class="rec-check">'+(on?'✓':'')+'</div>'+
+          '<div class="rec-label"><div class="rec-name">'+item.name+'</div>'+(item.note?'<div class="rec-note">'+item.note+'</div>':'')+'</div>'+
+          (item.auto?'<div class="rec-auto-badge">자동</div>':'');
+        if(!item.auto){
+          div.addEventListener('click', function(){
+            const r=loadRec();
+            if(!r[selKey]) r[selKey]={};
+            r[selKey][item.id]=!r[selKey][item.id];
+            saveRec(r);
+            renderRecord();
+          });
+        } else {
+          div.style.cursor='default';
+        }
+        wrap.appendChild(div);
+      });
     });
   }
 
@@ -2423,24 +2447,27 @@ renderExAlt();
     box.innerHTML='';
     const dm=displayMonth(t);
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
-    const counts={exercise:0, reading:0, guitar:0, drum:0, english:0, ledger:0, invest:0, business:0};
+    const counts={};
+    ALL_ITEMS.forEach(item=>{ counts[item.id]=0; });
     for(let d=1; d<=daysInMonth; d++){
       const k=dkey(dm.y, dm.m, d);
       if(k<START_DATE) continue;
-      if(exerciseDoneOn(k, kb)) counts.exercise++;
       const day=rec[k]||{};
-      if(day.reading) counts.reading++;
-      if(day.guitar) counts.guitar++;
-      if(day.drum) counts.drum++;
-      if(day.english) counts.english++;
-      if(day.ledger) counts.ledger++;
-      if(day.invest) counts.invest++;
-      if(day.business) counts.business++;
+      ALL_ITEMS.forEach(item=>{
+        if(item.auto){ if(exerciseDoneOn(k, kb)) counts[item.id]++; }
+        else if(day[item.id]) counts[item.id]++;
+      });
     }
-    ITEMS.forEach(item=>{
-      const el=document.createElement('div'); el.className='rec-mstat';
-      el.innerHTML='<div class="n">'+counts[item.id]+'</div><div class="l">'+item.short+'</div>';
-      box.appendChild(el);
+    ROUTINES.forEach(routine=>{
+      const head=document.createElement('div');
+      head.style.cssText='grid-column:1/-1;font-size:11px;color:var(--muted);margin:8px 0 2px;';
+      head.textContent=routine.title;
+      box.appendChild(head);
+      routine.items.forEach(item=>{
+        const el=document.createElement('div'); el.className='rec-mstat';
+        el.innerHTML='<div class="n">'+counts[item.id]+'</div><div class="l">'+item.short+'</div>';
+        box.appendChild(el);
+      });
     });
   }
 
@@ -2453,8 +2480,8 @@ renderExAlt();
     let totalActiveDays=0;
     allDates.forEach(k=>{
       const day=rec[k]||{};
-      const ex=exerciseDoneOn(k, kb);
-      if(ex||day.reading||day.guitar||day.drum||day.english||day.ledger||day.invest||day.business) totalActiveDays++;
+      const anyDone=ALL_ITEMS.some(item=> item.auto ? exerciseDoneOn(k, kb) : !!day[item.id]);
+      if(anyDone) totalActiveDays++;
     });
     const sp=START_DATE.split('-').map(Number);
     const start=new Date(sp[0], sp[1]-1, sp[2]);
@@ -2490,6 +2517,7 @@ renderExAlt();
     grid.innerHTML='';
     const firstDow=new Date(dm.y, dm.m-1, 1).getDay();
     const daysInMonth=new Date(dm.y, dm.m, 0).getDate();
+    const total=ALL_ITEMS.length;
     for(let i=0; i<firstDow; i++){
       const e=document.createElement('div'); e.className='rec-day empty'; grid.appendChild(e);
     }
@@ -2503,16 +2531,11 @@ renderExAlt();
       } else {
         const day=rec[k]||{};
         let cnt=0;
-        if(exerciseDoneOn(k, kb)) cnt++;
-        if(day.reading) cnt++;
-        if(day.guitar) cnt++;
-        if(day.drum) cnt++;
-        if(day.english) cnt++;
-        if(day.ledger) cnt++;
-        if(day.invest) cnt++;
-        if(day.business) cnt++;
-        // scale 0-8 counts onto the existing 5-step color ramp
-        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/8));
+        ALL_ITEMS.forEach(item=>{
+          if(item.auto){ if(exerciseDoneOn(k, kb)) cnt++; }
+          else if(day[item.id]) cnt++;
+        });
+        const step=cnt===0?0:Math.max(1, Math.round(cnt*5/total));
         el.className='rec-day'+(step>0?(' d'+step):'')+(k===t.key?' today':'')+(k===recSelKey?' today':'');
         el.style.cursor='pointer';
         el.addEventListener('click', function(){
