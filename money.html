@@ -1246,9 +1246,13 @@ function renderDeductions() {
 
   bars.forEach(b => {
     const pct = Math.min(100, (b.amount / b.limit) * 100);
-    document.getElementById(b.bar).style.width = pct + '%';
-    document.getElementById(b.bar).classList.toggle('over', b.amount > b.limit);
-    document.getElementById(b.num).textContent = fmt(b.amount);
+    const barEl = document.getElementById(b.bar);
+    const numEl = document.getElementById(b.num);
+    if (barEl) {
+      barEl.style.width = pct + '%';
+      barEl.classList.toggle('over', b.amount > b.limit);
+    }
+    if (numEl) numEl.textContent = fmt(b.amount);
   });
 
   // 절세 효과 계산
@@ -1258,15 +1262,19 @@ function renderDeductions() {
   totalSavings += Math.min(irpAmount, 3000000) * 0.12;      // IRP 세액공제 12%
   totalSavings *= 1.1; // 지방세 10% 추가
 
-  document.getElementById('taxSavings').textContent = fmt(totalSavings);
+  const taxSavingsEl = document.getElementById('taxSavings');
+  if (taxSavingsEl) taxSavingsEl.textContent = fmt(totalSavings);
 
   let taxReserveTotal = 0;
   Object.keys(state.records).forEach(m => {
     if (m.startsWith('2026')) taxReserveTotal += TAX_RESERVE;
   });
-  document.getElementById('taxReserve').textContent = fmt(taxReserveTotal);
-  document.getElementById('cumTaxSaving').textContent = fmt(totalSavings);
-  document.getElementById('cumYield').textContent = '0';
+  const taxReserveEl = document.getElementById('taxReserve');
+  if (taxReserveEl) taxReserveEl.textContent = fmt(taxReserveTotal);
+  const cumTaxEl = document.getElementById('cumTaxSaving');
+  if (cumTaxEl) cumTaxEl.textContent = fmt(totalSavings);
+  const cumYieldEl = document.getElementById('cumYield');
+  if (cumYieldEl) cumYieldEl.textContent = '0';
 }
 
 function renderTrend() {
