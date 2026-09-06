@@ -809,7 +809,8 @@ function loadState() {
     const s = localStorage.getItem(STORAGE_KEY);
     if (s) state = { ...state, ...JSON.parse(s) };
   } catch(e) { console.error(e); }
-  if (!state.currentMonth) {
+  // 앱을 열 때는 항상 "실제 오늘 달"을 현재 달로 (저장된 옛날 달이 남아있어도 갱신)
+  {
     const now = new Date();
     state.currentMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   }
@@ -1843,8 +1844,12 @@ document.getElementById('quickSubmit').addEventListener('click', () => {
   const amount = parseFloat(document.getElementById('quickAmount').value);
   if (isNaN(amount) || amount <= 0) { showToast('금액을 입력하세요'); return; }
 
-  const r = getRecord();
-  const entry = { date: todayStr(), amount: Math.round(amount), cma: Math.round(amount * CMA_RATIO) };
+  // 오늘 날짜와 그 달 (currentMonth가 뭐든 오늘 기준으로 저장)
+  const today = todayStr();
+  const todayMonth = today.slice(0, 7);
+  state.currentMonth = todayMonth;
+  const r = getRecord(todayMonth);
+  const entry = { date: today, amount: Math.round(amount), cma: Math.round(amount * CMA_RATIO) };
 
   if (quickType === 'academy') {
     r.revenue_days.push(entry);
