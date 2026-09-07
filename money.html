@@ -865,6 +865,9 @@ function getRecord(month = state.currentMonth) {
   if (!rec.personal_fixed) rec.personal_fixed = [];
   if (!rec.personal_var) rec.personal_var = [];
   if (rec.fun_total === undefined) rec.fun_total = 0;
+  if (!rec.kb_tx_ids) rec.kb_tx_ids = [];
+  if (!rec.kb_unclassified) rec.kb_unclassified = [];
+  if (rec.kb_fixed_initialized === undefined) rec.kb_fixed_initialized = false;
   return rec;
 }
 
@@ -1481,6 +1484,7 @@ function renderAll() {
   renderPersonal();
   renderJournal();
   renderInvestMonth();
+  renderUnclassified();
 }
 
 // 이벤트
@@ -1554,19 +1558,40 @@ document.getElementById('kbParseBtn').addEventListener('click', () => {
   if (txs.length === 0) { showToast('인식된 거래가 없어요'); return; }
 
   const r = getRecord();
-  // 초기화
-  r.var_costs = [];
-  r.personal_var = [];
-  r.fun_total = 0;
+  // 기존 데이터 유지 (초기화 안 함) - 여러 번 나눠 붙여넣어도 누적되게
+  if (!r.var_costs) r.var_costs = [];
+  if (!r.personal_var) r.personal_var = [];
+  if (r.fun_total === undefined) r.fun_total = 0;
+  if (!r.kb_tx_ids) r.kb_tx_ids = [];  // 중복 방지용 서명 목록
+  if (!r.kb_unclassified) r.kb_unclassified = [];  // 미분류는 상태에 저장해 유지
+
+  // 이 달에 처음 붙여넣는 거면, 고정비 항목을 전부 0으로 세팅
+  // → 국민은행에 실제로 있는 것만 이후 로직에서 그 위에 더해짐
+  // → 이번 달에 안 나간 고정비는 0으로 남아 "제외"됨 (예산 기본값 안 보임)
+  if (!r.kb_fixed_initialized) {
+    ACAD_BUDGET.forEach(b => {
+      if (b.id === 'whtax' || b.id === 'whtax_loc') return; // 자동계산 항목은 제외
+      if (r.acad_actual[b.id] === undefined) r.acad_actual[b.id] = 0;
+    });
+    LIFE_BUDGET.forEach(b => {
+      if (r.life_actual[b.id] === undefined) r.life_actual[b.id] = 0;
+    });
+    r.kb_fixed_initialized = true;
+  }
+
   const newAcadActual = {};
   const newLifeActual = {};
-  pendingUnclassified = [];
 
-  let cAcadF=0, cAcadV=0, cLifeF=0, cLifeV=0, cFun=0, cSkip=0, cUnc=0;
+  let cAcadF=0, cAcadV=0, cLifeF=0, cLifeV=0, cFun=0, cSkip=0, cUnc=0, cDup=0;
 
   txs.forEach(tx => {
+    // 중복 확인용 서명 (같은 거래를 두 번 붙여넣어도 중복 안 되게)
+    const sig = `${tx.date}|${tx.bonaen}|${tx.memo}|${tx.amount}`;
+    if (r.kb_tx_ids.includes(sig)) { cDup++; return; }
+
     const c = classifyTx(tx);
-    if (c.cat === 'skip') { cSkip++; return; }
+    if (c.cat === 'skip') { r.kb_tx_ids.push(sig); return; }
+
     if (c.cat === 'acad_fixed') {
       const matched = ACAD_BUDGET.find(b => b.name === c.name);
       if (matched) newAcadActual[matched.id] = (newAcadActual[matched.id]||0) + c.amount;
@@ -1584,12 +1609,16 @@ document.getElementById('kbParseBtn').addEventListener('click', () => {
     } else if (c.cat === 'fun') {
       r.fun_total += c.amount; cFun++;
     } else if (c.cat === 'unclassified') {
-      pendingUnclassified.push(c); cUnc++;
+      r.kb_unclassified.push(c); cUnc++;
     }
+    r.kb_tx_ids.push(sig);
   });
 
-  Object.keys(newAcadActual).forEach(id => { r.acad_actual[id] = newAcadActual[id]; });
-  Object.keys(newLifeActual).forEach(id => { r.life_actual[id] = newLifeActual[id]; });
+  // 고정비는 기존 값에 "더함" (덮어쓰기 아님) - 여러 번 나눠 붙여넣어도 누적
+  Object.keys(newAcadActual).forEach(id => { r.acad_actual[id] = (r.acad_actual[id]||0) + newAcadActual[id]; });
+  Object.keys(newLifeActual).forEach(id => { r.life_actual[id] = (r.life_actual[id]||0) + newLifeActual[id]; });
+
+  pendingUnclassified = r.kb_unclassified;
 
   saveState();
   renderBudgetList('academy');
@@ -1598,10 +1627,13 @@ document.getElementById('kbParseBtn').addEventListener('click', () => {
   renderPersonal();
   renderUnclassified();
   document.getElementById('kbPaste').value = '';
-  showToast(`분류 완료 · 미분류 ${cUnc}건`);
+  const dupMsg = cDup > 0 ? ` · 중복 ${cDup}건 제외` : '';
+  showToast(`분류 완료 · 미분류 ${cUnc}건${dupMsg}`);
 });
 
 function renderUnclassified() {
+  const r = getRecord();
+  pendingUnclassified = r.kb_unclassified || [];
   const card = document.getElementById('unclassifiedCard');
   const list = document.getElementById('unclassifiedList');
   if (pendingUnclassified.length === 0) {
@@ -1634,6 +1666,7 @@ window.classifyUnc = function(idx, cat) {
   else if (cat === 'fun') r.fun_total += u.amount;
   // skip은 그냥 제거
   pendingUnclassified.splice(idx, 1);
+  r.kb_unclassified = pendingUnclassified;  // 상태에도 반영해 유지되게
   saveState();
   renderVarCosts();
   renderPersonal();
