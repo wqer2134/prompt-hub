@@ -516,7 +516,7 @@
 
   <div class="card">
     <div class="card-title"><em>학원</em> 고정비</div>
-    <div class="card-sub">엑셀 업로드 또는 직접 수정 · 강사료 넣으면 원천세 자동</div>
+    <div class="card-sub">국민은행 붙여넣기 또는 직접 수정 · 실제 낸 금액 그대로</div>
     <div class="variance-grid header">
       <div>항목</div><div>금액 (원)</div><div>변화</div>
     </div>
@@ -757,8 +757,8 @@ const CLASSES = [
 const ACAD_BUDGET = [
   { id: 'salary',    name: '강사료',       amount: 6450000 },
   { id: 'aca_rent',  name: '학원 월세',    amount: 1550000 },
-  { id: 'whtax',     name: '원천세 (국세)',  amount: 223700 },
-  { id: 'whtax_loc', name: '지방소득세',     amount: 22340 },
+  { id: 'whtax',     name: '원천세',        amount: 223700 },
+  { id: 'whtax_loc', name: '지방세',   aliases: ['지방소득세'], amount: 22340 },
   { id: 'aca_mgmt',  name: '학원 관리비',  amount: 150000 },
   { id: 'aca_elec',  name: '학원 전기세',  amount: 200000 },
   { id: 'ad',        name: '광고비',       amount: 400000 },
@@ -833,15 +833,9 @@ function saveState() {
   showToast('저장됨');
 }
 
-// 학원 고정비 합계 - 강사료 기반 원천세/지방세 자동 반영
+// 학원 고정비 합계 - 실제 붙여넣은 값 사용 (원천세/지방세도 매달 실제값, 자동계산 안 함)
 function getAcadFixedTotal(r) {
-  const salaryActual = r.acad_actual['salary'];
-  const salary = salaryActual !== undefined ? salaryActual : 6450000;
-  const autoWhTax = Math.round(salary * 0.03);
-  const autoLocTax = Math.round(autoWhTax * 0.10);
   return ACAD_BUDGET.reduce((s,b) => {
-    if (b.id === 'whtax') return s + autoWhTax;
-    if (b.id === 'whtax_loc') return s + autoLocTax;
     const a = r.acad_actual[b.id];
     return s + (a !== undefined ? a : b.amount);
   }, 0);
@@ -973,28 +967,7 @@ function renderBudgetList(type) {
   const actualKey = type === 'academy' ? 'acad_actual' : 'life_actual';
   const container = document.getElementById(containerId);
 
-  // 학원이면 강사료 기반 원천세/지방세 자동 계산
-  let autoWhTax = 0, autoLocTax = 0;
-  if (type === 'academy') {
-    const salaryActual = r.acad_actual['salary'];
-    const salary = salaryActual !== undefined ? salaryActual : 6450000;
-    autoWhTax = Math.round(salary * 0.03);
-    autoLocTax = Math.round(autoWhTax * 0.10);
-  }
-
   container.innerHTML = BUDGET.map(b => {
-    // 학원의 원천세/지방세는 자동 계산값으로 표시(입력 불가)
-    if (type === 'academy' && (b.id === 'whtax' || b.id === 'whtax_loc')) {
-      const value = b.id === 'whtax' ? autoWhTax : autoLocTax;
-      return `
-        <div class="variance-grid">
-          <div class="variance-name">${b.name}</div>
-          <div class="variance-num num-mono" style="opacity:0.85;">${value.toLocaleString('ko-KR')}</div>
-          <div class="variance-diff zero">자동</div>
-        </div>
-      `;
-    }
-
     const actual = r[actualKey][b.id];
     const value = actual !== undefined ? actual : b.amount;
     const diff = actual !== undefined ? (actual - b.amount) : 0;
@@ -1015,11 +988,8 @@ function renderBudgetList(type) {
     `;
   }).join('');
 
-  // 합계 계산
+  // 합계 계산 - 실제 붙여넣은 값 기준 (원천세/지방세도 매달 실제값)
   const total = BUDGET.reduce((s,b) => {
-    // 학원의 원천세/지방세는 자동 계산값
-    if (type === 'academy' && b.id === 'whtax') return s + autoWhTax;
-    if (type === 'academy' && b.id === 'whtax_loc') return s + autoLocTax;
     const a = r[actualKey][b.id];
     return s + (a !== undefined ? a : b.amount);
   }, 0);
@@ -1570,7 +1540,6 @@ document.getElementById('kbParseBtn').addEventListener('click', () => {
   // → 이번 달에 안 나간 고정비는 0으로 남아 "제외"됨 (예산 기본값 안 보임)
   if (!r.kb_fixed_initialized) {
     ACAD_BUDGET.forEach(b => {
-      if (b.id === 'whtax' || b.id === 'whtax_loc') return; // 자동계산 항목은 제외
       if (r.acad_actual[b.id] === undefined) r.acad_actual[b.id] = 0;
     });
     LIFE_BUDGET.forEach(b => {
@@ -1593,14 +1562,14 @@ document.getElementById('kbParseBtn').addEventListener('click', () => {
     if (c.cat === 'skip') { r.kb_tx_ids.push(sig); return; }
 
     if (c.cat === 'acad_fixed') {
-      const matched = ACAD_BUDGET.find(b => b.name === c.name);
+      const matched = ACAD_BUDGET.find(b => b.name === c.name || (b.aliases && b.aliases.includes(c.name)));
       if (matched) newAcadActual[matched.id] = (newAcadActual[matched.id]||0) + c.amount;
       else r.var_costs.push({ name: c.name, amount: c.amount });
       cAcadF++;
     } else if (c.cat === 'acad_var') {
       r.var_costs.push({ name: c.name, amount: c.amount }); cAcadV++;
     } else if (c.cat === 'life_fixed') {
-      const matched = LIFE_BUDGET.find(b => b.name === c.name);
+      const matched = LIFE_BUDGET.find(b => b.name === c.name || (b.aliases && b.aliases.includes(c.name)));
       if (matched) newLifeActual[matched.id] = (newLifeActual[matched.id]||0) + c.amount;
       else r.personal_var.push({ name: c.name, amount: c.amount });
       cLifeF++;
