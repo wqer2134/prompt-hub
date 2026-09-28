@@ -228,6 +228,10 @@
   .unc-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
   .unc-btn.skip:hover { background: var(--text-3); border-color: var(--text-3); }
 
+  .memo-ref-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .memo-ref-chip { padding: 9px 14px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 20px; font-size: 13px; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--sans); }
+  .memo-ref-chip:active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
   /* 투자 기록 장부 */
   .rec-write { background: linear-gradient(160deg, rgba(212,165,116,0.06) 0%, var(--bg-card) 100%); border: 1px solid rgba(212,165,116,0.15); }
   .jrnl-entry { background: var(--bg-card); border: 1px solid var(--line-soft); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
@@ -504,6 +508,20 @@
     <textarea id="kbPaste" placeholder="국민은행 앱에서 거래내역을 복사해서 여기 붙여넣으세요" style="width:100%;min-height:120px;background:var(--bg-2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;font-family:var(--mono);font-size:13px;outline:none;resize:vertical;margin-bottom:10px;line-height:1.5;"></textarea>
     <button class="btn full" id="kbParseBtn" style="width:100%;padding:15px;">📥 분석해서 넣기</button>
     <div class="help">메모에 <strong>(학원 고정) (학원 변동) (생활 고정) (생활 변동) (용돈)</strong>을 넣으면 자동 분류돼요. 입금·CMA는 자동 제외. 메모 없는 카드결제는 <strong>미분류</strong>로 모여서 아래에서 버튼으로 분류할 수 있어요.</div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(160deg, rgba(217,185,110,0.06) 0%, var(--bg-card) 100%); border-color: rgba(217,185,110,0.2);">
+    <div class="card-title"><em>메모</em> 형식 참고</div>
+    <div class="card-sub">눌러서 복사 → 국민은행 메모에 붙여넣기 (오타 방지)</div>
+
+    <div class="rec-field-label" style="margin-bottom:8px;">학원 고정비</div>
+    <div id="memoRefAcad" class="memo-ref-list"></div>
+
+    <div class="rec-field-label" style="margin:16px 0 8px;">생활 고정비</div>
+    <div id="memoRefLife" class="memo-ref-list"></div>
+
+    <div class="rec-field-label" style="margin:16px 0 8px;">기타 태그 · 항목명 뒤에 붙이기</div>
+    <div id="memoRefOther" class="memo-ref-list"></div>
   </div>
 
   <div class="card" id="unclassifiedCard" style="display:none; background:linear-gradient(160deg, rgba(217,141,128,0.06) 0%, var(--bg-card) 100%); border-color: rgba(217,141,128,0.2);">
@@ -1370,6 +1388,59 @@ function escapeHtml(s) {
   return div.innerHTML;
 }
 
+// 클립보드 복사 (구형 환경 대비 폴백 포함)
+function copyToClipboard(text) {
+  const onDone = () => showToast(`복사됨: ${text}`);
+  const onFail = () => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      onDone();
+    } catch (e) { showToast('복사 실패 — 직접 입력해주세요'); }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onDone).catch(onFail);
+  } else {
+    onFail();
+  }
+}
+
+// 메모 형식 참고 칩 렌더 (고정 목록이라 한 번만 그려도 됨)
+function renderMemoRef() {
+  const acadEl = document.getElementById('memoRefAcad');
+  const lifeEl = document.getElementById('memoRefLife');
+  const otherEl = document.getElementById('memoRefOther');
+  if (!acadEl || !lifeEl || !otherEl) return;
+
+  acadEl.innerHTML = ACAD_BUDGET.map(b =>
+    `<button type="button" class="memo-ref-chip" data-copy="${escapeHtml(b.name + '(학원 고정)')}">${escapeHtml(b.name)}</button>`
+  ).join('');
+
+  lifeEl.innerHTML = LIFE_BUDGET.map(b =>
+    `<button type="button" class="memo-ref-chip" data-copy="${escapeHtml(b.name + '(생활 고정)')}">${escapeHtml(b.name)}</button>`
+  ).join('');
+
+  const others = [
+    { label: '학원 변동', copy: '(학원 변동)' },
+    { label: '생활 변동', copy: '(생활 변동)' },
+    { label: '용돈', copy: '용돈' },
+    { label: 'CMA', copy: 'cma' },
+  ];
+  otherEl.innerHTML = others.map(o =>
+    `<button type="button" class="memo-ref-chip" data-copy="${escapeHtml(o.copy)}">${escapeHtml(o.label)}</button>`
+  ).join('');
+
+  document.querySelectorAll('.memo-ref-chip').forEach(btn => {
+    btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy));
+  });
+}
+
 window.deleteDiary = function(idx) {
   if (!confirm('이 기록을 삭제할까요?')) return;
   state.diary.splice(idx, 1);
@@ -2124,6 +2195,7 @@ document.getElementById('restoreFile').addEventListener('change', (e) => {
 loadState();
 renderAll();
 initQuickOverlay();
+renderMemoRef();
 // 투자 기록 날짜 기본값
 (function(){ const jd = document.getElementById('jrnlDate'); if (jd) jd.value = todayStr(); })();
 </script>
