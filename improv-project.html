@@ -1,0 +1,839 @@
+<title>즉흥연주 10년 프로젝트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 폰 우선 한 열. 하단 탭 3개(오늘 · 로드맵 · 코드). 글씨는 전부 고대비, 터치 영역은 크게. */
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --line: #D2CDC4;
+  --edge: #14120F;
+  --fg: #14120F;
+  --muted: #423D36;
+  --accent: #FFA726;
+  --accent-ink: #8F4B00;
+  --accent-soft: #FFF0D6;
+  --done: #857E73;
+  --font-display: "Bebas Neue", "Oswald", Impact, sans-serif;
+  --font-body: "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12110F; --surface: #1C1A17; --line: #4A453D; --edge: #F7F3EC; --fg: #F7F3EC; --muted: #DAD3C7;
+    --accent: #FFB347; --accent-ink: #FFB347; --accent-soft: #3A2B10; --done: #9A9385; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12110F; --surface: #1C1A17; --line: #4A453D; --edge: #F7F3EC; --fg: #F7F3EC; --muted: #DAD3C7;
+  --accent: #FFB347; --accent-ink: #FFB347; --accent-soft: #3A2B10; --done: #9A9385; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+  padding-inline: 16px; padding-block: 22px 96px; }
+.wrap { max-width: 680px; margin-inline: auto; display: flex; flex-direction: column; gap: 32px; }
+.eyebrow { font-family: var(--font-display); letter-spacing: .2em; font-size: 16px; color: var(--accent-ink); }
+h1 { margin: 2px 0 4px; font-size: 28px; line-height: 1.25; font-weight: 900; text-wrap: balance; }
+h1 b { color: var(--accent); font-family: var(--font-display); font-weight: 400; font-size: 1.25em; letter-spacing: .02em; }
+.sub { color: var(--muted); margin: 0; }
+h2 { margin: 0 0 6px; font-size: 22px; font-weight: 900; text-wrap: balance; }
+h2 small { display: block; font-size: 14px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+h3 { margin: 22px 0 8px; font-size: 17px; font-weight: 700; }
+.sec-note { margin: 0 0 14px; color: var(--muted); }
+.legend { font-size: 14px; color: var(--muted); margin: 8px 0 0; }
+button { font: inherit; }
+button:focus-visible, input:focus-visible, summary:focus-visible, .row:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 하단 탭 */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs button { appearance: none; background: none; border: 0; padding: 10px 4px 12px; cursor: pointer; color: var(--muted);
+  display: flex; flex-direction: column; align-items: center; gap: 0; border-top: 3px solid transparent; margin-top: -1px; }
+.tabs .en { font-family: var(--font-display); letter-spacing: .14em; font-size: 15px; line-height: 1.2; }
+.tabs .ko { font-weight: 700; font-size: 15px; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-top-color: var(--accent); }
+.tabs button[aria-selected="true"] .en { color: var(--accent-ink); }
+.panel[hidden] { display: none; }
+.panel { display: flex; flex-direction: column; gap: 28px; }
+
+/* 오늘 */
+.week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.day { appearance: none; color: var(--fg); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 2px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.day .en { font-family: var(--font-display); letter-spacing: .12em; font-size: 16px; }
+.day .dt { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.day .bar { width: 70%; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 4px; }
+.day .bar i { display: block; height: 100%; background: var(--accent); width: 0; }
+.day[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.day.today .dt::after { content: " 오늘"; color: var(--accent-ink); font-weight: 700; }
+.day:disabled { opacity: .4; cursor: default; }
+#stageName { font-weight: 900; font-size: 17px; }
+.rest { margin: 0; padding: 12px 14px; border-radius: 8px; background: var(--accent-soft); font-weight: 700; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 14px; display: flex; flex-direction: column; gap: 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.card-head h2 { margin: 0; font-size: 19px; }
+.card-head h2 span { color: var(--accent-ink); font-family: var(--font-display); letter-spacing: .1em; font-size: 22px; margin-right: 6px; }
+.count { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
+.meter { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+.done-msg { margin: 0; font-weight: 700; color: var(--accent-ink); min-height: 1.6em; }
+
+.panelbox { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: var(--accent-soft); border-radius: 8px; }
+.panelbox .lab { font-size: 14px; color: var(--muted); font-weight: 500; }
+.panelbox p { margin: 0; font-weight: 500; }
+.panelbox p.lab { font-weight: 400; font-size: 13px; }
+.keyline { display: flex; align-items: center; gap: 14px; }
+.bigkey { font-family: var(--font-display); font-size: 44px; line-height: 1; letter-spacing: .04em; color: var(--accent-ink); min-width: 76px; text-align: center; }
+.step { min-width: 48px; min-height: 44px; font-size: 16px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pills button { min-height: 40px; font-weight: 700; font-size: 15px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 14px; cursor: pointer; }
+.pills button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #1F1C18; }
+
+.toggle { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px dashed var(--line); border-radius: 8px; cursor: pointer; }
+.toggle input { width: 22px; height: 22px; accent-color: var(--accent); flex: none; }
+.toggle small { color: var(--muted); display: block; line-height: 1.45; }
+
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 16px 2px; border-top: 1px solid var(--line); cursor: pointer; align-items: start; }
+.row:first-child { border-top: 0; }
+.row input { width: 26px; height: 26px; margin: 1px 0 0; accent-color: var(--accent); cursor: pointer; }
+.time { font-family: var(--font-display); letter-spacing: .1em; font-size: 17px; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+.what { font-weight: 700; }
+.ok { display: block; font-size: 14px; color: var(--muted); line-height: 1.45; }
+.row.checked .what { color: var(--done); text-decoration: line-through; }
+.row.checked .ok, .row.checked .time { color: var(--done); }
+.row.skipped { opacity: .45; }
+
+.note { display: flex; flex-direction: column; gap: 8px; }
+.note label { font-weight: 700; font-size: 14px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { min-height: 40px; font-size: 14px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
+.note input[type="text"] { font: inherit; width: 100%; min-height: 46px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.total { margin: 0; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.total b { color: var(--fg); }
+.reset { align-self: flex-start; font-size: 14px; color: var(--muted); background: none; border: 0; padding: 8px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+details.rules { border-top: 1px solid var(--line); padding-top: 16px; }
+details.rules summary { cursor: pointer; font-weight: 700; font-size: 16px; }
+.rules ol { margin: 8px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.rules li::marker { color: var(--accent-ink); font-weight: 700; }
+.rules p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+
+/* 로드맵 */
+.blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.blocks li { background: var(--accent-soft); border-radius: 8px; padding: 12px 12px; min-width: 0; }
+.blocks .m { font-family: var(--font-display); font-size: 28px; letter-spacing: .06em; color: var(--accent-ink); display: block; line-height: 1.1; }
+.blocks .t { font-weight: 700; display: block; line-height: 1.35; }
+.blocks .s { display: block; font-size: 13px; color: var(--muted); line-height: 1.45; margin-top: 4px; }
+.rulelist { margin: 14px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.rulelist li::marker { color: var(--accent-ink); font-weight: 700; }
+
+.years { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 10px; }
+.year { border: 1.5px solid var(--line); border-radius: 10px; padding: 14px 14px; background: var(--surface); }
+.year.now { border-color: var(--accent); background: var(--accent-soft); }
+.year .tag { font-family: var(--font-display); letter-spacing: .14em; font-size: 18px; color: var(--accent-ink); }
+.year .tag span { color: var(--muted); font-family: var(--font-body); letter-spacing: 0; font-size: 13px; margin-left: 8px; }
+.year h3 { margin: 2px 0 4px; font-size: 19px; }
+.year p { margin: 0 0 6px; font-size: 15px; }
+.year .kv { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.55; }
+.year .kv b { color: var(--fg); }
+
+.stages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.stage { border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.stage .wk { font-family: var(--font-display); letter-spacing: .12em; font-size: 18px; color: var(--accent-ink); }
+.stage h3 { margin: 0 0 2px; font-size: 18px; }
+.stage p { margin: 0; font-size: 15px; }
+.stage .sm { color: var(--muted); font-size: 14px; }
+
+.rows { border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.r { padding: 10px 14px; border-top: 1px solid var(--line); }
+.r:first-child { border-top: 0; }
+.r .h { font-weight: 900; }
+.r .h span { font-weight: 500; color: var(--accent-ink); margin-left: 8px; font-size: 14px; }
+.r .d { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.r .d.k { color: var(--fg); }
+
+/* 코드 */
+.chart { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 2px solid var(--edge); border-radius: 8px; overflow: hidden; margin: 6px 0 4px; }
+.chart.two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 320px; }
+.cm { padding: 10px 4px 8px; text-align: center; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-weight: 900; font-size: 17px; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+.chart > .cm:nth-child(4n) { border-right: 0; }
+.chart > .cm:nth-last-child(-n+4) { border-bottom: 0; }
+.chart.two > .cm:nth-child(4n) { border-right: 1px solid var(--line); }
+.chart.two > .cm:nth-child(2n) { border-right: 0; }
+.chart.two > .cm:nth-last-child(-n+4) { border-bottom: 1px solid var(--line); }
+.chart.two > .cm:nth-last-child(-n+2) { border-bottom: 0; }
+.cm small { display: block; font-weight: 500; font-size: 11.5px; color: var(--muted); margin-top: 1px; line-height: 1.3; }
+.cm.hot { background: var(--accent-soft); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 13px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+.tip { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; margin: 14px 0 0; }
+.tip b { color: var(--accent-ink); }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (min-width: 560px) { .years { grid-template-columns: 1fr 1fr; } .blocks { grid-template-columns: repeat(4, 1fr); } h1 { font-size: 34px; } }
+@media (prefers-reduced-motion: reduce) { .meter i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">IMPROVISATION · 10 YEAR PLAN</div>
+    <h1>즉흥연주 <b>10</b>년 프로젝트</h1>
+    <p class="sub">2026년 10월 1일 시작 · 월~금, 하루 60분. 토·일은 쉽니다. 결과가 아니라 시간을 채우면 성공입니다.</p>
+  </header>
+
+  <!-- ============ 오늘 ============ -->
+  <section class="panel" id="p-today" role="tabpanel">
+    <p class="rest" id="rest" hidden>오늘은 쉬는 날입니다. 월요일에 이어서 합니다.</p>
+    <div class="week" id="week" role="group" aria-label="요일 선택"></div>
+
+    <div class="card" aria-live="polite">
+      <div class="card-head">
+        <h2 id="dayTitle"></h2>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+      <p class="done-msg" id="doneMsg"></p>
+
+      <div class="panelbox">
+        <span class="lab" id="weekLab"></span>
+        <div class="keyline">
+          <button type="button" class="step" id="keyPrev" aria-label="이전 주로">◀</button>
+          <b class="bigkey" id="keyName"></b>
+          <button type="button" class="step" id="keyNext" aria-label="다음 주로">▶</button>
+        </div>
+        <p id="stageName"></p>
+        <p id="weekFocus"></p>
+        <p class="lab" id="weekChords"></p>
+        <p class="lab">◀ ▶ 는 주차를 한 주씩 옮깁니다. 평소에는 건드리지 않습니다.</p>
+      </div>
+
+      <label class="toggle" for="minMode">
+        <input type="checkbox" id="minMode">
+        <span>하기 싫은 날 · 최소 버전 30분<small>기초 15분 + 즉흥 15분만 하면 그날은 한 것으로 칩니다.</small></span>
+      </label>
+
+      <ul class="list" id="list"></ul>
+
+      <div class="note">
+        <label for="noteInput">오늘 한 줄 기록</label>
+        <div class="chips">
+          <button type="button" class="chip" data-fill="오늘 건진 것: ">오늘 건진 것</button>
+          <button type="button" class="chip" data-fill="오늘은 시간을 채웠다">시간을 채웠다</button>
+        </div>
+        <input type="text" id="noteInput" placeholder="예: 오늘 건진 것: 3rd로 끝나는 2마디" autocomplete="off">
+      </div>
+
+      <p class="total">지금까지 끝낸 날 <b id="totalDays">0</b>일</p>
+      <button type="button" class="reset" id="reset">이 날 체크 지우기</button>
+    </div>
+
+    <details class="rules">
+      <summary>이번 주 5일 계획 보기</summary>
+      <div id="weekPlanBody" style="margin-top:12px"></div>
+    </details>
+
+    <details class="rules">
+      <summary>안 되는 날 규칙</summary>
+      <ol>
+        <li>즉흥이 엉망이어도 괜찮습니다. 적어둔 것만 쓰면 그날 즉흥은 끝입니다.</li>
+        <li>솔로가 안 만들어지면 어제 솔로를 다시 연주해서 녹음합니다.</li>
+        <li>15분이 지나면 솔로가 덜 끝났어도 그 상태로 녹음하고 멈춥니다.</li>
+        <li>기록은 "오늘 건진 것"과 "오늘은 시간을 채웠다" 중 하나만 씁니다.</li>
+        <li>못 채운 날은 보충하지 않고 다음 날 그대로 이어갑니다.</li>
+      </ol>
+      <p>4주에 한 번, 첫 주 녹음과 비교해서만 평가합니다. 하루 단위로는 실력이 늘었는지 보이지 않습니다.</p>
+    </details>
+  </section>
+
+  <!-- ============ 로드맵 ============ -->
+  <section class="panel" id="p-road" role="tabpanel" hidden>
+    <div>
+      <h2>매일 60분<small>월~금 고정, 10년 내내 같은 틀</small></h2>
+      <ul class="blocks">
+        <li><span class="m">15</span><span class="t">기초</span><span class="s">블루스 스케일 · 모드 · 코드톤을 모든 키에서. 한 주에 한 키</span></li>
+        <li><span class="m">15</span><span class="t">어프로치 · 타겟</span><span class="s">블루스에서 재즈까지. 악보에 적기</span></li>
+        <li><span class="m">15</span><span class="t">즉흥</span><span class="s">위에서 적은 것만 사용</span></li>
+        <li><span class="m">15</span><span class="t">솔로 녹음</span><span class="s">짧은 솔로를 만들어 15분 안에 끝</span></li>
+      </ul>
+      <ol class="rulelist">
+        <li>기초는 한 주에 한 키만 잡고, 그 주는 매일 같은 순서로 반복합니다. 12주에 12키가 한 바퀴입니다.</li>
+        <li>즉흥은 머리가 복잡해지지 않게, 적어둔 것 안에서만 합니다.</li>
+        <li>4주에 한 번, 첫 주 녹음과 비교합니다. 매일 평가하지 않습니다.</li>
+        <li>토·일은 쉽니다. 연습일 5일이 1주이고, 10월 1일(목)이 1주차 첫날입니다. 그래서 주차는 목요일에 바뀝니다.</li>
+      </ol>
+    </div>
+
+    <div>
+      <h2>10년의 흐름<small>2026년 10월 1일 시작 · 해마다 하나의 질문</small></h2>
+      <p class="sec-note">상세 계획은 그 해 초에 그 해 것만 만듭니다. 아래는 큰 방향입니다.</p>
+      <ol class="years">
+        <li class="year now"><div class="tag">YEAR 1<span>2026.10~</span></div><h3>언어의 기초</h3><p>블루스에서 시작해 2-5-1, 재즈 블루스, 스탠다드까지.</p><p class="kv"><b>기초</b> 12키 × 블루스 스케일 × 모드 5개 × 코드톤 5종, 4바퀴<br><b>결과</b> 스탠다드 3곡과 블루스 3코러스 녹음</p></li>
+        <li class="year"><div class="tag">YEAR 2<span>2027.10~</span></div><h3>어휘 확장</h3><p>12키 전체 2-5-1, 비밥 어휘, 본격 트랜스크립션.</p><p class="kv"><b>기초</b> 9·13·sus 코드톤, 멜로딕 마이너 모드 추가<br><b>적기</b> 카피한 릭과 인클로저 어프로치<br><b>결과</b> 스탠다드 20곡</p></li>
+        <li class="year"><div class="tag">YEAR 3<span>2028.10~</span></div><h3>집시재즈 입문</h3><p>라 폼프, 장고 언어, 아르페지오 시스템, 렘 피치킹.</p><p class="kv"><b>기초</b> 아르페지오·렘 피치킹<br><b>결과</b> 집시재즈 곡 녹음</p></li>
+        <li class="year"><div class="tag">YEAR 4<span>2029.10~</span></div><h3>아웃사이드</h3><p>얼터드·디미니시드·크로매티시즘. 긴장과 해결의 확장.</p><p class="kv"><b>적기</b> 도미넌트 위 아웃사이드 라인<br><b>결과</b> 긴장에서 해결로 끝나는 솔로</p></li>
+        <li class="year"><div class="tag">YEAR 5<span>2030.10~</span></div><h3>스타일 통합</h3><p>집시와 모던의 융합. 안토니 부아예 심층 분석.</p><p class="kv"><b>결과</b> 스탠다드 50곡</p></li>
+        <li class="year"><div class="tag">YEAR 6<span>2031.10~</span></div><h3>리듬의 자유</h3><p>폴리리듬, 메트릭 모듈레이션, 오드미터 위의 즉흥.</p><p class="kv"><b>적기</b> 리듬 프레이즈를 악보에</p></li>
+        <li class="year"><div class="tag">YEAR 7<span>2032.10~</span></div><h3>솔로 기타</h3><p>무반주 즉흥. 코드멜로디를 실시간으로 만드는 해.</p><p class="kv"><b>솔로</b> 무반주 솔로 녹음</p></li>
+        <li class="year"><div class="tag">YEAR 8<span>2033.10~</span></div><h3>작곡적 즉흥</h3><p>모티프 개발과 스토리텔링. 남의 언어를 내 언어로.</p><p class="kv"><b>적기</b> 모티프 발전 설계</p></li>
+        <li class="year"><div class="tag">YEAR 9<span>2034.10~</span></div><h3>무대와 기록</h3><p>공연·녹음·발표. 사람 앞에서 완성되는 연주.</p><p class="kv"><b>결과</b> 공연과 음원</p></li>
+        <li class="year"><div class="tag">YEAR 10<span>2035.10~2036.9</span></div><h3>대가의 해</h3><p>자기 스타일의 완성. 작품을 남기고, 가르침으로 환원.</p><p class="kv"><b>결과</b> 작품집</p></li>
+      </ol>
+    </div>
+
+    <div>
+      <h2>기초 15분<small>블루스 스케일 · 모드 · 코드톤을 모든 키에서</small></h2>
+      <p class="sec-note">한 주에 한 키를 잡고, 그 주는 매일 같은 순서로 반복합니다. 12주에 12키가 한 바퀴이고, 1년에 4바퀴를 돕니다.</p>
+
+      <h3>매일 15분 순서 (그 주의 키에서, 매일 똑같이)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">0~3분<span>블루스 스케일</span></div><div class="d k">한 포지션에서 1분 오르내리기, 1분 3도 간격(1-3, 2-4, 3-5 …), 1분 4음 그룹(1-2-3-4, 2-3-4-5 …). E♭에서 한 박 머물기. 60bpm</div></div>
+        <div class="r"><div class="h">3~9분<span>모드 하나</span></div><div class="d k">오늘 요일의 모드를 코드를 깔아 놓고 6분. 2분 오르내리기, 2분 3음 그룹, 2분 4음 그룹</div></div>
+        <div class="r"><div class="h">9~15분<span>코드톤 5종</span></div><div class="d k">maj7, 7, m7, m7♭5, dim7을 1-3-5-7 오르내리기로 1분씩. 마지막 1분은 3rd·7th만 오가기</div></div>
+      </div>
+
+      <h3>요일별 모드 (코드를 깔아 놓고)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">1일차</div><div class="d k">믹솔리디안 · A7</div></div>
+        <div class="r"><div class="h">2일차</div><div class="d k">도리안 · Am7</div></div>
+        <div class="r"><div class="h">3일차</div><div class="d k">아이오니안 · Amaj7</div></div>
+        <div class="r"><div class="h">4일차</div><div class="d k">프리지안 · Am</div></div>
+        <div class="r"><div class="h">5일차</div><div class="d k">로크리안 · Am7♭5</div></div>
+      </div>
+      <p class="legend">키는 주마다 바뀌고, 위 순서는 매주 그대로입니다. 리디안과 에올리안은 2년차에 더합니다. 블루스 스케일은 한 주 동안 포지션을 하나로 고정하고, 다음 주에 옆 포지션으로 옮깁니다.</p>
+
+      <h3>펜타토닉 · 블루스 스케일 (A 루트 예)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">마이너 펜타토닉<span>1 ♭3 4 5 ♭7</span></div><div class="d k">A C D E G</div></div>
+        <div class="r"><div class="h">블루스 스케일<span>1 ♭3 4 ♭5 5 ♭7</span></div><div class="d k">A C D E♭ E G</div></div>
+      </div>
+
+      <h3>모드 7개 (C 루트 예)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">이오니안<span>maj7</span></div><div class="d">1 2 3 4 5 6 7</div><div class="d k">C D E F G A B</div></div>
+        <div class="r"><div class="h">도리안<span>m7</span></div><div class="d">1 2 ♭3 4 5 6 ♭7</div><div class="d k">C D E♭ F G A B♭</div></div>
+        <div class="r"><div class="h">프리지안<span>m7 (♭9)</span></div><div class="d">1 ♭2 ♭3 4 5 ♭6 ♭7</div><div class="d k">C D♭ E♭ F G A♭ B♭</div></div>
+        <div class="r"><div class="h">리디안<span>maj7 (♯11)</span></div><div class="d">1 2 3 ♯4 5 6 7</div><div class="d k">C D E F♯ G A B</div></div>
+        <div class="r"><div class="h">믹솔리디안<span>7</span></div><div class="d">1 2 3 4 5 6 ♭7</div><div class="d k">C D E F G A B♭</div></div>
+        <div class="r"><div class="h">에올리안<span>m7 (내추럴 마이너)</span></div><div class="d">1 2 ♭3 4 5 ♭6 ♭7</div><div class="d k">C D E♭ F G A♭ B♭</div></div>
+        <div class="r"><div class="h">로크리안<span>m7♭5</span></div><div class="d">1 ♭2 ♭3 4 ♭5 ♭6 ♭7</div><div class="d k">C D♭ E♭ F G♭ A♭ B♭</div></div>
+      </div>
+      <p class="legend">모드는 메이저 스케일의 음을 그대로 두고 시작음만 바꾼 것입니다. 연습할 때는 그 코드를 깔아 놓고 소리를 귀에 넣습니다. 믹솔리디안은 7, 도리안은 m7, 아이오니안·리디안은 maj7, 에올리안·프리지안은 m, 로크리안은 m7♭5 위에서 씁니다.</p>
+
+      <h3>코드톤 5종 (A 루트 예, 이번 주)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">Amaj7<span>1 3 5 7</span></div><div class="d k">A C♯ E G♯</div></div>
+        <div class="r"><div class="h">A7<span>1 3 5 ♭7</span></div><div class="d k">A C♯ E G</div></div>
+        <div class="r"><div class="h">Am7<span>1 ♭3 5 ♭7</span></div><div class="d k">A C E G</div></div>
+        <div class="r"><div class="h">Am7♭5<span>1 ♭3 ♭5 ♭7</span></div><div class="d k">A C E♭ G</div></div>
+        <div class="r"><div class="h">Adim7<span>1 ♭3 ♭5 ♭♭7</span></div><div class="d k">A C E♭ G♭ (C, E♭, G♭에서 시작해도 같은 음)</div></div>
+      </div>
+      <p class="legend">1년차는 블루스 스케일, 모드 5개, 7th 코드 5종을 12키 전부에서 합니다. 9·13·sus는 2년차에 더합니다.</p>
+
+      <h3>12주 한 바퀴 (4도 순환, A부터)</h3>
+      <div class="chart">
+        <div class="cm">A<small>1주</small></div><div class="cm">D<small>2주</small></div><div class="cm">G<small>3주</small></div><div class="cm">C<small>4주</small></div>
+        <div class="cm">F<small>5주</small></div><div class="cm">B♭<small>6주</small></div><div class="cm">E♭<small>7주</small></div><div class="cm">A♭<small>8주</small></div>
+        <div class="cm">D♭<small>9주</small></div><div class="cm">G♭<small>10주</small></div><div class="cm">B<small>11주</small></div><div class="cm">E<small>12주</small></div>
+      </div>
+
+      <h3>바퀴마다 깊어지는 방식</h3>
+      <div class="rows">
+        <div class="r"><div class="h">1바퀴<span>1~12주</span></div><div class="d k">1·2 포지션에서, 60bpm</div></div>
+        <div class="r"><div class="h">2바퀴<span>13~24주</span></div><div class="d k">3·4·5 포지션에서</div></div>
+        <div class="r"><div class="h">3바퀴<span>25~36주</span></div><div class="d k">넥 전체를 포지션 이동으로 이어서</div></div>
+        <div class="r"><div class="h">4바퀴<span>37~48주</span></div><div class="d k">시작 포지션을 아무거나 골라서, 외워서 (눈 감고)</div></div>
+        <div class="r"><div class="h">복습<span>49~52주</span></div><div class="d k">가장 어려웠던 키 4개를 다시</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>1년차 52주<small>블루스에서 재즈로</small></h2>
+      <p class="sec-note">어프로치·타겟 15분과 즉흥·솔로의 진행입니다. 기초 15분은 위의 12주 한 바퀴를 따로 돕니다. 주 수는 제안이며, 익숙해지면 앞당기거나 늘려도 됩니다.</p>
+      <ol class="stages">
+        <li class="stage"><div class="wk">1~8주</div><h3>블루스 A</h3><p class="sm">기본 12마디 · Am 펜타토닉</p><p>루트, 7th, 3rd 순서로 타겟. 블루스 노트(E♭)와 반음 아래 어프로치.</p></li>
+        <li class="stage"><div class="wk">9~16주</div><h3>블루스 E · D · G</h3><p class="sm">퀵체인지 (A, E)</p><p>반음 위 어프로치 추가. 아래·위 두 종류로 같은 타겟에 접근.</p></li>
+        <li class="stage"><div class="wk">17~28주</div><h3>메이저 2-5-1</h3><p class="sm">C F B♭ E♭ A♭ D♭, 키당 2주</p><p>3rd–7th 가이드톤 연결선. 각 코드 타겟에 아래·위 접근.</p></li>
+        <li class="stage"><div class="wk">29~36주</div><h3>마이너 2-5-1</h3><p class="sm">Cm Fm Gm Dm, 키당 2주</p><p>♭9 (A♭) 등 도미넌트 위 타겟, 마이너 가이드톤.</p></li>
+        <li class="stage"><div class="wk">37~44주</div><h3>재즈 블루스 C</h3><p>블루스 안의 2-5(4마디, 8~9마디)와 디미니시드에 타겟 적기.</p></li>
+        <li class="stage"><div class="wk">45~52주</div><h3>스탠다드 3곡</h3><p class="sm">Autumn Leaves, Blue Bossa, Fly Me to the Moon</p><p>곡 진행 위에서 2-5마다 타겟 적기. 연말에 3곡 + 블루스 3코러스 녹음.</p></li>
+      </ol>
+      <details class="rules" style="margin-top:16px"><summary>52주 전체 계획 보기</summary><div id="allWeeks" style="margin-top:12px"></div></details>
+    </div>
+  </section>
+
+  <!-- ============ 코드 ============ -->
+  <section class="panel" id="p-chords" role="tabpanel" hidden>
+    <div>
+      <h2>블루스 코드<small>A 기준, 한 칸이 한 마디</small></h2>
+
+      <h3>A 블루스 스케일 (Am 펜타토닉)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">Am 펜타토닉<span>1 ♭3 4 5 ♭7</span></div><div class="d k">A C D E G</div></div>
+        <div class="r"><div class="h">블루스 스케일<span>펜타토닉 + ♭5</span></div><div class="d k">A C D E♭ E G</div></div>
+        <div class="r"><div class="h">펜타토닉 안의 타겟</div><div class="d k">A7 루트 A · 7th G</div><div class="d k">D7 루트 D · 7th C</div><div class="d k">E7 루트 E · 7th D</div></div>
+        <div class="r"><div class="h">3rd는 펜타토닉 밖</div><div class="d k">A7 C→C♯ · D7 G→F♯ · E7 G→G♯</div></div>
+      </div>
+      <p class="legend">A 블루스는 A7 · D7 · E7 세 코드를 Am 펜타토닉 하나로 칩니다. 코드가 바뀔 때 반음 이동으로 3rd에 닿는 것이 블루스의 소리입니다.</p>
+
+      <h3>기본 12마디 블루스</h3>
+      <div class="chart">
+        <div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div>
+        <div class="cm hot">D7<small>IV7</small></div><div class="cm hot">D7<small>IV7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div>
+        <div class="cm hot">E7<small>V7</small></div><div class="cm hot">D7<small>IV7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7 E7<small>턴어라운드</small></div>
+      </div>
+
+      <h3>퀵체인지 (2마디가 D7)</h3>
+      <div class="chart">
+        <div class="cm">A7<small>I7</small></div><div class="cm hot">D7<small>퀵체인지</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div>
+        <div class="cm hot">D7<small>IV7</small></div><div class="cm hot">D7<small>IV7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7<small>I7</small></div>
+        <div class="cm hot">E7<small>V7</small></div><div class="cm hot">D7<small>IV7</small></div><div class="cm">A7<small>I7</small></div><div class="cm">A7 E7<small>턴어라운드</small></div>
+      </div>
+
+      <h3>재즈 블루스 C (37주차부터)</h3>
+      <div class="chart">
+        <div class="cm">C7<small>I7</small></div><div class="cm hot">F7<small>IV7</small></div><div class="cm">C7<small>I7</small></div><div class="cm hot">Gm7 C7<small>ii–V (F로)</small></div>
+        <div class="cm hot">F7<small>IV7</small></div><div class="cm">F♯dim7<small>디미니시드</small></div><div class="cm">C7<small>I7</small></div><div class="cm hot">Em7♭5 A7<small>ii–V (Dm으로)</small></div>
+        <div class="cm hot">Dm7<small>ii</small></div><div class="cm hot">G7<small>V</small></div><div class="cm">C7 A7<small>I7 · V/ii</small></div><div class="cm hot">Dm7 G7<small>턴어라운드</small></div>
+      </div>
+      <p class="legend">진한 칸은 코드가 I에서 벗어나는 자리입니다. 타겟노트는 이 자리에서 바뀝니다.</p>
+
+      <h3>블루스 코드톤과 타겟 (3rd · 7th)</h3>
+      <div class="rows">
+        <div class="r"><div class="h">A7<span>A C♯ E G</span></div><div class="d k">3rd C♯ · 7th G</div><div class="d">3rd 접근: C→C♯ (펜타토닉 음에서 반음 위로)</div></div>
+        <div class="r"><div class="h">D7<span>D F♯ A C</span></div><div class="d k">3rd F♯ · 7th C</div><div class="d">3rd 접근: G→F♯ (펜타토닉 음에서 반음 아래로), F→F♯ (아래에서)</div></div>
+        <div class="r"><div class="h">E7<span>E G♯ B D</span></div><div class="d k">3rd G♯ · 7th D</div><div class="d">3rd 접근: G→G♯ (펜타토닉 음에서 반음 위로), A→G♯ (반음 아래로)</div></div>
+      </div>
+      <p class="legend">재즈 블루스에서 늘어나는 코드: Gm7 (G B♭ D F), Dm7 (D F A C), F♯dim7 (F♯ A C E♭), Em7♭5 (E G B♭ D), A7 (A C♯ E G).</p>
+
+      <h3>키별 블루스 코드</h3>
+      <table>
+        <thead><tr><th>키</th><th>I7</th><th>IV7</th><th>V7</th></tr></thead>
+        <tbody>
+          <tr><td><b>A</b></td><td>A7</td><td>D7</td><td>E7</td></tr>
+          <tr><td><b>E</b></td><td>E7</td><td>A7</td><td>B7</td></tr>
+          <tr><td><b>D</b></td><td>D7</td><td>G7</td><td>A7</td></tr>
+          <tr><td><b>G</b></td><td>G7</td><td>C7</td><td>D7</td></tr>
+          <tr><td><b>C</b></td><td>C7</td><td>F7</td><td>G7</td></tr>
+          <tr><td><b>F</b></td><td>F7</td><td>B♭7</td><td>C7</td></tr>
+          <tr><td><b>B♭</b></td><td>B♭7</td><td>E♭7</td><td>F7</td></tr>
+          <tr><td><b>E♭</b></td><td>E♭7</td><td>A♭7</td><td>B♭7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>2-5-1 코드<small>C 기준</small></h2>
+
+      <h3>메이저 2-5-1 (17주차부터)</h3>
+      <div class="chart">
+        <div class="cm hot">Dm7<small>ii7</small></div><div class="cm hot">G7<small>V7</small></div><div class="cm">Cmaj7<small>Imaj7</small></div><div class="cm">Cmaj7<small>Imaj7</small></div>
+      </div>
+      <p class="legend">익숙해지면 두 마디로 압축합니다.</p>
+      <div class="chart two" style="margin-top:8px">
+        <div class="cm">Dm7 G7<small>ii–V</small></div><div class="cm">Cmaj7<small>I</small></div>
+      </div>
+
+      <h3>코드톤과 가이드톤</h3>
+      <div class="rows">
+        <div class="r"><div class="h">Dm7<span>D F A C</span></div><div class="d k">3rd F · 7th C</div></div>
+        <div class="r"><div class="h">G7<span>G B D F</span></div><div class="d k">3rd B · 7th F</div></div>
+        <div class="r"><div class="h">Cmaj7<span>C E G B</span></div><div class="d k">3rd E · 7th B</div></div>
+      </div>
+      <p class="tip"><b>라인 A</b> Dm7의 7th (C) → G7의 3rd (B) → Cmaj7의 7th (B)<br><b>라인 B</b> Dm7의 3rd (F) → G7의 7th (F) → Cmaj7의 3rd (E)<br>코드가 바뀌는 첫 박에 이 음으로 착지하는 것이 연습의 핵심입니다.</p>
+
+      <h3>12키 메이저 2-5-1</h3>
+      <table>
+        <thead><tr><th>키</th><th>ii7</th><th>V7</th><th>Imaj7</th></tr></thead>
+        <tbody>
+          <tr><td><b>C</b></td><td>Dm7</td><td>G7</td><td>Cmaj7</td></tr>
+          <tr><td><b>F</b></td><td>Gm7</td><td>C7</td><td>Fmaj7</td></tr>
+          <tr><td><b>B♭</b></td><td>Cm7</td><td>F7</td><td>B♭maj7</td></tr>
+          <tr><td><b>E♭</b></td><td>Fm7</td><td>B♭7</td><td>E♭maj7</td></tr>
+          <tr><td><b>A♭</b></td><td>B♭m7</td><td>E♭7</td><td>A♭maj7</td></tr>
+          <tr><td><b>D♭</b></td><td>E♭m7</td><td>A♭7</td><td>D♭maj7</td></tr>
+          <tr><td><b>G♭</b></td><td>A♭m7</td><td>D♭7</td><td>G♭maj7</td></tr>
+          <tr><td><b>B</b></td><td>C♯m7</td><td>F♯7</td><td>Bmaj7</td></tr>
+          <tr><td><b>E</b></td><td>F♯m7</td><td>B7</td><td>Emaj7</td></tr>
+          <tr><td><b>A</b></td><td>Bm7</td><td>E7</td><td>Amaj7</td></tr>
+          <tr><td><b>D</b></td><td>Em7</td><td>A7</td><td>Dmaj7</td></tr>
+          <tr><td><b>G</b></td><td>Am7</td><td>D7</td><td>Gmaj7</td></tr>
+        </tbody>
+      </table>
+      <p class="legend">1년차에는 위에서 여섯 키(C, F, B♭, E♭, A♭, D♭)를 키당 2주씩 합니다. 나머지 여섯 키는 2년차입니다.</p>
+
+      <h3>마이너 2-5-1 (29주차부터)</h3>
+      <div class="chart">
+        <div class="cm hot">Dm7♭5<small>iiø7</small></div><div class="cm hot">G7♭9<small>V7♭9</small></div><div class="cm">Cm7<small>im7</small></div><div class="cm">Cm7<small>im7</small></div>
+      </div>
+      <div class="rows" style="margin-top:12px">
+        <div class="r"><div class="h">Dm7♭5<span>D F A♭ C</span></div><div class="d k">3rd F · 7th C</div></div>
+        <div class="r"><div class="h">G7♭9<span>G B D F A♭</span></div><div class="d k">3rd B · 7th F</div></div>
+        <div class="r"><div class="h">Cm7<span>C E♭ G B♭</span></div><div class="d k">3rd E♭ · 7th B♭</div></div>
+      </div>
+      <p class="tip"><b>라인 A</b> C → B → B♭<br><b>라인 B</b> F → F → E♭<br>메이저와 다른 점은 마지막 3rd가 E♭, 7th가 B♭로 반음 내려간다는 것뿐입니다.</p>
+
+      <h3>마이너 2-5-1 키</h3>
+      <table>
+        <thead><tr><th>키</th><th>iiø7</th><th>V7♭9</th><th>im7</th></tr></thead>
+        <tbody>
+          <tr><td><b>Cm</b></td><td>Dm7♭5</td><td>G7♭9</td><td>Cm7</td></tr>
+          <tr><td><b>Fm</b></td><td>Gm7♭5</td><td>C7♭9</td><td>Fm7</td></tr>
+          <tr><td><b>Gm</b></td><td>Am7♭5</td><td>D7♭9</td><td>Gm7</td></tr>
+          <tr><td><b>Dm</b></td><td>Em7♭5</td><td>A7♭9</td><td>Dm7</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" role="tablist" aria-label="화면 선택">
+  <button type="button" role="tab" id="t-today" data-tab="today" aria-selected="true"><span class="en">TODAY</span><span class="ko">오늘</span></button>
+  <button type="button" role="tab" id="t-road" data-tab="road" aria-selected="false"><span class="en">ROADMAP</span><span class="ko">로드맵</span></button>
+  <button type="button" role="tab" id="t-chords" data-tab="chords" aria-selected="false"><span class="en">CHORDS</span><span class="ko">코드</span></button>
+</nav>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DOW = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  var DOWKO = ["일", "월", "화", "수", "목", "금", "토"];
+  var KEYS12 = ["A", "D", "G", "C", "F", "B♭", "E♭", "A♭", "D♭", "G♭", "B", "E"];
+  var DEPTH = ["1·2 포지션에서", "3·4·5 포지션에서", "넥 전체를 포지션 이동으로 이어서", "시작 포지션을 아무거나 골라서, 외워서 (눈 감고)"];
+
+  // PLAN-START
+  var T = {
+    "C7": ["E", "B♭"], "F7": ["A", "E♭"], "G7": ["B", "F"], "B♭7": ["D", "A♭"], "E♭7": ["G", "D♭"], "A♭7": ["C", "G♭"], "D7": ["F♯", "C"], "A7": ["C♯", "G"], "E7": ["G♯", "D"], "B7": ["D♯", "A"],
+    "Dm7": ["F", "C"], "Gm7": ["B♭", "F"], "Cm7": ["E♭", "B♭"], "Fm7": ["A♭", "E♭"], "B♭m7": ["D♭", "A♭"], "E♭m7": ["G♭", "D♭"],
+    "Cmaj7": ["E", "B"], "Fmaj7": ["A", "E"], "B♭maj7": ["D", "A"], "E♭maj7": ["G", "D"], "A♭maj7": ["C", "G"], "D♭maj7": ["F", "C"],
+    "Dm7♭5": ["F", "C"], "Gm7♭5": ["B♭", "F"], "Am7♭5": ["C", "G"], "Em7♭5": ["G", "D"],
+    "G7♭9": ["B", "F"], "C7♭9": ["E", "B♭"], "D7♭9": ["F♯", "C"], "A7♭9": ["C♯", "G"]
+  };
+  var MAJ = [["Dm7", "G7", "Cmaj7", "C"], ["Gm7", "C7", "Fmaj7", "F"], ["Cm7", "F7", "B♭maj7", "B♭"], ["Fm7", "B♭7", "E♭maj7", "E♭"], ["B♭m7", "E♭7", "A♭maj7", "A♭"], ["E♭m7", "A♭7", "D♭maj7", "D♭"]];
+  var MIN = [["Dm7♭5", "G7♭9", "Cm7", "Cm"], ["Gm7♭5", "C7♭9", "Fm7", "Fm"], ["Am7♭5", "D7♭9", "Gm7", "Gm"], ["Em7♭5", "A7♭9", "Dm7", "Dm"]];
+  var BLUES = { "A": ["A7", "D7", "E7"], "E": ["E7", "A7", "B7"], "D": ["D7", "G7", "A7"], "G": ["G7", "C7", "D7"] };
+  var PENT = { "A": "Am", "E": "Em", "D": "Dm", "G": "Gm" };
+  var FOCUS1 = [
+    "루트 타겟: 코드마다 루트에 착지 (A7=A, D7=D, E7=E). Am 펜타토닉 1포지션 안에서",
+    "7th 타겟: A7=G, D7=C, E7=D. 모두 Am 펜타토닉 안의 음",
+    "3rd 타겟: 펜타토닉 음에서 반음으로 착지 (A7 C→C♯, D7 G→F♯, E7 G→G♯)",
+    "블루스 노트 E♭: A와 E 사이를 지나가는 음으로 쓴다",
+    "반음 아래 어프로치: 타겟 바로 아래 반음에서 올라가 착지",
+    "반음 아래 어프로치에 쉼표를 섞는다",
+    "2마디 모티프를 코드에 맞춰 옮긴다 (A7 → D7 → E7)",
+    "종합: 12마디 한 코러스를 하나의 악보로 완성"
+  ];
+  var S2 = [
+    { k: "E", f: "반음 위 어프로치를 새로 더한다" },
+    { k: "E", f: "반음 아래·위 어프로치를 번갈아 쓴다" },
+    { k: "D", f: "E 블루스의 프레이즈를 D 블루스로 옮긴다" },
+    { k: "D", f: "아래·위 어프로치에 쉼표를 섞는다" },
+    { k: "G", f: "프레이즈를 G 블루스로 옮긴다" },
+    { k: "G", f: "어프로치 두 종류를 자유롭게 조합한다" },
+    { k: "A", q: 1, f: "퀵체인지: 2마디가 D7로 바뀌는 자리에 타겟을 적는다" },
+    { k: "E", q: 1, f: "퀵체인지 E 블루스, 그리고 1~2단계 종합" }
+  ];
+  var S5 = [
+    "1~4마디 (C7 F7 C7 Gm7-C7)를 적는다",
+    "5~8마디 (F7 F♯dim7 C7 Em7♭5-A7)를 적는다",
+    "9~12마디 (Dm7 G7 C7-A7 Dm7-G7)를 적는다",
+    "12마디를 이어서 한 코러스로 완성한다",
+    "2-5(4마디, 8~9마디)에서 3rd→7th를 연결한다",
+    "F♯dim7 위에서 반음 어프로치를 쓴다",
+    "코러스 두 개를 이어서 짧은 솔로로 만든다",
+    "종합: 첫 주 녹음과 비교한다"
+  ];
+  var SONGS = ["Autumn Leaves", "Blue Bossa", "Fly Me to the Moon"];
+
+  function cl(c) { return c + " (3rd " + T[c][0] + " · 7th " + T[c][1] + ")"; }
+  function tonesLine(arr) { return arr.map(cl).join(", "); }
+  function guide(ch) {
+    return { A: [T[ch[0]][1], T[ch[1]][0], T[ch[2]][1]].join(" → "), B: [T[ch[0]][0], T[ch[1]][1], T[ch[2]][0]].join(" → ") };
+  }
+  var BLUES_I = ["적은 1~4마디만 연주, 나머지는 쉼", "적은 1~8마디만 연주, 나머지는 쉼", "적은 1~12마디를 연주 (못 적은 곳은 쉼)", "12마디 3코러스, 적은 것만 사용", "12마디 4코러스, 적은 것만 사용"];
+  var BLUES_S = ["4마디 짧은 솔로를 만들어 연주, 녹음", "8마디 짧은 솔로를 만들어 연주, 녹음", "12마디 한 코러스 솔로를 만들어 연주, 녹음", "어제 솔로를 다듬어 연주, 녹음", "이번 주 최종 솔로 한 코러스를 연주, 녹음"];
+  function tplBlues(f) {
+    return {
+      a: ["1~4마디를 적는다. " + f, "5~8마디를 적는다. " + f, "9~12마디를 적는다. " + f, "1~12마디를 이어서 읽고 고쳐 적는다", "12마디 한 코러스 악보를 깨끗하게 완성한다"],
+      i: BLUES_I, s: BLUES_S
+    };
+  }
+  function tplJazz() {
+    return {
+      a: ["1~4마디 (C7 | F7 | C7 | Gm7 C7)를 적는다. 3rd·7th 타겟과 어프로치 포함",
+          "5~8마디 (F7 | F♯dim7 | C7 | Em7♭5 A7)를 적는다",
+          "9~12마디 (Dm7 | G7 | C7 A7 | Dm7 G7)를 적는다",
+          "1~12마디를 이어서 읽고 고쳐 적는다",
+          "12마디 한 코러스 악보를 깨끗하게 완성한다"],
+      i: BLUES_I, s: BLUES_S
+    };
+  }
+  function tplJazzFocus(f) {
+    return {
+      a: ["1~4마디 (C7 | F7 | C7 | Gm7 C7)에 적용해 적는다. " + f, "5~8마디 (F7 | F♯dim7 | C7 | Em7♭5 A7)에 적용해 적는다. " + f, "9~12마디 (Dm7 | G7 | C7 A7 | Dm7 G7)에 적용해 적는다. " + f, "1~12마디를 이어서 읽고 고쳐 적는다", "12마디 한 코러스 악보를 깨끗하게 완성한다"],
+      i: BLUES_I, s: BLUES_S
+    };
+  }
+  function tpl251(ch, second) {
+    var g = guide(ch);
+    var a = second ? [
+      "아래·위 어프로치를 섞어 4마디 프레이즈를 적는다 (" + ch.join(" | ") + " | " + ch[2] + ")",
+      "7th에 착지하는 프레이즈를 적는다 (라인 B: " + g.B + ")",
+      "코드가 바뀐 뒤 뒷박에 착지하는 프레이즈를 적는다",
+      "쉼표를 넣어 프레이즈를 다듬는다",
+      "이 키의 2~3코러스 분량 프레이즈를 완성한다"
+    ] : [
+      "세 코드의 3rd·7th를 악보에 표시한다. " + tonesLine(ch),
+      "가이드톤 라인을 적는다. 라인 A: " + g.A + " / 라인 B: " + g.B,
+      "각 코드의 3rd로 반음 아래에서 접근하는 프레이즈를 4마디에 적는다",
+      "반음 위에서 접근하는 프레이즈를 4마디에 적는다",
+      "두 마디 압축형으로 프레이즈를 완성한다 (" + ch[0] + " " + ch[1] + " | " + ch[2] + ")"
+    ];
+    return {
+      a: a,
+      i: ["표시한 3rd·7th 음만 사용", "가이드톤 라인 A·B만 사용", "적은 프레이즈만 사용", "적은 프레이즈를 이어서 4코러스", "적은 프레이즈만 사용, 마지막 코러스는 쉼표를 넣어서"],
+      s: ["가이드톤 라인으로 4마디 솔로 뼈대를 만들어 연주, 녹음", "어프로치를 하나 넣어 4마디 솔로를 연주, 녹음", "2-5-1을 두 번 이은 8마디 솔로를 연주, 녹음", "어제 솔로를 다듬어 연주, 녹음", "이번 주 최종 솔로를 연주, 녹음"]
+    };
+  }
+  function tplSong(song, second) {
+    var f = second ? "어프로치를 더해 프레이즈로 만든다" : "2-5마다 3rd→7th 타겟을 적는다";
+    return {
+      a: [song + " 앞부분 코드를 옮겨 적고 " + f, song + " 중간 부분을 같은 방법으로 적는다", song + " 뒷부분을 같은 방법으로 적는다", "곡 전체를 이어서 읽고 고쳐 적는다", "곡 전체 악보를 깨끗하게 완성한다"],
+      i: ["앞부분만 연주, 나머지는 쉼", "앞부분과 중간 부분만 연주", "곡 전체를 연주 (적은 곳만)", "곡 전체 2코러스", "곡 전체 3코러스"],
+      s: ["앞부분만 짧은 솔로로 연주, 녹음", "중간 부분까지 짧은 솔로로 연주, 녹음", "곡 전체 한 코러스 짧은 솔로를 연주, 녹음", "어제 솔로를 다듬어 연주, 녹음", "이번 주 최종 솔로 한 코러스를 연주, 녹음"]
+    };
+  }
+  function tplPrep() {
+    var n = ["Autumn Leaves", "Blue Bossa", "Fly Me to the Moon", "블루스 A", "약한 곡"];
+    return {
+      a: [n[0] + " 악보를 점검하고 빠진 타겟을 보강한다", n[1] + " 악보를 점검하고 빠진 타겟을 보강한다", n[2] + " 악보를 점검하고 빠진 타겟을 보강한다", "블루스 A 악보를 점검한다", "점검이 덜 끝난 곡을 보강한다"],
+      i: n.map(function (x) { return x + " 3코러스, 적은 것만 사용"; }),
+      s: n.map(function (x) { return x + " 솔로를 연주, 녹음"; })
+    };
+  }
+  function tplFinal() {
+    return {
+      a: ["녹음 전 Autumn Leaves 악보를 마지막으로 읽는다", "녹음 전 Blue Bossa 악보를 마지막으로 읽는다", "녹음 전 Fly Me to the Moon 악보를 마지막으로 읽는다", "녹음 전 블루스 A 악보를 마지막으로 읽는다", "첫 주 녹음과 비교할 메모를 준비한다"],
+      i: ["Autumn Leaves 즉흥 3코러스 (녹음)", "Blue Bossa 즉흥 3코러스 (녹음)", "Fly Me to the Moon 즉흥 3코러스 (녹음)", "블루스 A 즉흥 3코러스 (녹음)", "녹음한 것 중 마음에 드는 코러스를 고른다"],
+      s: ["Autumn Leaves 솔로 녹음", "Blue Bossa 솔로 녹음", "Fly Me to the Moon 솔로 녹음", "블루스 A 솔로 녹음", "1년 리뷰: 첫 주 녹음과 비교해서 좋아진 것 3개를 기록한다"]
+    };
+  }
+  function weekPlan(w) {
+    var p = { w: w, key: KEYS12[(w - 1) % 12] };
+    var n, ch;
+    if (w <= 8) {
+      p.stage = "블루스 A · Am 펜타토닉"; p.focus = FOCUS1[w - 1]; p.chordText = BLUES.A.join(" · "); p.tones = tonesLine(BLUES.A); p.t = tplBlues(p.focus);
+    } else if (w <= 16) {
+      var e = S2[w - 9];
+      p.stage = "블루스 " + e.k + (e.q ? " · 퀵체인지" : "") + " · " + PENT[e.k] + " 펜타토닉"; p.focus = e.f; p.chordText = BLUES[e.k].join(" · "); p.tones = tonesLine(BLUES[e.k]); p.t = tplBlues(p.focus);
+    } else if (w <= 28) {
+      n = w - 17; ch = MAJ[Math.floor(n / 2)];
+      p.stage = "메이저 2-5-1 · " + ch[3]; p.focus = n % 2 ? "어프로치를 붙여 프레이즈로 만든다" : "가이드톤(3rd–7th) 연결선을 잡는다";
+      p.chordText = ch[0] + " → " + ch[1] + " → " + ch[2]; p.tones = tonesLine(ch.slice(0, 3)); p.t = tpl251(ch.slice(0, 3), n % 2 === 1);
+    } else if (w <= 36) {
+      n = w - 29; ch = MIN[Math.floor(n / 2)];
+      p.stage = "마이너 2-5-1 · " + ch[3]; p.focus = n % 2 ? "어프로치를 붙여 프레이즈로 만든다 (♭9 포함)" : "마이너 가이드톤 연결선을 잡는다";
+      p.chordText = ch[0] + " → " + ch[1] + " → " + ch[2]; p.tones = tonesLine(ch.slice(0, 3)); p.t = tpl251(ch.slice(0, 3), n % 2 === 1);
+    } else if (w <= 44) {
+      p.stage = "재즈 블루스 C"; p.focus = S5[w - 37]; p.chordText = "C7 · F7 · Gm7 · F♯dim7 · Em7♭5 · A7 · Dm7 · G7"; p.tones = ""; p.t = w <= 39 ? tplJazz() : tplJazzFocus(p.focus);
+    } else if (w <= 50) {
+      n = w - 45; var song = SONGS[Math.floor(n / 2)];
+      p.stage = "스탠다드 · " + song; p.focus = n % 2 ? "같은 곡에서 어프로치를 더해 프레이즈로 만든다" : "곡 진행 위에서 2-5마다 3rd→7th 타겟을 적는다"; p.chordText = "곡의 코드 진행"; p.tones = ""; p.t = tplSong(song, n % 2 === 1);
+    } else if (w === 51) {
+      p.stage = "연말 녹음 준비"; p.focus = "녹음할 곡 3개와 블루스 악보를 점검한다"; p.chordText = "Autumn Leaves · Blue Bossa · Fly Me to the Moon · 블루스 A"; p.tones = ""; p.t = tplPrep();
+    } else if (w === 52) {
+      p.stage = "연말 녹음"; p.focus = "곡 3개와 블루스 3코러스를 녹음하고 1년을 리뷰한다"; p.chordText = "Autumn Leaves · Blue Bossa · Fly Me to the Moon · 블루스 A"; p.tones = ""; p.t = tplFinal();
+    } else {
+      p.stage = "2년차 준비"; p.focus = "1년차 계획이 끝났습니다. 2년차 계획은 새로 만듭니다"; p.chordText = ""; p.tones = "";
+      var g = function (x) { return [x, x, x, x, x]; };
+      p.t = { a: g("스탠다드 한 곡을 골라 타겟을 적는다"), i: g("적은 것만 사용"), s: g("짧은 솔로를 연주, 녹음") };
+    }
+    return p;
+  }
+  var MD = [
+    ["믹솔리디안", "7"],
+    ["도리안", "m7"],
+    ["아이오니안", "maj7"],
+    ["프리지안", "m"],
+    ["로크리안", "m7♭5"]
+  ];
+  function itemsFor(w, pos) {
+    var p = weekPlan(w), lap = Math.floor((w - 1) / 12);
+    var review = w > 48;
+    var root = review ? "그 주 키" : p.key;
+    var m = MD[pos];
+    return [
+      { id: "b", time: "0~15분", what: (review ? "기초: 가장 어려웠던 키" : "기초: " + p.key + " 루트") + ". 오늘 모드 — " + root + " " + m[0] + (review ? " (해당 코드 위)" : " (" + root + m[1] + " 코드 위)"),
+        ok: "블루스 스케일 3분 → " + m[0] + " 모드 6분 → 코드톤 5종 6분. " + (review ? "복습 주간" : DEPTH[lap]) + ", 60bpm",
+        pat: "블루스 스케일 3분 (오르내리기, 3도 간격, 4음 그룹), 모드 " + m[0] + " 6분 (" + (m[1] === "m" ? "m 코드" : m[1] + " 코드") + " 위), 코드톤 5종 1-3-5-7 6분" },
+      { id: "a", time: "15~30분", what: "어프로치 · 타겟 적기: " + p.t.a[pos], ok: "한 줄이라도 적었으면 끝" },
+      { id: "i", time: "30~45분", what: "즉흥 15분: " + p.t.i[pos], ok: "적은 것만 썼으면 끝" },
+      { id: "s", time: "45~60분", what: "짧은 솔로: " + p.t.s[pos], ok: "15분 안에 녹음까지 했으면 끝" }
+    ];
+  }
+  // PLAN-END
+
+  var STORE = "improv-daily-checklist-v2";
+  var TABKEY = "improv-tab-v1";
+  var state = { days: {}, phase: 0, keyOffset: 0 };
+  try { var raw = localStorage.getItem(STORE); if (raw) state = JSON.parse(raw) || state; } catch (e) {}
+  state.days = state.days || {}; state.keyOffset = state.keyOffset || 0;
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+
+  function iso(d) { var m = d.getMonth() + 1, day = d.getDate(); return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day; }
+  function isWork(d) { var g = d.getDay(); return g !== 0 && g !== 6; }
+  function addDays(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  var BEGIN = new Date(2026, 9, 1);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  function dateOfDay(k) {
+    var d = BEGIN, c = 0;
+    while (true) { if (isWork(d)) { if (c === k) return d; c++; } d = addDays(d, 1); }
+  }
+  function dayIndexOf(d) {
+    var x = BEGIN, c = 0;
+    while (x < d) { if (isWork(x)) c++; x = addDays(x, 1); }
+    return c;
+  }
+  var nToday = dayIndexOf(today);
+  var weekStart = nToday - (nToday % 5);
+  var sel = nToday % 5;
+  var dates = [0, 1, 2, 3, 4].map(function (i) { return dateOfDay(weekStart + i); });
+  function planDayOf(i) {
+    var pd = Math.max(0, weekStart + i + 5 * state.keyOffset);
+    return { w: Math.floor(pd / 5) + 1, pos: pd % 5 };
+  }
+
+  function rec(i) {
+    var k = iso(dates[i]);
+    if (!state.days[k]) state.days[k] = { c: {}, min: false, note: "" };
+    return state.days[k];
+  }
+  function req(r) { return r.min ? ["b", "i"] : ["b", "a", "i", "s"]; }
+  function progressOf(r) {
+    var q = req(r);
+    return { done: q.filter(function (id) { return r.c[id]; }).length, total: q.length };
+  }
+  function progress(i) { return progressOf(rec(i)); }
+  function totalDone() {
+    var n = 0;
+    Object.keys(state.days).forEach(function (k) { var p = progressOf(state.days[k]); if (p.total > 0 && p.done === p.total) n++; });
+    return n;
+  }
+  function md(d) { return (d.getMonth() + 1) + "/" + d.getDate(); }
+
+  var weekEl = $("week"), list = $("list");
+
+  function renderWeek() {
+    weekEl.innerHTML = "";
+    dates.forEach(function (d, i) {
+      var p = progress(i);
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "day" + (iso(d) === iso(today) ? " today" : "");
+      b.setAttribute("aria-pressed", i === sel ? "true" : "false");
+      b.setAttribute("aria-label", DOWKO[d.getDay()] + "요일 " + p.done + "/" + p.total);
+      b.innerHTML = '<span class="en">' + DOW[d.getDay()] + '</span><span class="dt">' + md(d) + '</span><span class="bar"><i style="width:' + Math.round(p.done / p.total * 100) + '%"></i></span>';
+      b.addEventListener("click", function () { sel = i; render(); });
+      weekEl.appendChild(b);
+    });
+  }
+
+  function renderDay() {
+    var d = dates[sel], r = rec(sel), p = progress(sel);
+    var pd = planDayOf(sel), plan = weekPlan(pd.w), items = itemsFor(pd.w, pd.pos);
+    $("dayTitle").innerHTML = "<span>" + DOW[d.getDay()] + "</span>" + DOWKO[d.getDay()] + "요일 · " + pd.w + "주차 " + (pd.pos + 1) + "일차";
+    $("count").textContent = p.done + " / " + p.total;
+    $("meter").style.width = Math.round(p.done / p.total * 100) + "%";
+    $("doneMsg").textContent = p.done === p.total ? "오늘은 끝났습니다. 시간을 채웠으니 성공입니다." : "";
+    if (today < BEGIN) { $("rest").hidden = false; $("rest").textContent = "10월 1일에 시작합니다."; }
+    else if (!isWork(today)) { $("rest").hidden = false; $("rest").textContent = "오늘은 쉬는 날입니다. 다음 연습일은 " + md(dateOfDay(nToday)) + "입니다."; }
+    else { $("rest").hidden = true; }
+    $("minMode").checked = !!r.min;
+    $("noteInput").value = r.note || "";
+    $("totalDays").textContent = totalDone();
+
+    $("weekLab").textContent = pd.w + "주차 · 이번 주 기초 키 (블루스 스케일 · 모드 · 코드톤 5종)";
+    $("keyName").textContent = pd.w <= 48 ? plan.key : "복습";
+    $("stageName").textContent = plan.stage;
+    $("weekFocus").textContent = "이번 주 주제: " + plan.focus;
+    $("weekChords").textContent = plan.chordText ? "코드: " + plan.chordText + (plan.tones ? " · " + plan.tones : "") : "";
+
+    list.innerHTML = "";
+    items.forEach(function (it) {
+      var skipped = r.min && !(it.id === "b" || it.id === "i"), checked = !!r.c[it.id];
+      var li = document.createElement("li");
+      var lab = document.createElement("label");
+      lab.className = "row" + (checked ? " checked" : "") + (skipped ? " skipped" : "");
+      lab.htmlFor = "it-" + it.id;
+      lab.innerHTML = '<input type="checkbox" id="it-' + it.id + '"' + (checked ? " checked" : "") + (skipped ? " disabled" : "") + '>' +
+        '<span><span class="time">' + it.time + '</span><br><span class="what"></span><span class="ok"></span></span>';
+      lab.querySelector(".what").textContent = it.what;
+      lab.querySelector(".ok").textContent = it.ok;
+      lab.querySelector("input").addEventListener("change", function (e) { r.c[it.id] = e.target.checked; save(); render(); });
+      li.appendChild(lab); list.appendChild(li);
+    });
+  }
+
+  function renderWeekPlan() {
+    var body = $("weekPlanBody"); body.innerHTML = "";
+    var wrap = document.createElement("div"); wrap.className = "rows";
+    for (var i = 0; i < 5; i++) {
+      var pd = planDayOf(i), it = itemsFor(pd.w, pd.pos), d = dates[i];
+      var r = document.createElement("div"); r.className = "r";
+      var h = document.createElement("div"); h.className = "h"; h.textContent = (pd.pos + 1) + "일차 · " + DOWKO[d.getDay()] + " " + md(d);
+      r.appendChild(h);
+      [["기초", it[0].pat], ["적기", it[1].what.replace("어프로치 · 타겟 적기: ", "")], ["즉흥", it[2].what.replace("즉흥 15분: ", "")], ["솔로", it[3].what.replace("짧은 솔로: ", "")]].forEach(function (x) {
+        var dd = document.createElement("div"); dd.className = "d k"; dd.textContent = x[0] + ": " + x[1]; r.appendChild(dd);
+      });
+      wrap.appendChild(r);
+    }
+    body.appendChild(wrap);
+  }
+
+  function renderAllWeeks() {
+    var body = $("allWeeks"); if (!body) return;
+    var wrap = document.createElement("div"); wrap.className = "rows";
+    for (var w = 1; w <= 52; w++) {
+      var p = weekPlan(w);
+      var r = document.createElement("div"); r.className = "r";
+      var h = document.createElement("div"); h.className = "h";
+      h.textContent = w + "주 · 기초 " + (w <= 48 ? p.key : "복습");
+      var sp = document.createElement("span"); sp.textContent = p.stage; h.appendChild(sp);
+      var dd = document.createElement("div"); dd.className = "d"; dd.textContent = p.focus;
+      r.appendChild(h); r.appendChild(dd); wrap.appendChild(r);
+    }
+    body.appendChild(wrap);
+  }
+
+  function render() { renderWeek(); renderDay(); renderWeekPlan(); }
+
+  $("keyPrev").addEventListener("click", function () { state.keyOffset -= 1; save(); render(); });
+  $("keyNext").addEventListener("click", function () { state.keyOffset += 1; save(); render(); });
+  $("minMode").addEventListener("change", function (e) { rec(sel).min = e.target.checked; save(); render(); });
+  $("noteInput").addEventListener("input", function (e) { rec(sel).note = e.target.value; save(); });
+  document.querySelectorAll(".chip").forEach(function (c) {
+    c.addEventListener("click", function () {
+      var r = rec(sel); r.note = c.getAttribute("data-fill"); save();
+      var inp = $("noteInput"); inp.value = r.note; inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+    });
+  });
+  $("reset").addEventListener("click", function () { state.days[iso(dates[sel])] = { c: {}, min: false, note: "" }; save(); render(); });
+
+  var tabs = document.querySelectorAll(".tabs button");
+  function showTab(name) {
+    ["today", "road", "chords"].forEach(function (n) {
+      var on = n === name;
+      $("p-" + n).hidden = !on;
+      $("t-" + n).setAttribute("aria-selected", on ? "true" : "false");
+    });
+    try { localStorage.setItem(TABKEY, name); } catch (e) {}
+  }
+  tabs.forEach(function (b) {
+    b.addEventListener("click", function () { showTab(b.getAttribute("data-tab")); window.scrollTo(0, 0); });
+  });
+  var first = "today";
+  try { var t = localStorage.getItem(TABKEY); if (t === "road" || t === "chords") first = t; } catch (e) {}
+  showTab(first);
+  render();
+  renderAllWeeks();
+})();
+</script>
