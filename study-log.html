@@ -43,8 +43,8 @@
 [hidden] { display: none !important; }
 body {
   background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.5;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-left: calc(max(8px, env(safe-area-inset-left, 0px)) + 44px);
+  padding-right: calc(max(8px, env(safe-area-inset-right, 0px)) + 44px);
   padding-block: 0 56px;
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
@@ -119,6 +119,9 @@ button { touch-action: manipulation; }
 .seedtext { margin: 0; font-size: 18px; font-weight: 700; }
 .list11 { margin: 0; padding-left: 1.4em; display: grid; gap: 2px; font-size: 15px; color: var(--muted); }
 @media (max-width: 520px) { .cell { min-height: 40px; font-size: 14px; } .grid100 { gap: 4px; } }
+.scrollstrip { position: fixed; top: 0; bottom: 0; right: env(safe-area-inset-right, 0px); width: 44px; z-index: 12; touch-action: pan-y; display: grid; place-items: center; background: linear-gradient(to left, var(--accent-soft), transparent); color: var(--accent); font-size: 20px; line-height: 1.2; text-align: center; -webkit-user-select: none; user-select: none; }
+.scrollstrip.left { right: auto; left: env(safe-area-inset-left, 0px); background: linear-gradient(to right, var(--accent-soft), transparent); }
+.scrollstrip span { pointer-events: none; opacity: .8; font-weight: 700; }
 .toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; z-index: 20; font-size: 15px; }
 </style>
 
@@ -149,6 +152,8 @@ button { touch-action: manipulation; }
   <main id="todayView"></main>
   <main id="dramaView" hidden></main>
 </div>
+<div class="scrollstrip" aria-hidden="true"><span>▲<br>↕<br>▼</span></div>
+<div class="scrollstrip left" aria-hidden="true"><span>▲<br>↕<br>▼</span></div>
 <div id="toast" class="toast" hidden role="status"></div>
 
 <script>
@@ -246,6 +251,9 @@ button { touch-action: manipulation; }
     cv.addEventListener("pointerup", end);
     cv.addEventListener("pointercancel", end);
     cv.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    // a second quick tap on the pad (pen or finger) must not count as a double tap zoom; only touchend is blocked, so drawing is untouched
+    var lastEnd = 0;
+    cv.addEventListener("touchend", function (e) { var t = Date.now(); if (t - lastEnd < 450) e.preventDefault(); lastEnd = t; }, { passive: false });
   }
   function makePad(o) {
     var box = el("div", "pad"); box.style.aspectRatio = o.w + " / " + o.h; box.style.setProperty("--rows", o.rows || 1);
@@ -380,8 +388,8 @@ button { touch-action: manipulation; }
     var bs = block(p2, "예문 3개", "영어 한 줄, 해석 한 줄");
     for (var si = 1; si <= 3; si++) {
       var ps = el("div", "sub"); bs.appendChild(ps);
-      addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 130, 1, true);
-      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 130, 1, true);
+      addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 100, 1, true);
+      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 100, 1, true);
     }
 
     var p3 = page("gram", "문법");
@@ -403,32 +411,30 @@ button { touch-action: manipulation; }
     todayDramaPads = dramaSet(bm, function () { return "drama_" + todayNo(); },
       function () { var n = todayNo(); var c = cache[date] || (cache[date] = {}); if (c.dramaNo !== n || !c.has) { c.dramaNo = n; c.has = true; saveDay(date); } markSlot(n); renderChips(); });
 
-    var p5 = page("frame1", "문장 틀 1~5");
+    var p5 = page("frame", "문장 틀");
     var bf = block(p5, "문장 틀", "틀은 한 번만 쓰면 10줄에 반복돼요");
-    framePad = addDaily("frame", bf, "틀 한 번만 쓰기", null, 1000, 150, 1, true);
+    framePad = addDaily("frame", bf, "틀 한 번만 쓰기", null, 1000, 120, 1, true);
     framePad.after = function () { dayMark(); rowsRedraw(); };
     framePad.onLoaded = rowsRedraw;
-    var p6 = page("frame2", "문장 틀 6~10");
-    var rl1 = block(p5, "뒤만 쓰기 1~5", "틀 오른쪽에만 써져요");
-    var rl2 = block(p6, "뒤만 쓰기 6~10", "틀은 앞 쪽에 쓴 것이 반복돼요");
+    var rl1 = block(p5, "뒤만 쓰기 10줄", "틀 오른쪽에만 써져요");
     for (var i = 1; i <= FRAME_ROWS; i++) {
       (function (i) {
         var line = el("div", "rowline"); line.appendChild(el("b", "", i + ")"));
         var pd = makePad({
-          w: 1000, h: 110, rows: 1, aria: "문장 " + i, docId: function () { return date + "_f" + i; }, after: dayMark, daily: true,
+          w: 1000, h: 90, rows: 1, aria: "문장 " + i, docId: function () { return date + "_f" + i; }, after: dayMark, daily: true,
           gate: function (pt) { return pt[0] >= frameWidth() - 6; },
           under: function (ctx) {
             var b = frameBox(); if (!b) return;
             ctx.save(); ctx.globalAlpha = 0.9;
-            framePad.strokes.forEach(function (s) { drawStroke(ctx, s, SC, 18 - b.minX * SC, 55 - b.midY * SC); });
+            framePad.strokes.forEach(function (s) { drawStroke(ctx, s, SC, 18 - b.minX * SC, 45 - b.midY * SC); });
             ctx.restore();
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim() || "#cfe0de";
-            ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); var x = frameWidth() - 6; ctx.moveTo(x, 12); ctx.lineTo(x, 98); ctx.stroke(); ctx.setLineDash([]);
+            ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); var x = frameWidth() - 6; ctx.moveTo(x, 10); ctx.lineTo(x, 80); ctx.stroke(); ctx.setLineDash([]);
           }
         });
         pd.box.style.backgroundImage = "linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px))";
         pads["f" + i] = pd; daily.push(pd); frameRows.push(pd);
-        line.appendChild(pd.box); (i <= 5 ? rl1 : rl2).appendChild(line);
+        line.appendChild(pd.box); rl1.appendChild(line);
       })(i);
     }
 
@@ -566,7 +572,16 @@ button { touch-action: manipulation; }
 
 
   /* ---------- no accidental zoom (palm or double tap) ---------- */
-  ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) {
+    document.addEventListener(n, function (e) { e.preventDefault(); }, { passive: false });
+    window.addEventListener(n, function (e) { e.preventDefault(); }, { passive: false });
+  });
+  // two or more touches at once (a palm plus a finger or pen) never zoom; one finger still scrolls
+  ["touchstart", "touchmove"].forEach(function (n) {
+    document.addEventListener(n, function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  });
+  // a stray ctrl+wheel or trackpad pinch zoom
+  window.addEventListener("wheel", function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 
   /* ---------- boot ---------- */
   build(); buildBoard(); renderTitle(); showPage("word");
