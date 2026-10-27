@@ -40,6 +40,7 @@
   --ink-default: #e6edf1; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.5;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -63,8 +64,14 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
 button[aria-pressed="true"], button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); font-weight: 700; }
 .status { font-size: 14px; color: var(--muted); min-width: 64px; text-align: right; }
 .status.err { color: var(--warn); }
-.tabs { display: flex; gap: 8px; }
-.tabs button { flex: 1 1 0; font-weight: 700; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.tabs .pt { flex: 0 0 auto; font-weight: 700; min-height: 42px; padding: 0 14px; white-space: nowrap; }
+.pagenav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 6px; }
+.pagenav button { min-height: 52px; font-weight: 700; }
+.pagenav button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.pagenav button:disabled { opacity: .4; }
+.page { display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.page[hidden] { display: none; }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
 .chip { flex: 0 0 auto; min-height: 38px; padding: 0 12px; font-size: 15px; border-radius: 999px; }
 .chip small { color: var(--muted); margin-left: 6px; }
@@ -91,8 +98,8 @@ section.card, .group { background: var(--surface); border: 1px solid var(--line)
 .pad { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background-color: var(--surface-2); max-width: 100%;
   background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows))); }
 canvas { width: 100%; height: 100%; display: block; touch-action: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
-html, body { touch-action: none; -webkit-text-size-adjust: 100%; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
-html.pan, html.pan body, html.pan canvas { touch-action: pan-y; }
+html, body { touch-action: pan-y; -webkit-text-size-adjust: 100%; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+canvas { touch-action: none; }
 button { touch-action: manipulation; }
 .rowline { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; }
 .rowline b { color: var(--muted); font-weight: 500; text-align: right; font-size: 15px; }
@@ -112,8 +119,6 @@ button { touch-action: manipulation; }
 .seedtext { margin: 0; font-size: 18px; font-weight: 700; }
 .list11 { margin: 0; padding-left: 1.4em; display: grid; gap: 2px; font-size: 15px; color: var(--muted); }
 @media (max-width: 520px) { .cell { min-height: 40px; font-size: 14px; } .grid100 { gap: 4px; } }
-.scrollkeys { position: fixed; right: max(12px, env(safe-area-inset-right, 0px)); bottom: max(24px, env(safe-area-inset-bottom, 0px)); display: grid; gap: 10px; z-index: 15; }
-.scrollkeys button { width: 60px; height: 60px; border-radius: 50%; font-size: 22px; padding: 0; background: var(--accent); color: var(--accent-fg); border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,.25); touch-action: manipulation; }
 .toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; z-index: 20; font-size: 15px; }
 </style>
 
@@ -124,13 +129,11 @@ button { touch-action: manipulation; }
       <h1 id="title">오늘의 공부</h1>
       <button id="today">오늘</button>
       <button id="next" aria-label="내일">▶</button>
+      <button id="hist" aria-expanded="false">기록한 날</button>
       <span id="status" class="status" role="status">불러오는 중</span>
     </div>
-    <div class="tabs" role="tablist">
-      <button id="tabToday" role="tab" aria-selected="true">오늘 공부</button>
-      <button id="tabDrama" role="tab" aria-selected="false">미드 100</button>
-    </div>
-    <nav class="chips" id="chips" aria-label="기록한 날"></nav>
+    <div class="tabs" id="pageTabs" role="tablist"></div>
+    <nav class="chips" id="chips" aria-label="기록한 날" hidden></nav>
     <div class="tools" role="toolbar" aria-label="펜 도구">
       <button class="swatch" data-color="#16222b" data-themed="1" aria-label="기본 색" aria-pressed="true" style="--c: var(--ink-default)"><i></i></button>
       <button class="swatch" data-color="#d23b3b" aria-label="빨강" aria-pressed="false" style="--c:#d23b3b"><i></i></button>
@@ -140,16 +143,11 @@ button { touch-action: manipulation; }
       <button id="eraser" aria-pressed="false">지우개</button>
       <button id="undo">되돌리기</button>
       <button id="finger" aria-pressed="false">손가락 쓰기</button>
-      <button id="pan" aria-pressed="false">화면 넘기기</button>
     </div>
   </header>
 
   <main id="todayView"></main>
   <main id="dramaView" hidden></main>
-</div>
-<div class="scrollkeys" aria-label="화면 이동">
-  <button id="goUp" aria-label="위로">▲</button>
-  <button id="goDown" aria-label="아래로">▼</button>
 </div>
 <div id="toast" class="toast" hidden role="status"></div>
 
@@ -205,7 +203,7 @@ button { touch-action: manipulation; }
   function pos(cv, e) { var r = cv.getBoundingClientRect(); return [Math.round((e.clientX - r.left) * cv.width / r.width), Math.round((e.clientY - r.top) * cv.height / r.height)]; }
   function allowed(e) {
     if (e.pointerType === "pen") { penSeen = true; return true; }
-    if (e.pointerType === "touch") return fingerOK && !penSeen && !document.documentElement.classList.contains("pan");
+    if (e.pointerType === "touch") return fingerOK && !penSeen && true;
     return true;
   }
   function eraseAt(pd, pt) {
@@ -351,50 +349,68 @@ button { touch-action: manipulation; }
   }
   function frameWidth() { var b = frameBox(); return b ? Math.min(b.w + 36, 620) : 0; }
   function rowsRedraw() { frameRows.forEach(redraw); }
+  var pageEls = {}, pageOrder = [], curPage = "word";
+  function page(id, title) {
+    var d = el("section", "page"); d.id = "page-" + id; d.hidden = true;
+    $("todayView").appendChild(d); pageEls[id] = d; pageOrder.push({ id: id, title: title }); return d;
+  }
+  function pageNav(id) {
+    var i = -1; pageOrder.forEach(function (p, k) { if (p.id === id) i = k; });
+    var n = el("div", "pagenav");
+    var pv = el("button", "", "◀ 이전"); pv.type = "button"; pv.disabled = i <= 0;
+    var nx = el("button", "primary", i >= pageOrder.length - 1 ? "미드 100 보기 ▶" : "다음 ▶"); nx.type = "button";
+    pv.addEventListener("click", function () { showPage(pageOrder[i - 1].id); });
+    nx.addEventListener("click", function () { showPage(i >= pageOrder.length - 1 ? "drama100" : pageOrder[i + 1].id); });
+    n.appendChild(pv); n.appendChild(nx); pageEls[id].appendChild(n);
+  }
   function build() {
-    var main = $("todayView");
-
-    var g1 = el("section", "group"); g1.appendChild(el("div", "head")).appendChild(el("h2", "", "단어"));
-    var bw = block(g1, "메인 단어", "단어, 품사와 뜻");
+    var p1 = page("word", "단어");
+    var bw = block(p1, "메인 단어", "단어, 품사와 뜻");
     var pw = el("div", "pair"); bw.appendChild(pw);
     addDaily("word", pw, "단어", null, 400, 150, 1, true);
     addDaily("wordKo", pw, "뜻 · 품사", null, 600, 150, 1, true);
-    var bd = block(g1, "파생어 3개", "파생어와 뜻, 구성");
+    var bd = block(p1, "파생어 3개", "파생어와 뜻, 구성");
     for (var di = 1; di <= 3; di++) {
       var pdv = el("div", "pair"); bd.appendChild(pdv);
       addDaily("d" + di, pdv, "파생어 " + di, null, 400, 130, 1, true);
       addDaily("d" + di + "k", pdv, "뜻 · 구성", null, 600, 130, 1, true);
     }
-    var bs = block(g1, "예문 3개", "영어 한 줄, 해석 한 줄");
+
+    var p2 = page("sent", "예문");
+    var bs = block(p2, "예문 3개", "영어 한 줄, 해석 한 줄");
     for (var si = 1; si <= 3; si++) {
       var ps = el("div", "sub"); bs.appendChild(ps);
-      addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 120, 1, true);
-      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 120, 1, true);
+      addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 130, 1, true);
+      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 130, 1, true);
     }
-    var bg = block(g1, "문법", "문법 이름, 설명과 예");
-    addDaily("gramName", bg, "문법 이름", null, 1000, 120, 1, true);
-    addDaily("gram", bg, "설명과 예", null, 1000, 330, 3, true);
-    main.appendChild(g1);
 
-    var g2 = el("section", "group"); g2.appendChild(el("div", "head")).appendChild(el("h2", "", "미드 표현"));
+    var p3 = page("gram", "문법");
+    var bg = block(p3, "문법", "문법 이름, 설명과 예");
+    addDaily("gramName", bg, "문법 이름", null, 1000, 130, 1, true);
+    addDaily("gram", bg, "설명과 예", null, 1000, 560, 5, true);
+
+    var p4 = page("drama", "미드 표현");
     var nav = el("div", "slotnav");
     var bp = el("button", "", "◀"); bp.type = "button"; bp.setAttribute("aria-label", "이전 번호");
     var lab = el("strong", ""); lab.id = "todayNo";
     var bn = el("button", "", "▶"); bn.type = "button"; bn.setAttribute("aria-label", "다음 번호");
     var cnt = el("span", "hint"); cnt.id = "todayCount";
-    nav.appendChild(bp); nav.appendChild(lab); nav.appendChild(bn); nav.appendChild(cnt); g2.appendChild(nav);
+    nav.appendChild(bp); nav.appendChild(lab); nav.appendChild(bn); nav.appendChild(cnt);
+    var bm = block(p4, "미드 표현", "100개 중 오늘 번호에 저장돼요"); bm.appendChild(nav);
     function setNo(n) { n = Math.max(1, Math.min(GOAL, n)); var c = cache[date] || (cache[date] = {}); c.dramaNo = n; c.has = true; saveDay(date); refreshDrama(); renderChips(); }
     bp.addEventListener("click", function () { setNo(todayNo() - 1); });
     bn.addEventListener("click", function () { setNo(todayNo() + 1); });
-    todayDramaPads = dramaSet(g2, function () { return "drama_" + todayNo(); },
+    todayDramaPads = dramaSet(bm, function () { return "drama_" + todayNo(); },
       function () { var n = todayNo(); var c = cache[date] || (cache[date] = {}); if (c.dramaNo !== n || !c.has) { c.dramaNo = n; c.has = true; saveDay(date); } markSlot(n); renderChips(); });
-    main.appendChild(g2);
 
-    var g3 = el("section", "group"); g3.appendChild(el("div", "head")).appendChild(el("h2", "", "문장 틀"));
-    framePad = addDaily("frame", g3, "틀 한 번만 쓰기", "아래 10줄에 자동으로 반복돼요", 1000, 150, 1);
+    var p5 = page("frame1", "문장 틀 1~5");
+    var bf = block(p5, "문장 틀", "틀은 한 번만 쓰면 10줄에 반복돼요");
+    framePad = addDaily("frame", bf, "틀 한 번만 쓰기", null, 1000, 150, 1, true);
     framePad.after = function () { dayMark(); rowsRedraw(); };
     framePad.onLoaded = rowsRedraw;
-    var rl = el("div", "sub"); var rh = el("div", "head"); rh.appendChild(el("h3", "", "뒤만 쓰기 10줄")); rh.appendChild(el("p", "", "틀 오른쪽에만 써져요")); rl.appendChild(rh);
+    var p6 = page("frame2", "문장 틀 6~10");
+    var rl1 = block(p5, "뒤만 쓰기 1~5", "틀 오른쪽에만 써져요");
+    var rl2 = block(p6, "뒤만 쓰기 6~10", "틀은 앞 쪽에 쓴 것이 반복돼요");
     for (var i = 1; i <= FRAME_ROWS; i++) {
       (function (i) {
         var line = el("div", "rowline"); line.appendChild(el("b", "", i + ")"));
@@ -403,8 +419,7 @@ button { touch-action: manipulation; }
           gate: function (pt) { return pt[0] >= frameWidth() - 6; },
           under: function (ctx) {
             var b = frameBox(); if (!b) return;
-            ctx.save();
-            ctx.globalAlpha = 0.9;
+            ctx.save(); ctx.globalAlpha = 0.9;
             framePad.strokes.forEach(function (s) { drawStroke(ctx, s, SC, 18 - b.minX * SC, 55 - b.midY * SC); });
             ctx.restore();
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim() || "#cfe0de";
@@ -413,24 +428,38 @@ button { touch-action: manipulation; }
         });
         pd.box.style.backgroundImage = "linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px))";
         pads["f" + i] = pd; daily.push(pd); frameRows.push(pd);
-        line.appendChild(pd.box); rl.appendChild(line);
+        line.appendChild(pd.box); (i <= 5 ? rl1 : rl2).appendChild(line);
       })(i);
     }
-    g3.appendChild(rl); main.appendChild(g3);
 
-    var g4 = el("section", "group"); g4.appendChild(el("div", "head")).appendChild(el("h2", "", "저녁 복습"));
+    var p7 = page("review", "복습");
+    var br = block(p7, "저녁 복습", "오늘 한 것에 체크");
     var checks = el("div", "checks"); checks.setAttribute("role", "group"); checks.setAttribute("aria-label", "복습 체크");
     CHECKS.forEach(function (c) {
       var l = el("label", "check"); var i = document.createElement("input"); i.type = "checkbox"; i.id = c[0];
       i.addEventListener("change", function () { var cc = cache[date] || (cache[date] = {}); cc.has = true; cc[c[0]] = i.checked; saveDay(date); renderChips(); setStatus(db ? "저장됨" : "이 기기에 저장됨"); });
       l.appendChild(i); l.appendChild(document.createTextNode(" " + c[1])); checks.appendChild(l);
     });
-    g4.appendChild(checks);
-    addDaily("review", g4, "메모", "헷갈린 것, 다시 볼 것", 1000, 330, 3);
-    main.appendChild(g4);
+    br.appendChild(checks);
+    addDaily("review", br, "메모", "헷갈린 것, 다시 볼 것", 1000, 560, 5, true);
 
-    var hint = el("p", "hint", "Apple Pencil로 칸에 바로 쓰세요. 손이 닿아도 화면이 움직이지 않아요. 화면은 오른쪽 아래 ▲ ▼ 버튼으로 넘기세요.");
-    main.appendChild(hint);
+    pageOrder.forEach(function (p) { pageNav(p.id); });
+    var tabs = $("pageTabs");
+    pageOrder.concat([{ id: "drama100", title: "미드 100" }]).forEach(function (p) {
+      var b = el("button", "pt", p.title); b.type = "button"; b.setAttribute("role", "tab"); b.dataset.page = p.id;
+      b.addEventListener("click", function () { showPage(p.id); });
+      tabs.appendChild(b);
+    });
+  }
+  function showPage(id) {
+    curPage = id;
+    Object.keys(pageEls).forEach(function (k) { pageEls[k].hidden = k !== id; });
+    $("dramaView").hidden = id !== "drama100";
+    Array.prototype.forEach.call($("pageTabs").children, function (b) { b.setAttribute("aria-selected", b.dataset.page === id); });
+    var sel = $("pageTabs").querySelector('[aria-selected="true"]'); if (sel && sel.scrollIntoView) { try { sel.scrollIntoView({ block: "nearest", inline: "center" }); } catch (e) {} }
+    if (id === "drama100") { renderBoard(); slotPads.forEach(redraw); }
+    else { daily.concat(todayDramaPads).forEach(redraw); }
+    window.scrollTo(0, 0);
   }
 
   /* ---------- build: 미드 100 ---------- */
@@ -509,17 +538,9 @@ button { touch-action: manipulation; }
     renderTitle(); applyChecks(); renderChips();
     daily.forEach(loadPad);
     todayDramaPads[0].loadedFor = null; refreshDrama();
-    showTab("today"); window.scrollTo(0, 0);
+    if (curPage === "drama100") showPage("word"); else showPage(curPage); window.scrollTo(0, 0);
   }
-  function showTab(t) {
-    var isToday = t === "today";
-    $("todayView").hidden = !isToday; $("dramaView").hidden = isToday;
-    $("tabToday").setAttribute("aria-selected", isToday); $("tabDrama").setAttribute("aria-selected", !isToday);
-    if (!isToday) { renderBoard(); slotPads.forEach(redraw); }
-    window.scrollTo(0, 0);
-  }
-  $("tabToday").addEventListener("click", function () { showTab("today"); });
-  $("tabDrama").addEventListener("click", function () { showTab("drama"); });
+  $("hist").addEventListener("click", function () { var h = $("chips").hidden; $("chips").hidden = !h; $("hist").setAttribute("aria-expanded", h); });
   $("prev").addEventListener("click", function () { go(shiftKey(date, -1)); });
   $("next").addEventListener("click", function () { go(shiftKey(date, 1)); });
   $("today").addEventListener("click", function () { go(todayKey()); });
@@ -531,7 +552,6 @@ button { touch-action: manipulation; }
   $("eraser").addEventListener("click", function () { erasing = true; setPressed(["thin","thick","eraser"], "eraser"); });
   $("undo").addEventListener("click", function () { var pd = activePad; if (pd && pd.strokes.length) { pd.strokes.pop(); redraw(pd); changed(pd); } });
   $("finger").addEventListener("click", function () { fingerOK = !fingerOK; $("finger").setAttribute("aria-pressed", fingerOK); });
-  $("pan").addEventListener("click", function () { var on = !document.documentElement.classList.contains("pan"); document.documentElement.classList.toggle("pan", on); $("pan").setAttribute("aria-pressed", on); $("pan").textContent = on ? "쓰기로 돌아가기" : "화면 넘기기"; });
   Array.prototype.forEach.call(document.querySelectorAll(".swatch"), function (b) {
     b.addEventListener("click", function () {
       color = b.dataset.color; themed = !!b.dataset.themed; erasing = false;
@@ -544,18 +564,12 @@ button { touch-action: manipulation; }
   window.addEventListener("pagehide", flushAll);
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
 
-  function jump(dir) { var h = window.innerHeight * 0.7; try { window.scrollBy({ top: dir * h, behavior: "smooth" }); } catch (e) { window.scrollBy(0, dir * h); } }
-  $("goUp").addEventListener("click", function () { jump(-1); });
-  $("goDown").addEventListener("click", function () { jump(1); });
 
   /* ---------- no accidental zoom (palm or double tap) ---------- */
   ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
-  var lastTouchEnd = 0;
-  document.addEventListener("touchend", function (e) { var t = Date.now(); if (t - lastTouchEnd < 350) e.preventDefault(); lastTouchEnd = t; }, { passive: false });
-  document.addEventListener("touchmove", function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
   /* ---------- boot ---------- */
-  build(); buildBoard(); renderTitle();
+  build(); buildBoard(); renderTitle(); showPage("word");
   var ld = lsGet("daily:" + date); if (ld) cache[date] = ld;
   var lm = lsGet("dramaMeta"); if (lm && lm.done) dramaMeta = lm.done;
   applyChecks(); renderChips(); renderBoard();
