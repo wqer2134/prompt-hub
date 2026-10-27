@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>오늘의 공부</title>
 </head>
@@ -91,7 +91,9 @@ section.card, .group { background: var(--surface); border: 1px solid var(--line)
 .pad { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background-color: var(--surface-2); max-width: 100%;
   background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows))); }
 canvas { width: 100%; height: 100%; display: block; touch-action: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
-body.pan canvas { touch-action: pan-y pinch-zoom; }
+html, body { touch-action: none; -webkit-text-size-adjust: 100%; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+html.pan, html.pan body, html.pan canvas { touch-action: pan-y; }
+button { touch-action: manipulation; }
 .rowline { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; }
 .rowline b { color: var(--muted); font-weight: 500; text-align: right; font-size: 15px; }
 .rowline .pad { background-image: none; }
@@ -197,7 +199,7 @@ body.pan canvas { touch-action: pan-y pinch-zoom; }
   function pos(cv, e) { var r = cv.getBoundingClientRect(); return [Math.round((e.clientX - r.left) * cv.width / r.width), Math.round((e.clientY - r.top) * cv.height / r.height)]; }
   function allowed(e) {
     if (e.pointerType === "pen") { penSeen = true; return true; }
-    if (e.pointerType === "touch") return fingerOK && !penSeen && !document.body.classList.contains("pan");
+    if (e.pointerType === "touch") return fingerOK && !penSeen && !document.documentElement.classList.contains("pan");
     return true;
   }
   function eraseAt(pd, pt) {
@@ -421,7 +423,7 @@ body.pan canvas { touch-action: pan-y pinch-zoom; }
     addDaily("review", g4, "메모", "헷갈린 것, 다시 볼 것", 1000, 330, 3);
     main.appendChild(g4);
 
-    var hint = el("p", "hint", "Apple Pencil로 칸에 바로 쓰세요. 화면은 칸 바깥을 손가락으로 밀거나 '화면 넘기기'를 켜고 넘기세요.");
+    var hint = el("p", "hint", "Apple Pencil로 칸에 바로 쓰세요. 손이 닿아도 화면이 움직이지 않아요. 화면을 넘길 땐 위의 '화면 넘기기'를 켜고 손가락으로 미세요.");
     main.appendChild(hint);
   }
 
@@ -523,7 +525,7 @@ body.pan canvas { touch-action: pan-y pinch-zoom; }
   $("eraser").addEventListener("click", function () { erasing = true; setPressed(["thin","thick","eraser"], "eraser"); });
   $("undo").addEventListener("click", function () { var pd = activePad; if (pd && pd.strokes.length) { pd.strokes.pop(); redraw(pd); changed(pd); } });
   $("finger").addEventListener("click", function () { fingerOK = !fingerOK; $("finger").setAttribute("aria-pressed", fingerOK); });
-  $("pan").addEventListener("click", function () { var on = !document.body.classList.contains("pan"); document.body.classList.toggle("pan", on); $("pan").setAttribute("aria-pressed", on); });
+  $("pan").addEventListener("click", function () { var on = !document.documentElement.classList.contains("pan"); document.documentElement.classList.toggle("pan", on); $("pan").setAttribute("aria-pressed", on); $("pan").textContent = on ? "쓰기로 돌아가기" : "화면 넘기기"; });
   Array.prototype.forEach.call(document.querySelectorAll(".swatch"), function (b) {
     b.addEventListener("click", function () {
       color = b.dataset.color; themed = !!b.dataset.themed; erasing = false;
@@ -535,6 +537,12 @@ body.pan canvas { touch-action: pan-y pinch-zoom; }
   document.addEventListener("visibilitychange", function () { if (document.hidden) flushAll(); });
   window.addEventListener("pagehide", flushAll);
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+
+  /* ---------- no accidental zoom (palm or double tap) ---------- */
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
+  var lastTouchEnd = 0;
+  document.addEventListener("touchend", function (e) { var t = Date.now(); if (t - lastTouchEnd < 350) e.preventDefault(); lastTouchEnd = t; }, { passive: false });
+  document.addEventListener("touchmove", function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
   /* ---------- boot ---------- */
   build(); buildBoard(); renderTitle();
