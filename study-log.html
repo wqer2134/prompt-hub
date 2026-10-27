@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>오늘의 공부</title>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* Layout: sticky date bar with pen tools and two tabs. 오늘 = labelled handwriting pads (단어, 파생어, 예문, 문법, 미드 표현 한 칸, 문장 틀 10줄, 복습). 미드 100 = a 10x10 board of numbered slots. */
+:root {
+  --bg: #eef1f3;
+  --surface: #ffffff;
+  --surface-2: #f8fafb;
+  --fg: #16222b;
+  --muted: #5d6b76;
+  --line: #d5dce1;
+  --rule: #cfe0de;
+  --accent: #0f6a62;
+  --accent-fg: #ffffff;
+  --accent-soft: #dcefec;
+  --warn: #a4531a;
+  --ink-default: #16222b;
+  --font-body: "Gothic A1", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --font-display: "Nanum Myeongjo", "Apple Myeongjo", "Noto Serif KR", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11181d; --surface: #1a242b; --surface-2: #1e2a32; --fg: #e6edf1; --muted: #93a3ae;
+    --line: #2f3d47; --rule: #2a4440; --accent: #4cc0b3; --accent-fg: #07211e; --accent-soft: #1d3a37; --warn: #e0925a;
+    --ink-default: #e6edf1; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11181d; --surface: #1a242b; --surface-2: #1e2a32; --fg: #e6edf1; --muted: #93a3ae;
+  --line: #2f3d47; --rule: #2a4440; --accent: #4cc0b3; --accent-fg: #07211e; --accent-soft: #1d3a37; --warn: #e0925a;
+  --ink-default: #e6edf1; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 56px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 900px; margin: 0 auto; }
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg);
+  padding: 10px 0; display: grid; gap: 8px; border-bottom: 1px solid var(--line);
+}
+.datebar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.datebar h1 { font-family: var(--font-display); font-size: 24px; margin: 0 4px; flex: 1 1 auto; min-width: 150px; font-weight: 800; letter-spacing: -0.01em; }
+button {
+  font: inherit; min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+button[aria-pressed="true"], button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); font-weight: 700; }
+.status { font-size: 14px; color: var(--muted); min-width: 64px; text-align: right; }
+.status.err { color: var(--warn); }
+.tabs { display: flex; gap: 8px; }
+.tabs button { flex: 1 1 0; font-weight: 700; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.chip { flex: 0 0 auto; min-height: 38px; padding: 0 12px; font-size: 15px; border-radius: 999px; }
+.chip small { color: var(--muted); margin-left: 6px; }
+.chip[aria-current="date"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.chip[aria-current="date"] small { color: inherit; opacity: .85; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.swatch { width: 44px; padding: 0; position: relative; }
+.swatch i { position: absolute; inset: 11px; border-radius: 50%; background: var(--c); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+main { display: grid; gap: 18px; padding-top: 16px; }
+section.card, .group { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; }
+.sub { display: grid; gap: 6px; }
+.head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.head h2 { font-family: var(--font-display); font-size: 22px; margin: 0; }
+.head h3 { font-size: 16px; margin: 0; color: var(--accent); }
+.head p { margin: 0; font-size: 14px; color: var(--muted); flex: 1 1 160px; }
+.head button { min-height: 38px; font-size: 14px; padding: 0 12px; }
+.head h3.lab { font-size: 14px; color: var(--muted); font-weight: 500; }
+.head .mini { min-height: 30px; font-size: 13px; padding: 0 10px; margin-left: auto; }
+.block { display: grid; gap: 10px; padding-top: 4px; }
+.block > .head h3 { font-size: 17px; }
+.pair { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 10px; }
+@media (max-width: 520px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+.pad { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background-color: var(--surface-2); max-width: 100%;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows) - 1px), var(--rule) calc(100% / var(--rows))); }
+canvas { width: 100%; height: 100%; display: block; touch-action: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+body.pan canvas { touch-action: pan-y pinch-zoom; }
+.rowline { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; }
+.rowline b { color: var(--muted); font-weight: 500; text-align: right; font-size: 15px; }
+.rowline .pad { background-image: none; }
+.checks { display: flex; gap: 10px; flex-wrap: wrap; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); font-size: 17px; }
+.check input { width: 24px; height: 24px; accent-color: var(--accent); }
+.hint { font-size: 14px; color: var(--muted); margin: 0; }
+.slotnav { display: flex; align-items: center; gap: 8px; }
+.slotnav strong { font-size: 18px; min-width: 70px; text-align: center; }
+.meter { height: 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); width: 0; }
+.grid100 { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; }
+.cell { min-width: 0; padding: 0; min-height: 52px; font-size: 16px; font-variant-numeric: tabular-nums; }
+.cell.done { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+.cell[aria-current="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.seedtext { margin: 0; font-size: 18px; font-weight: 700; }
+.list11 { margin: 0; padding-left: 1.4em; display: grid; gap: 2px; font-size: 15px; color: var(--muted); }
+@media (max-width: 520px) { .cell { min-height: 40px; font-size: 14px; } .grid100 { gap: 4px; } }
+.toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; z-index: 20; font-size: 15px; }
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="datebar">
+      <button id="prev" aria-label="어제">◀</button>
+      <h1 id="title">오늘의 공부</h1>
+      <button id="today">오늘</button>
+      <button id="next" aria-label="내일">▶</button>
+      <span id="status" class="status" role="status">불러오는 중</span>
+    </div>
+    <div class="tabs" role="tablist">
+      <button id="tabToday" role="tab" aria-selected="true">오늘 공부</button>
+      <button id="tabDrama" role="tab" aria-selected="false">미드 100</button>
+    </div>
+    <nav class="chips" id="chips" aria-label="기록한 날"></nav>
+    <div class="tools" role="toolbar" aria-label="펜 도구">
+      <button class="swatch" data-color="#16222b" data-themed="1" aria-label="기본 색" aria-pressed="true" style="--c: var(--ink-default)"><i></i></button>
+      <button class="swatch" data-color="#d23b3b" aria-label="빨강" aria-pressed="false" style="--c:#d23b3b"><i></i></button>
+      <button class="swatch" data-color="#2457d6" aria-label="파랑" aria-pressed="false" style="--c:#2457d6"><i></i></button>
+      <button id="thin" aria-pressed="true">가는 펜</button>
+      <button id="thick" aria-pressed="false">굵은 펜</button>
+      <button id="eraser" aria-pressed="false">지우개</button>
+      <button id="undo">되돌리기</button>
+      <button id="finger" aria-pressed="false">손가락 쓰기</button>
+      <button id="pan" aria-pressed="false">화면 넘기기</button>
+    </div>
+  </header>
+
+  <main id="todayView"></main>
+  <main id="dramaView" hidden></main>
+</div>
+<div id="toast" class="toast" hidden role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+  var SEEDS = ["What are you talking about?", "Are you kidding me?", "I can't believe this.", "It's not a big deal.", "Give me a break.",
+    "Let me know.", "You've got to be kidding me.", "Long story short.", "Not a chance.", "Fair enough.", "I'm on it."];
+  var GOAL = 100, FRAME_ROWS = 10, SC = 0.6;
+  var CHECKS = [["rvWord", "단어와 파생어"], ["rvDrama", "미드 표현"], ["rvFrame", "문장 틀 3문장"]];
+  var DOW = ["일","월","화","수","목","금","토"];
+  var $ = function (id) { return document.getElementById(id); };
+
+  var db = null, date = todayKey();
+  var cache = {};                 // date -> {has, rvX, dramaNo}
+  var dramaMeta = [];             // slot numbers (beyond SEEDS) with handwriting
+  var saveChain = Promise.resolve();
+  var pads = {}, daily = [], frameRows = [];
+  var color = "#16222b", themed = true, width = 3, erasing = false, fingerOK = false, penSeen = false, activePad = null;
+  var selSlot = null, slotPads = [], todayDramaPads = [], framePad = null;
+
+  function p2(n) { return (n < 10 ? "0" : "") + n; }
+  function keyOf(d) { return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  function todayKey() { return keyOf(new Date()); }
+  function parseKey(k) { var a = k.split("-"); return new Date(+a[0], +a[1] - 1, +a[2]); }
+  function shiftKey(k, n) { var d = parseKey(k); d.setDate(d.getDate() + n); return keyOf(d); }
+  function label(k) { var d = parseKey(k); return (d.getMonth() + 1) + "/" + d.getDate() + " " + DOW[d.getDay()]; }
+  function setStatus(t, err) { var s = $("status"); s.textContent = t; s.className = "status" + (err ? " err" : ""); }
+  var toastTimer;
+  function toast(t) { var el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function () { el.hidden = true; }, 2200); }
+  function lsGet(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  /* ---------- drawing ---------- */
+  function themeInk() { return getComputedStyle(document.documentElement).getPropertyValue("--ink-default").trim() || "#16222b"; }
+  function drawStroke(ctx, s, f, ox, oy) {
+    var p = s.p; if (!p.length) return;
+    f = f || 1; ox = ox || 0; oy = oy || 0;
+    ctx.strokeStyle = s.t ? themeInk() : s.c; ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(s.w * f, 1.6); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (p.length === 2) { ctx.beginPath(); ctx.arc(p[0] * f + ox, p[1] * f + oy, ctx.lineWidth / 2, 0, 6.2832); ctx.fill(); return; }
+    ctx.beginPath(); ctx.moveTo(p[0] * f + ox, p[1] * f + oy);
+    for (var i = 2; i < p.length; i += 2) ctx.lineTo(p[i] * f + ox, p[i + 1] * f + oy);
+    ctx.stroke();
+  }
+  function redraw(pd) {
+    pd.ctx.clearRect(0, 0, pd.cv.width, pd.cv.height);
+    if (pd.under) pd.under(pd.ctx);
+    pd.strokes.forEach(function (s) { drawStroke(pd.ctx, s); });
+    if (pd.cur && !pd.cur.erase) drawStroke(pd.ctx, pd.cur);
+  }
+  function redrawAll() { Object.keys(pads).forEach(function (k) { redraw(pads[k]); }); todayDramaPads.concat(slotPads).forEach(redraw); }
+  function pos(cv, e) { var r = cv.getBoundingClientRect(); return [Math.round((e.clientX - r.left) * cv.width / r.width), Math.round((e.clientY - r.top) * cv.height / r.height)]; }
+  function allowed(e) {
+    if (e.pointerType === "pen") { penSeen = true; return true; }
+    if (e.pointerType === "touch") return fingerOK && !penSeen && !document.body.classList.contains("pan");
+    return true;
+  }
+  function eraseAt(pd, pt) {
+    var r2 = 32 * 32, before = pd.strokes.length;
+    pd.strokes = pd.strokes.filter(function (s) {
+      for (var i = 0; i < s.p.length; i += 2) { var dx = s.p[i] - pt[0], dy = s.p[i + 1] - pt[1]; if (dx * dx + dy * dy < r2) return false; }
+      return true;
+    });
+    if (pd.strokes.length !== before) { redraw(pd); changed(pd); }
+  }
+  function wire(pd) {
+    var cv = pd.cv;
+    cv.addEventListener("pointerdown", function (e) {
+      if (!allowed(e)) return;
+      var pt = pos(cv, e);
+      if (pd.gate && !pd.gate(pt)) return;
+      e.preventDefault(); cv.setPointerCapture(e.pointerId); activePad = pd;
+      if (erasing) { pd.cur = { erase: true }; eraseAt(pd, pt); return; }
+      pd.cur = { c: color, t: themed ? 1 : 0, w: width, p: [pt[0], pt[1]] };
+      redraw(pd);
+    });
+    cv.addEventListener("pointermove", function (e) {
+      if (!pd.cur) return;
+      e.preventDefault();
+      var evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      if (!evs.length) evs = [e];
+      evs.forEach(function (ev) {
+        var pt = pos(cv, ev);
+        if (pd.cur.erase) { eraseAt(pd, pt); return; }
+        var n = pd.cur.p.length, dx = pt[0] - pd.cur.p[n - 2], dy = pt[1] - pd.cur.p[n - 1];
+        if (dx * dx + dy * dy >= 4) pd.cur.p.push(pt[0], pt[1]);
+      });
+      if (!pd.cur.erase) redraw(pd);
+    });
+    function end() {
+      if (!pd.cur) return;
+      var c = pd.cur; pd.cur = null;
+      if (!c.erase) { pd.strokes.push(c); redraw(pd); changed(pd); }
+    }
+    cv.addEventListener("pointerup", end);
+    cv.addEventListener("pointercancel", end);
+    cv.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  }
+  function makePad(o) {
+    var box = el("div", "pad"); box.style.aspectRatio = o.w + " / " + o.h; box.style.setProperty("--rows", o.rows || 1);
+    var cv = document.createElement("canvas"); cv.width = o.w; cv.height = o.h; cv.setAttribute("aria-label", o.aria || "손글씨");
+    box.appendChild(cv);
+    var pd = { box: box, cv: cv, ctx: cv.getContext("2d"), strokes: [], cur: null, docId: o.docId, gate: o.gate, under: o.under, after: o.after, onLoaded: o.onLoaded, timer: null, daily: !!o.daily };
+    wire(pd); return pd;
+  }
+
+  /* ---------- saving / loading ink ---------- */
+  function enqueue(fn) { saveChain = saveChain.then(fn, fn); return saveChain; }
+  function changed(pd) {
+    setStatus("입력 중");
+    var id = pd.docId(); if (!id) return;
+    clearTimeout(pd.timer);
+    pd.pend = { id: id, snap: pd.strokes.slice() };
+    pd.timer = setTimeout(function () { flush(pd); }, 900);
+    if (pd.after) pd.after();
+  }
+  function flush(pd) {
+    if (!pd.pend) return;
+    clearTimeout(pd.timer);
+    var id = pd.pend.id, body = { strokes: pd.pend.snap }; pd.pend = null;
+    enqueue(function () {
+      if (!db) { lsSet("dailyink:" + id, body); setStatus("이 기기에 저장됨"); return; }
+      setStatus("저장 중");
+      return db.doc("ink/" + id).set(body).then(function () { setStatus("저장됨"); }, function (e) {
+        setStatus(e && e.code === "quota_exceeded" ? "용량이 가득 찼어요" : e && e.code === "invalid_argument" ? "쓰기 권한 없음" : "저장 실패", true);
+      });
+    });
+  }
+  function loadPad(pd) {
+    var id = pd.docId();
+    pd.strokes = []; pd.cur = null; redraw(pd);
+    if (!id) return;
+    var done = function (v) { if (pd.docId() !== id) return; pd.strokes = (v && v.strokes) || []; redraw(pd); if (pd.onLoaded) pd.onLoaded(); };
+    if (!db) { done(lsGet("dailyink:" + id)); return; }
+    db.doc("ink/" + id).get().then(function (s) { done(s.exists ? s.data() : null); }, function () { done(null); });
+  }
+
+  /* ---------- day + drama bookkeeping ---------- */
+  function saveDay(k) {
+    var body = cache[k]; if (!body) return Promise.resolve();
+    if (!db) { lsSet("daily:" + k, body); return Promise.resolve(); }
+    return enqueue(function () { return db.doc("days/" + k).set(body).catch(function () {}); });
+  }
+  function dayMark() { var c = cache[date] || (cache[date] = {}); if (!c.has) { c.has = true; saveDay(date); renderChips(); } }
+  function saveDramaMeta() {
+    if (!db) { lsSet("dramaMeta", { done: dramaMeta }); return; }
+    enqueue(function () { return db.doc("meta/drama").set({ done: dramaMeta }).catch(function () {}); });
+  }
+  function isDone(n) { return n <= SEEDS.length || dramaMeta.indexOf(n) >= 0; }
+  function doneCount() { var c = SEEDS.length; dramaMeta.forEach(function (n) { if (n > SEEDS.length) c++; }); return c; }
+  function nextEmpty() { for (var n = 1; n <= GOAL; n++) if (!isDone(n)) return n; return GOAL; }
+  function markSlot(n) { if (!isDone(n)) { dramaMeta.push(n); saveDramaMeta(); renderBoard(); } }
+  function todayNo() { var c = cache[date]; return (c && c.dramaNo) || nextEmpty(); }
+
+  /* ---------- build: 오늘 ---------- */
+  function sub(parent, title, note, o) {
+    var s = el("div", "sub"), h = el("div", "head");
+    var small = !!o.small;
+    h.appendChild(el("h3", small ? "lab" : "", title)); if (note) h.appendChild(el("p", "", note));
+    var clr = el("button", small ? "mini" : "", small ? "지우기" : "이 칸 지우기"); clr.type = "button";
+    var rest = clr.textContent;
+    var pd;
+    clr.addEventListener("click", function () {
+      if (clr.dataset.armed === "1") { pd.strokes = []; redraw(pd); changed(pd); clr.textContent = rest; clr.dataset.armed = ""; return; }
+      clr.dataset.armed = "1"; clr.textContent = "한 번 더";
+      setTimeout(function () { clr.dataset.armed = ""; clr.textContent = rest; }, 2500);
+    });
+    h.appendChild(clr); s.appendChild(h);
+    pd = makePad(o); s.appendChild(pd.box); parent.appendChild(s);
+    return pd;
+  }
+  function addDaily(name, parent, title, note, w, h, rows, small) {
+    var pd = sub(parent, title, note, { w: w, h: h, rows: rows, aria: title, small: small, docId: function () { return date + "_" + name; }, after: dayMark, daily: true });
+    pads[name] = pd; daily.push(pd); return pd;
+  }
+  function block(parent, title, note) {
+    var b = el("div", "block"), h = el("div", "head");
+    h.appendChild(el("h3", "", title)); if (note) h.appendChild(el("p", "", note));
+    b.appendChild(h); parent.appendChild(b); return b;
+  }
+  function dramaSet(parent, idFn, afterFn) {
+    var set = [];
+    function one(host, suffix, title, w, h) {
+      var pd = sub(host, title, null, { w: w, h: h, rows: 1, aria: title, small: true, docId: function () { var b = idFn(); return b ? b + suffix : null; }, after: afterFn });
+      set.push(pd); return pd;
+    }
+    one(parent, "", "표현", 1000, 140);
+    var pr = el("div", "pair"); parent.appendChild(pr);
+    one(pr, "_p", "한국식 발음", 400, 140);
+    one(pr, "_m", "뜻", 600, 140);
+    return set;
+  }
+  function frameBox() {
+    var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+    framePad.strokes.forEach(function (s) { for (var i = 0; i < s.p.length; i += 2) { minX = Math.min(minX, s.p[i]); maxX = Math.max(maxX, s.p[i]); minY = Math.min(minY, s.p[i + 1]); maxY = Math.max(maxY, s.p[i + 1]); } });
+    if (minX > maxX) return null;
+    return { minX: minX, minY: minY, w: (maxX - minX) * SC, h: (maxY - minY) * SC, midY: (minY + maxY) / 2 };
+  }
+  function frameWidth() { var b = frameBox(); return b ? Math.min(b.w + 36, 620) : 0; }
+  function rowsRedraw() { frameRows.forEach(redraw); }
+  function build() {
+    var main = $("todayView");
+
+    var g1 = el("section", "group"); g1.appendChild(el("div", "head")).appendChild(el("h2", "", "단어"));
+    var bw = block(g1, "메인 단어", "단어, 품사와 뜻");
+    var pw = el("div", "pair"); bw.appendChild(pw);
+    addDaily("word", pw, "단어", null, 400, 150, 1, true);
+    addDaily("wordKo", pw, "뜻 · 품사", null, 600, 150, 1, true);
+    var bd = block(g1, "파생어 3개", "파생어와 뜻, 구성");
+    for (var di = 1; di <= 3; di++) {
+      var pdv = el("div", "pair"); bd.appendChild(pdv);
+      addDaily("d" + di, pdv, "파생어 " + di, null, 400, 130, 1, true);
+      addDaily("d" + di + "k", pdv, "뜻 · 구성", null, 600, 130, 1, true);
+    }
+    var bs = block(g1, "예문 3개", "영어 한 줄, 해석 한 줄");
+    for (var si = 1; si <= 3; si++) {
+      var ps = el("div", "sub"); bs.appendChild(ps);
+      addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 120, 1, true);
+      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 120, 1, true);
+    }
+    var bg = block(g1, "문법", "문법 이름, 설명과 예");
+    addDaily("gramName", bg, "문법 이름", null, 1000, 120, 1, true);
+    addDaily("gram", bg, "설명과 예", null, 1000, 330, 3, true);
+    main.appendChild(g1);
+
+    var g2 = el("section", "group"); g2.appendChild(el("div", "head")).appendChild(el("h2", "", "미드 표현"));
+    var nav = el("div", "slotnav");
+    var bp = el("button", "", "◀"); bp.type = "button"; bp.setAttribute("aria-label", "이전 번호");
+    var lab = el("strong", ""); lab.id = "todayNo";
+    var bn = el("button", "", "▶"); bn.type = "button"; bn.setAttribute("aria-label", "다음 번호");
+    var cnt = el("span", "hint"); cnt.id = "todayCount";
+    nav.appendChild(bp); nav.appendChild(lab); nav.appendChild(bn); nav.appendChild(cnt); g2.appendChild(nav);
+    function setNo(n) { n = Math.max(1, Math.min(GOAL, n)); var c = cache[date] || (cache[date] = {}); c.dramaNo = n; c.has = true; saveDay(date); refreshDrama(); renderChips(); }
+    bp.addEventListener("click", function () { setNo(todayNo() - 1); });
+    bn.addEventListener("click", function () { setNo(todayNo() + 1); });
+    todayDramaPads = dramaSet(g2, function () { return "drama_" + todayNo(); },
+      function () { var n = todayNo(); var c = cache[date] || (cache[date] = {}); if (c.dramaNo !== n || !c.has) { c.dramaNo = n; c.has = true; saveDay(date); } markSlot(n); renderChips(); });
+    main.appendChild(g2);
+
+    var g3 = el("section", "group"); g3.appendChild(el("div", "head")).appendChild(el("h2", "", "문장 틀"));
+    framePad = addDaily("frame", g3, "틀 한 번만 쓰기", "아래 10줄에 자동으로 반복돼요", 1000, 150, 1);
+    framePad.after = function () { dayMark(); rowsRedraw(); };
+    framePad.onLoaded = rowsRedraw;
+    var rl = el("div", "sub"); var rh = el("div", "head"); rh.appendChild(el("h3", "", "뒤만 쓰기 10줄")); rh.appendChild(el("p", "", "틀 오른쪽에만 써져요")); rl.appendChild(rh);
+    for (var i = 1; i <= FRAME_ROWS; i++) {
+      (function (i) {
+        var line = el("div", "rowline"); line.appendChild(el("b", "", i + ")"));
+        var pd = makePad({
+          w: 1000, h: 110, rows: 1, aria: "문장 " + i, docId: function () { return date + "_f" + i; }, after: dayMark, daily: true,
+          gate: function (pt) { return pt[0] >= frameWidth() - 6; },
+          under: function (ctx) {
+            var b = frameBox(); if (!b) return;
+            ctx.save();
+            ctx.globalAlpha = 0.9;
+            framePad.strokes.forEach(function (s) { drawStroke(ctx, s, SC, 18 - b.minX * SC, 55 - b.midY * SC); });
+            ctx.restore();
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim() || "#cfe0de";
+            ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); var x = frameWidth() - 6; ctx.moveTo(x, 12); ctx.lineTo(x, 98); ctx.stroke(); ctx.setLineDash([]);
+          }
+        });
+        pd.box.style.backgroundImage = "linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px))";
+        pads["f" + i] = pd; daily.push(pd); frameRows.push(pd);
+        line.appendChild(pd.box); rl.appendChild(line);
+      })(i);
+    }
+    g3.appendChild(rl); main.appendChild(g3);
+
+    var g4 = el("section", "group"); g4.appendChild(el("div", "head")).appendChild(el("h2", "", "저녁 복습"));
+    var checks = el("div", "checks"); checks.setAttribute("role", "group"); checks.setAttribute("aria-label", "복습 체크");
+    CHECKS.forEach(function (c) {
+      var l = el("label", "check"); var i = document.createElement("input"); i.type = "checkbox"; i.id = c[0];
+      i.addEventListener("change", function () { var cc = cache[date] || (cache[date] = {}); cc.has = true; cc[c[0]] = i.checked; saveDay(date); renderChips(); setStatus(db ? "저장됨" : "이 기기에 저장됨"); });
+      l.appendChild(i); l.appendChild(document.createTextNode(" " + c[1])); checks.appendChild(l);
+    });
+    g4.appendChild(checks);
+    addDaily("review", g4, "메모", "헷갈린 것, 다시 볼 것", 1000, 330, 3);
+    main.appendChild(g4);
+
+    var hint = el("p", "hint", "Apple Pencil로 칸에 바로 쓰세요. 화면은 칸 바깥을 손가락으로 밀거나 '화면 넘기기'를 켜고 넘기세요.");
+    main.appendChild(hint);
+  }
+
+  /* ---------- build: 미드 100 ---------- */
+  function buildBoard() {
+    var v = $("dramaView");
+    var top = el("section", "group");
+    var h = el("div", "head"); h.appendChild(el("h2", "", "미드 표현 100")); var pr = el("p", ""); pr.id = "progText"; h.appendChild(pr); top.appendChild(h);
+    var m = el("div", "meter"); var mi = document.createElement("i"); mi.id = "meterFill"; m.appendChild(mi); top.appendChild(m);
+    var ed = el("div", "sub"); ed.id = "slotEditor"; top.appendChild(ed);
+    v.appendChild(top);
+    var gridBox = el("section", "group"); var gh = el("div", "head"); gh.appendChild(el("h3", "", "번호를 누르면 그 번호의 칸이 열려요")); gridBox.appendChild(gh);
+    var grid = el("div", "grid100"); grid.id = "grid100"; gridBox.appendChild(grid);
+    var li = el("div", "sub"); li.appendChild(el("h3", "", "지금까지 배운 표현 1~11")); li.style.color = "var(--muted)";
+    var ol = el("ol", "list11"); SEEDS.forEach(function (t) { ol.appendChild(el("li", "", t)); }); li.appendChild(ol); gridBox.appendChild(li);
+    v.appendChild(gridBox);
+
+    var head = el("div", "head"); var sn = el("h3", ""); sn.id = "slotTitle"; head.appendChild(sn); var st = el("p", ""); st.id = "slotSeed"; st.className = "seedtext"; head.appendChild(st);
+    ed.appendChild(head);
+    slotPads = dramaSet(ed, function () { return selSlot ? "drama_" + selSlot : null; }, function () { if (selSlot) markSlot(selSlot); });
+    selectSlot(nextEmpty());
+  }
+  function renderBoard() {
+    var grid = $("grid100"); if (!grid) return;
+    grid.textContent = "";
+    for (var n = 1; n <= GOAL; n++) {
+      (function (n) {
+        var b = el("button", "cell" + (isDone(n) ? " done" : ""), String(n)); b.type = "button";
+        b.setAttribute("aria-label", n + "번" + (isDone(n) ? " 완료" : ""));
+        if (n === selSlot) b.setAttribute("aria-current", "true");
+        b.addEventListener("click", function () { selectSlot(n); });
+        grid.appendChild(b);
+      })(n);
+    }
+    var c = doneCount();
+    $("progText").textContent = c + " / " + GOAL;
+    $("meterFill").style.width = (c / GOAL * 100) + "%";
+    refreshDrama();
+  }
+  function selectSlot(n) {
+    slotPads.forEach(flush);
+    selSlot = n;
+    $("slotTitle").textContent = "No. " + n;
+    $("slotSeed").textContent = n <= SEEDS.length ? SEEDS[n - 1] : "";
+    slotPads.forEach(loadPad); renderBoard();
+  }
+  function refreshDrama() {
+    var n = todayNo();
+    var a = $("todayNo"); if (a) a.textContent = "No. " + n;
+    var b = $("todayCount"); if (b) b.textContent = doneCount() + "/" + GOAL + " 완료";
+    if (todayDramaPads.length && (todayDramaPads[0].loadedFor !== n)) { todayDramaPads[0].loadedFor = n; todayDramaPads.forEach(loadPad); }
+  }
+
+  /* ---------- navigation / chrome ---------- */
+  function renderTitle() {
+    var d = parseKey(date);
+    $("title").textContent = (d.getMonth() + 1) + "월 " + d.getDate() + "일 " + DOW[d.getDay()] + "요일" + (date === todayKey() ? " · 오늘" : "");
+  }
+  function renderChips() {
+    var keys = Object.keys(cache).filter(function (k) { return cache[k] && cache[k].has; });
+    if (keys.indexOf(date) < 0) keys.push(date);
+    keys.sort().reverse();
+    var box = $("chips"); box.textContent = "";
+    keys.slice(0, 21).forEach(function (k) {
+      var b = el("button", "chip", label(k)); b.type = "button";
+      var m = cache[k];
+      if (m && CHECKS.every(function (c) { return m[c[0]]; })) b.appendChild(el("small", "", "복습 완료"));
+      if (k === date) b.setAttribute("aria-current", "date");
+      b.addEventListener("click", function () { go(k); });
+      box.appendChild(b);
+    });
+  }
+  function applyChecks() { var c = cache[date] || {}; CHECKS.forEach(function (x) { var i = $(x[0]); if (i) i.checked = !!c[x[0]]; }); }
+  function go(k) {
+    daily.forEach(flush); todayDramaPads.forEach(flush);
+    date = k;
+    renderTitle(); applyChecks(); renderChips();
+    daily.forEach(loadPad);
+    todayDramaPads[0].loadedFor = null; refreshDrama();
+    showTab("today"); window.scrollTo(0, 0);
+  }
+  function showTab(t) {
+    var isToday = t === "today";
+    $("todayView").hidden = !isToday; $("dramaView").hidden = isToday;
+    $("tabToday").setAttribute("aria-selected", isToday); $("tabDrama").setAttribute("aria-selected", !isToday);
+    if (!isToday) { renderBoard(); slotPads.forEach(redraw); }
+    window.scrollTo(0, 0);
+  }
+  $("tabToday").addEventListener("click", function () { showTab("today"); });
+  $("tabDrama").addEventListener("click", function () { showTab("drama"); });
+  $("prev").addEventListener("click", function () { go(shiftKey(date, -1)); });
+  $("next").addEventListener("click", function () { go(shiftKey(date, 1)); });
+  $("today").addEventListener("click", function () { go(todayKey()); });
+
+  /* ---------- tools ---------- */
+  function setPressed(ids, on) { ids.forEach(function (id) { $(id).setAttribute("aria-pressed", id === on ? "true" : "false"); }); }
+  $("thin").addEventListener("click", function () { width = 3; erasing = false; setPressed(["thin","thick","eraser"], "thin"); });
+  $("thick").addEventListener("click", function () { width = 7; erasing = false; setPressed(["thin","thick","eraser"], "thick"); });
+  $("eraser").addEventListener("click", function () { erasing = true; setPressed(["thin","thick","eraser"], "eraser"); });
+  $("undo").addEventListener("click", function () { var pd = activePad; if (pd && pd.strokes.length) { pd.strokes.pop(); redraw(pd); changed(pd); } });
+  $("finger").addEventListener("click", function () { fingerOK = !fingerOK; $("finger").setAttribute("aria-pressed", fingerOK); });
+  $("pan").addEventListener("click", function () { var on = !document.body.classList.contains("pan"); document.body.classList.toggle("pan", on); $("pan").setAttribute("aria-pressed", on); });
+  Array.prototype.forEach.call(document.querySelectorAll(".swatch"), function (b) {
+    b.addEventListener("click", function () {
+      color = b.dataset.color; themed = !!b.dataset.themed; erasing = false;
+      Array.prototype.forEach.call(document.querySelectorAll(".swatch"), function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      if ($("eraser").getAttribute("aria-pressed") === "true") setPressed(["thin","thick","eraser"], width > 4 ? "thick" : "thin");
+    });
+  });
+  function flushAll() { daily.forEach(flush); todayDramaPads.forEach(flush); slotPads.forEach(flush); }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) flushAll(); });
+  window.addEventListener("pagehide", flushAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+
+  /* ---------- boot ---------- */
+  build(); buildBoard(); renderTitle();
+  var ld = lsGet("daily:" + date); if (ld) cache[date] = ld;
+  var lm = lsGet("dramaMeta"); if (lm && lm.done) dramaMeta = lm.done;
+  applyChecks(); renderChips(); renderBoard();
+  daily.forEach(loadPad); todayDramaPads[0].loadedFor = todayNo(); todayDramaPads.forEach(loadPad);
+
+  function startDb(d) {
+    db = d;
+    db.collection("days").onSnapshot(function (snap) {
+      var m = {}; snap.docs.forEach(function (x) { m[x.id] = x.data(); });
+      var keep = cache[date]; cache = m; if (!cache[date] && keep) cache[date] = keep;
+      renderChips();
+      var a = document.activeElement; if (!(a && a.type === "checkbox")) applyChecks();
+      refreshDrama(); renderBoard(); setStatus("저장됨");
+    }, function (e) { setStatus(e && e.code === "revoked" ? "읽기 전용" : "불러오기 실패", true); });
+    db.doc("meta/drama").onSnapshot(function (s) {
+      var arr = s.exists && s.data().done ? s.data().done : [];
+      arr.forEach(function (n) { if (dramaMeta.indexOf(n) < 0) dramaMeta.push(n); });
+      renderBoard();
+    }, function () {});
+    daily.forEach(loadPad); todayDramaPads[0].loadedFor = null; refreshDrama(); slotPads.forEach(loadPad);
+  }
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then(function (d) { if (d) startDb(d); else setStatus("이 기기에 저장됨"); }, function () { setStatus("이 기기에 저장됨"); });
+  } else setStatus("이 기기에 저장됨");
+})();
+</script>
+
+</body>
+</html>
