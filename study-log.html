@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>오늘의 공부</title>
 </head>
@@ -595,6 +595,32 @@ button { touch-action: manipulation; }
   // a stray ctrl+wheel or trackpad pinch zoom
   window.addEventListener("wheel", function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 
+  // the published page's viewport allows zoom; lock it from script
+  (function () {
+    var want = "width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover";
+    var metas = document.querySelectorAll('meta[name="viewport"]');
+    if (!metas.length) { var m = document.createElement("meta"); m.name = "viewport"; document.head.appendChild(m); metas = [m]; }
+    Array.prototype.forEach.call(metas, function (m) { m.setAttribute("content", want); });
+  })();
+
+  // pen and pad touches: block every browser gesture (double tap zoom, magnifier) at the source.
+  // canvas: always. Stylus anywhere except buttons and checkboxes: always. Any quick second tap off a button: blocked.
+  function isControl(t) { return !!(t && t.closest && t.closest("button, input, label, a, select, textarea")); }
+  function isStylus(e) { var t = e.changedTouches && e.changedTouches[0]; return !!(t && t.touchType === "stylus"); }
+  var lastTapEnd = 0;
+  document.addEventListener("touchstart", function (e) {
+    var tg = e.target;
+    if (tg && tg.tagName === "CANVAS") { e.preventDefault(); return; }
+    if (isStylus(e) && !isControl(tg) && !(tg.closest && tg.closest(".scrollstrip"))) e.preventDefault();
+  }, { passive: false, capture: true });
+  document.addEventListener("touchend", function (e) {
+    var now = Date.now(), tg = e.target;
+    if (tg && tg.tagName === "CANVAS") { e.preventDefault(); lastTapEnd = now; return; }
+    if (!isControl(tg) && (isStylus(e) || now - lastTapEnd < 500)) e.preventDefault();
+    lastTapEnd = now;
+  }, { passive: false, capture: true });
+  document.addEventListener("dblclick", function (e) { e.preventDefault(); }, { passive: false });
+
   /* ---------- boot ---------- */
   build(); buildBoard(); renderTitle(); showPage("word");
   var ld = lsGet("daily:" + date); if (ld) cache[date] = ld;
@@ -623,6 +649,5 @@ button { touch-action: manipulation; }
   } else setStatus("이 기기에 저장됨");
 })();
 </script>
-
 </body>
 </html>
