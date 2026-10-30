@@ -24,6 +24,7 @@
   --accent-soft: #dcefec;
   --warn: #a4531a;
   --ink-default: #16222b;
+  --ink-ko: #a2520f; --ink-fr: #2457d6; --ink-my: #b0236e;
   --font-body: "Gothic A1", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
   --font-display: "Nanum Myeongjo", "Apple Myeongjo", "Noto Serif KR", serif;
 }
@@ -31,13 +32,13 @@
   :root:not([data-theme="light"]) {
     --bg: #11181d; --surface: #1a242b; --surface-2: #1e2a32; --fg: #e6edf1; --muted: #93a3ae;
     --line: #2f3d47; --rule: #2a4440; --accent: #4cc0b3; --accent-fg: #07211e; --accent-soft: #1d3a37; --warn: #e0925a;
-    --ink-default: #e6edf1; color-scheme: dark;
+    --ink-default: #e6edf1; --ink-ko: #f0a65e; --ink-fr: #8fb0ff; --ink-my: #ff8cc8; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #11181d; --surface: #1a242b; --surface-2: #1e2a32; --fg: #e6edf1; --muted: #93a3ae;
   --line: #2f3d47; --rule: #2a4440; --accent: #4cc0b3; --accent-fg: #07211e; --accent-soft: #1d3a37; --warn: #e0925a;
-  --ink-default: #e6edf1; color-scheme: dark;
+  --ink-default: #e6edf1; --ink-ko: #f0a65e; --ink-fr: #8fb0ff; --ink-my: #ff8cc8; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -126,6 +127,8 @@ button { touch-action: manipulation; }
 .scrollstrip { position: fixed; top: 0; bottom: 0; right: env(safe-area-inset-right, 0px); width: 44px; z-index: 12; touch-action: pan-y; display: grid; place-items: center; background: linear-gradient(to left, var(--accent-soft), transparent); color: var(--accent); font-size: 20px; line-height: 1.2; text-align: center; -webkit-user-select: none; user-select: none; }
 .scrollstrip.left { right: auto; left: env(safe-area-inset-left, 0px); background: linear-gradient(to right, var(--accent-soft), transparent); }
 .scrollstrip span { pointer-events: none; opacity: .8; font-weight: 700; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--k); margin-right: 5px; vertical-align: 0; }
 .toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; z-index: 20; font-size: 15px; }
 </style>
 
@@ -142,7 +145,7 @@ button { touch-action: manipulation; }
     <div class="tabs" id="pageTabs" role="tablist"></div>
     <nav class="chips" id="chips" aria-label="기록한 날" hidden></nav>
     <div class="tools" role="toolbar" aria-label="펜 도구">
-      <button class="swatch" data-color="#16222b" data-themed="1" aria-label="기본 색" aria-pressed="true" style="--c: var(--ink-default)"><i></i></button>
+      <button class="swatch" data-color="#16222b" data-themed="1" aria-label="자동 색" aria-pressed="true" style="--c: var(--ink-default)"><i></i></button>
       <button class="swatch" data-color="#d23b3b" aria-label="빨강" aria-pressed="false" style="--c:#d23b3b"><i></i></button>
       <button class="swatch" data-color="#2457d6" aria-label="파랑" aria-pressed="false" style="--c:#2457d6"><i></i></button>
       <button id="thin" aria-pressed="true">가는 펜</button>
@@ -151,6 +154,7 @@ button { touch-action: manipulation; }
       <button id="undo">되돌리기</button>
       <button id="finger" aria-pressed="false">손가락 쓰기</button>
     </div>
+    <div class="legend" aria-label="자동 색 안내"><span style="--k:var(--ink-default)">영어</span><span style="--k:var(--ink-ko)">해석 · 뜻</span><span style="--k:var(--ink-fr)">반복 틀</span><span style="--k:var(--ink-my)">내가 쓰는 부분</span></div>
   </header>
 
   <main id="todayView"></main>
@@ -192,11 +196,17 @@ button { touch-action: manipulation; }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
   /* ---------- drawing ---------- */
-  function themeInk() { return getComputedStyle(document.documentElement).getPropertyValue("--ink-default").trim() || "#16222b"; }
-  function drawStroke(ctx, s, f, ox, oy) {
+  // 자동 색: en = 영어(단어·문장), ko = 해석·뜻, fr = 반복되는 문장 틀, my = 내가 채워 쓰는 부분
+  var INK_FALLBACK = { en: "#16222b", ko: "#a2520f", fr: "#2457d6", my: "#b0236e" };
+  function themeInk(t) {
+    var k = (t === 1 || !INK_FALLBACK[t]) ? "en" : t;
+    var v = getComputedStyle(document.documentElement).getPropertyValue(k === "en" ? "--ink-default" : "--ink-" + k).trim();
+    return v || INK_FALLBACK[k];
+  }
+  function drawStroke(ctx, s, f, ox, oy, force) {
     var p = s.p; if (!p.length) return;
     f = f || 1; ox = ox || 0; oy = oy || 0;
-    ctx.strokeStyle = s.t ? themeInk() : s.c; ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(s.w * f, 1.6); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.strokeStyle = s.t ? themeInk(force || s.t) : s.c; ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(s.w * f, 1.6); ctx.lineCap = "round"; ctx.lineJoin = "round";
     if (p.length === 2) { ctx.beginPath(); ctx.arc(p[0] * f + ox, p[1] * f + oy, ctx.lineWidth / 2, 0, 6.2832); ctx.fill(); return; }
     ctx.beginPath(); ctx.moveTo(p[0] * f + ox, p[1] * f + oy);
     for (var i = 2; i < p.length; i += 2) ctx.lineTo(p[i] * f + ox, p[i + 1] * f + oy);
@@ -231,7 +241,7 @@ button { touch-action: manipulation; }
       if (pd.gate && !pd.gate(pt)) return;
       e.preventDefault(); cv.setPointerCapture(e.pointerId); activePad = pd;
       if (erasing) { pd.cur = { erase: true }; eraseAt(pd, pt); return; }
-      pd.cur = { c: color, t: themed ? 1 : 0, w: width, p: [pt[0], pt[1]] };
+      pd.cur = { c: color, t: themed ? (pd.ink || "en") : 0, w: width, p: [pt[0], pt[1]] };
       redraw(pd);
     });
     cv.addEventListener("pointermove", function (e) {
@@ -263,7 +273,7 @@ button { touch-action: manipulation; }
     var box = el("div", "pad"); box.style.aspectRatio = o.w + " / " + o.h; box.style.setProperty("--rows", o.rows || 1);
     var cv = document.createElement("canvas"); cv.width = o.w; cv.height = o.h; cv.setAttribute("aria-label", o.aria || "손글씨");
     box.appendChild(cv);
-    var pd = { box: box, cv: cv, ctx: cv.getContext("2d"), strokes: [], cur: null, docId: o.docId, gate: o.gate, under: o.under, after: o.after, onLoaded: o.onLoaded, timer: null, daily: !!o.daily };
+    var pd = { box: box, cv: cv, ctx: cv.getContext("2d"), strokes: [], cur: null, docId: o.docId, gate: o.gate, under: o.under, after: o.after, onLoaded: o.onLoaded, timer: null, daily: !!o.daily, ink: o.ink || "en" };
     wire(pd); return pd;
   }
 
@@ -332,8 +342,8 @@ button { touch-action: manipulation; }
     pd = makePad(o); s.appendChild(pd.box); parent.appendChild(s);
     return pd;
   }
-  function addDaily(name, parent, title, note, w, h, rows, small) {
-    var pd = sub(parent, title, note, { w: w, h: h, rows: rows, aria: title, small: small, docId: function () { return date + "_" + name; }, after: dayMark, daily: true });
+  function addDaily(name, parent, title, note, w, h, rows, small, ink) {
+    var pd = sub(parent, title, note, { w: w, h: h, rows: rows, aria: title, small: small, ink: ink, docId: function () { return date + "_" + name; }, after: dayMark, daily: true });
     pads[name] = pd; daily.push(pd); return pd;
   }
   function block(parent, title, note) {
@@ -343,23 +353,77 @@ button { touch-action: manipulation; }
   }
   function dramaSet(parent, idFn, afterFn) {
     var set = [];
-    function one(host, suffix, title, w, h) {
-      var pd = sub(host, title, null, { w: w, h: h, rows: 1, aria: title, small: true, docId: function () { var b = idFn(); return b ? b + suffix : null; }, after: afterFn });
+    function one(host, suffix, title, w, h, ink) {
+      var pd = sub(host, title, null, { w: w, h: h, rows: 1, aria: title, small: true, ink: ink, docId: function () { var b = idFn(); return b ? b + suffix : null; }, after: afterFn });
       set.push(pd); return pd;
     }
     one(parent, "", "표현", 1000, 230);
     var pr = el("div", "pair"); parent.appendChild(pr);
-    one(pr, "_p", "한국식 발음", 400, 230);
-    one(pr, "_m", "뜻", 600, 230);
+    one(pr, "_p", "한국식 발음", 400, 230, "ko");
+    one(pr, "_m", "뜻", 600, 230, "ko");
     return set;
   }
-  function frameBox() {
+  /* 문장 틀: 앞 · 가운데 · 뒤 세 조각. 쓴 조각만 줄에 찍히고, 그 사이가 빈칸이 된다.
+     F만: [F][__]   B만: [__][B]   M만: [__][M][__]   F+M (I'm too ~ to ~): [F][__][M][__]
+     F+B: [F][__][B]   M+B: [__][M][__][B]   F+M+B: [F][__][M][__][B] */
+  var framePads = [];
+  var ROW_W = 1000, ROW_H = 130, PGAP = 14, MIN_BLANK = 150;
+  function boxOf(pd) {
+    if (!pd) return null;
     var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
-    framePad.strokes.forEach(function (s) { for (var i = 0; i < s.p.length; i += 2) { minX = Math.min(minX, s.p[i]); maxX = Math.max(maxX, s.p[i]); minY = Math.min(minY, s.p[i + 1]); maxY = Math.max(maxY, s.p[i + 1]); } });
+    pd.strokes.forEach(function (s) { for (var i = 0; i < s.p.length; i += 2) { minX = Math.min(minX, s.p[i]); maxX = Math.max(maxX, s.p[i]); minY = Math.min(minY, s.p[i + 1]); maxY = Math.max(maxY, s.p[i + 1]); } });
     if (minX > maxX) return null;
-    return { minX: minX, minY: minY, w: (maxX - minX) * SC, h: (maxY - minY) * SC, midY: (minY + maxY) / 2 };
+    return { minX: minX, maxX: maxX, minY: minY, maxY: maxY, w: Math.max(maxX - minX, 4), h: Math.max(maxY - minY, 4), midY: (minY + maxY) / 2 };
   }
-  function frameWidth() { var b = frameBox(); return b ? Math.min(b.w + 36, 620) : 0; }
+  function frameLayout() {
+    var bs = framePads.map(boxOf);
+    var n = 0, sumW = 0, maxH = 0;
+    bs.forEach(function (b) { if (b) { n++; sumW += b.w; maxH = Math.max(maxH, b.h); } });
+    if (!n) return null;
+    var blanks = bs[1] ? 2 : 1;
+    var s = Math.min(SC, (ROW_W - blanks * MIN_BLANK - n * 2 * PGAP) / sumW, (ROW_H - 16) / maxH);
+    s = Math.max(s, 0.15);
+    var piecesW = sumW * s + n * 2 * PGAP;
+    var blankW = Math.max((ROW_W - piecesW) / blanks, 40);
+    var segs = [], x = 0;
+    function piece(i) { var w = bs[i].w * s + 2 * PGAP; segs.push({ piece: i, x0: x, x1: x + w }); x += w; }
+    function blank() { segs.push({ piece: -1, x0: x, x1: x + blankW }); x += blankW; }
+    if (bs[0]) piece(0);
+    blank();
+    if (bs[1]) { piece(1); blank(); }
+    if (bs[2]) piece(2);
+    return { s: s, segs: segs, boxes: bs };
+  }
+  function rowUnder(ctx) {
+    var L = frameLayout(); if (!L) return;
+    ctx.save(); ctx.globalAlpha = 0.9;
+    L.segs.forEach(function (g) {
+      if (g.piece < 0) return;
+      var b = L.boxes[g.piece];
+      framePads[g.piece].strokes.forEach(function (st) { drawStroke(ctx, st, L.s, g.x0 + PGAP - b.minX * L.s, ROW_H / 2 - b.midY * L.s, "fr"); });
+    });
+    ctx.restore();
+    var rule = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim() || "#cfe0de";
+    ctx.save();
+    L.segs.forEach(function (g) {
+      if (g.piece >= 0) return;
+      ctx.fillStyle = rule; ctx.globalAlpha = 0.25; ctx.fillRect(g.x0 + 2, 10, g.x1 - g.x0 - 4, ROW_H - 20); ctx.globalAlpha = 1;
+      ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      if (g.x0 > 1) { ctx.moveTo(g.x0, 12); ctx.lineTo(g.x0, ROW_H - 12); }
+      if (g.x1 < ROW_W - 1) { ctx.moveTo(g.x1, 12); ctx.lineTo(g.x1, ROW_H - 12); }
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+  }
+  function rowGate(pt) {
+    var L = frameLayout(); if (!L) return true;
+    for (var i = 0; i < L.segs.length; i++) {
+      var g = L.segs[i];
+      if (g.piece >= 0 && pt[0] > g.x0 + 6 && pt[0] < g.x1 - 6) return false;
+    }
+    return true;
+  }
   function rowsRedraw() { frameRows.forEach(redraw); }
   var pageEls = {}, pageOrder = [], curPage = "word";
   function page(id, title) {
@@ -380,12 +444,12 @@ button { touch-action: manipulation; }
     var bw = block(p1, "메인 단어", "단어, 품사와 뜻");
     var pw = el("div", "pair"); bw.appendChild(pw);
     addDaily("word", pw, "단어", null, 400, 260, 1, true);
-    addDaily("wordKo", pw, "뜻 · 품사", null, 600, 260, 1, true);
+    addDaily("wordKo", pw, "뜻 · 품사", null, 600, 260, 1, true, "ko");
     var bd = block(p1, "파생어 3개", "파생어와 뜻, 구성");
     for (var di = 1; di <= 3; di++) {
       var pdv = el("div", "pair"); bd.appendChild(pdv);
       addDaily("d" + di, pdv, "파생어 " + di, null, 400, 240, 1, true);
-      addDaily("d" + di + "k", pdv, "뜻 · 구성", null, 600, 240, 1, true);
+      addDaily("d" + di + "k", pdv, "뜻 · 구성", null, 600, 240, 1, true, "ko");
     }
 
     var p2 = page("sent", "예문");
@@ -393,7 +457,7 @@ button { touch-action: manipulation; }
     for (var si = 1; si <= 3; si++) {
       var ps = el("div", "sub"); bs.appendChild(ps);
       addDaily("s" + si, ps, "예문 " + si + " 영어", null, 1000, 170, 1, true);
-      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 170, 1, true);
+      addDaily("s" + si + "k", ps, "예문 " + si + " 해석", null, 1000, 170, 1, true, "ko");
     }
 
     var p3 = page("gram", "문법");
@@ -416,33 +480,28 @@ button { touch-action: manipulation; }
       function () { var n = todayNo(); var c = cache[date] || (cache[date] = {}); if (c.dramaNo !== n || !c.has) { c.dramaNo = n; c.has = true; saveDay(date); } markSlot(n); renderChips(); });
 
     var p5 = page("frame", "문장 틀");
-    var bf = block(p5, "문장 틀", "틀은 한 번만 쓰면 10줄에 반복돼요");
-    framePad = addDaily("frame", bf, "틀 한 번만 쓰기", null, 1000, 200, 1, true);
-    addDaily("frameKo", bf, "틀 뜻", null, 1000, 140, 1, true);
-    framePad.after = function () { dayMark(); rowsRedraw(); };
-    framePad.onLoaded = rowsRedraw;
-    var rl1 = block(p5, "뒤만 쓰기 10줄", "틀 오른쪽에만 써져요, 아래 줄에 해석");
+    var bf = block(p5, "문장 틀", "반복되는 부분만 해당 칸에 쓰세요. 비운 칸은 건너뛰고, 사이사이가 빈칸이 돼요");
+    var ex = el("p", "hint", "예) I'm too ~ to ~ → 앞: I'm too, 가운데: to   ·   I want to ~ → 앞만   ·   ~ , right? → 뒤만"); bf.appendChild(ex);
+    var fA = addDaily("frame", bf, "앞부분", null, 1000, 170, 1, true, "fr");
+    var fM = addDaily("frameM", bf, "가운데", null, 1000, 170, 1, true, "fr");
+    var fB = addDaily("frameB", bf, "뒷부분", null, 1000, 170, 1, true, "fr");
+    framePads = [fA, fM, fB]; framePad = fA;
+    framePads.forEach(function (fp) { fp.after = function () { dayMark(); rowsRedraw(); }; fp.onLoaded = rowsRedraw; });
+    addDaily("frameKo", bf, "틀 뜻", null, 1000, 140, 1, true, "ko");
+    var rl1 = block(p5, "빈칸 채우기 10줄", "틀 사이 빈칸에만 써져요, 아래 줄에 해석");
     for (var i = 1; i <= FRAME_ROWS; i++) {
       (function (i) {
         var line = el("div", "rowline"); line.appendChild(el("b", "", i + ")"));
         var pd = makePad({
-          w: 1000, h: 130, rows: 1, aria: "문장 " + i, docId: function () { return date + "_f" + i; }, after: dayMark, daily: true,
-          gate: function (pt) { return pt[0] >= frameWidth() - 6; },
-          under: function (ctx) {
-            var b = frameBox(); if (!b) return;
-            ctx.save(); ctx.globalAlpha = 0.9;
-            framePad.strokes.forEach(function (s) { drawStroke(ctx, s, SC, 18 - b.minX * SC, 65 - b.midY * SC); });
-            ctx.restore();
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim() || "#cfe0de";
-            ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); var x = frameWidth() - 6; ctx.moveTo(x, 12); ctx.lineTo(x, 118); ctx.stroke(); ctx.setLineDash([]);
-          }
+          w: ROW_W, h: ROW_H, rows: 1, aria: "문장 " + i, docId: function () { return date + "_f" + i; }, after: dayMark, daily: true, ink: "my",
+          gate: rowGate, under: rowUnder
         });
         pd.box.style.backgroundImage = "linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px))";
         pads["f" + i] = pd; daily.push(pd); frameRows.push(pd);
         line.appendChild(pd.box);
         var grp = el("div", "sentgrp"); grp.appendChild(line);
         var kline = el("div", "rowline ko"); kline.appendChild(el("b", "", "해석"));
-        var kp = makePad({ w: 1000, h: 100, rows: 1, aria: "문장 " + i + " 해석", docId: function () { return date + "_f" + i + "k"; }, after: dayMark, daily: true });
+        var kp = makePad({ w: 1000, h: 100, rows: 1, aria: "문장 " + i + " 해석", docId: function () { return date + "_f" + i + "k"; }, after: dayMark, daily: true, ink: "ko" });
         kp.box.style.backgroundImage = "linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px))";
         pads["f" + i + "k"] = kp; daily.push(kp);
         kline.appendChild(kp.box); grp.appendChild(kline);
